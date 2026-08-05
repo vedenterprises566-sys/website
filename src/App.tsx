@@ -211,7 +211,7 @@ export default function App() {
   };
 
   if (showCountdown) {
-    return <LaunchCountdown onBypass={() => setShowCountdown(false)} />;
+    return <LaunchCountdown />;
   }
 
   return (
