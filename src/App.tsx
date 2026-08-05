@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowRight, Layers } from 'lucide-react';
 import { Header } from './components/Header';
@@ -22,7 +22,22 @@ import { PRODUCTS_CATALOG } from './data/products';
 export default function App() {
   // Launch countdown state for August 7, 2026 00:00 IST
   const targetLaunch = new Date('2026-08-07T00:00:00+05:30').getTime();
-  const [showCountdown, setShowCountdown] = useState<boolean>(Date.now() < targetLaunch);
+  const [showCountdown, setShowCountdown] = useState<boolean>(() => Date.now() < targetLaunch);
+
+  // Auto-remove countdown overlay the exact second timer hits August 7 00:00 IST
+  useEffect(() => {
+    if (!showCountdown) return;
+
+    const checkLaunch = () => {
+      if (Date.now() >= targetLaunch) {
+        setShowCountdown(false);
+      }
+    };
+
+    checkLaunch();
+    const interval = setInterval(checkLaunch, 1000);
+    return () => clearInterval(interval);
+  }, [showCountdown, targetLaunch]);
 
   const [currentPage, setCurrentPage] = useState<'home' | 'catalog' | 'basket' | 'garments'>('home');
   const [searchQuery, setSearchQuery] = useState<string>('');
