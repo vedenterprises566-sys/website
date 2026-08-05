@@ -1,0 +1,699 @@
+[
+  {
+    "referenceId": "VED-979384",
+    "timestamp": "2026-08-05T19:07:07.155Z",
+    "fullName": "Rajesh Kumar",
+    "phone": "9876543210",
+    "city": "Surat",
+    "state": "Gujarat",
+    "email": "rajesh@example.com",
+    "comments": "Need 500kg 2/48 Vislon Lurex yarn",
+    "items": [
+      {
+        "product": {
+          "name": "2/48 Vislon Lurex",
+          "countOrDenier": "2/48 Nm"
+        },
+        "quantityKg": 500
+      }
+    ]
+  },
+  {
+    "referenceId": "VED-743259",
+    "timestamp": "2026-08-05T19:11:34.652Z",
+    "fullName": "harsh",
+    "companyName": "harsh",
+    "city": "noida",
+    "state": "Delhi NCR",
+    "phone": "8795376727",
+    "email": "",
+    "yarnRequirement": "",
+    "quantityTonsOrKg": "100 Kg",
+    "comments": "new fabric",
+    "requestSample": true,
+    "items": [
+      {
+        "product": {
+          "id": "fy-2",
+          "name": "Space Polyester Yarn (300D - 550D)",
+          "category": "fancy",
+          "categoryLabel": "Fancy Yarn",
+          "countOrDenier": "300 Denier to 550 Denier",
+          "description": "Multi-tone space-dyed polyester yarn delivering vibrant rainbow and ombre effects for designer sweaters, scarves, and woven textiles.",
+          "recommendedUses": [
+            "Designer Sweaters",
+            "Scarves & Stoles",
+            "Jacquard Weaving",
+            "Upholstery"
+          ],
+          "features": [
+            "Multi-Color Gradient",
+            "High Tenacity",
+            "Colorfastness",
+            "Uniform Dyeing"
+          ],
+          "sampleAvailable": true,
+          "origin": "Ved Premium Selection",
+          "popularFor": "Multi-color Winter Wear",
+          "imageUrl": "https://images.unsplash.com/photo-1584992236310-6edddc08acff?auto=format&fit=crop&w=800&q=80"
+        },
+        "quantityKg": 100
+      },
+      {
+        "product": {
+          "id": "fy-1",
+          "name": "MX Lurex 50/85 Fine Count",
+          "category": "fancy",
+          "categoryLabel": "Fancy Yarn",
+          "countOrDenier": "50/85 Fine Count",
+          "description": "High-lustre metallic shimmer Lurex yarn engineered for high-end garment borders, luxury knitwear, sarees, shawls, and decorative embroidery.",
+          "recommendedUses": [
+            "Knitwear Borders",
+            "Shawls & Sarees",
+            "Fancy Sweaters",
+            "Embroidery"
+          ],
+          "features": [
+            "Metallic Shine",
+            "Tarnish Resistant",
+            "Smooth Runnability",
+            "Soft Hand Feel"
+          ],
+          "sampleAvailable": true,
+          "origin": "Ved Exclusive Fancy",
+          "popularFor": "Festive & Premium Fashion Apparel",
+          "imageUrl": "/src/assets/images/lurex_fancy_yarn_1785307540278.jpg",
+          "badge": "Popular Fancy"
+        },
+        "quantityKg": 100
+      },
+      {
+        "product": {
+          "id": "fy-3",
+          "name": "Poly Enigma Yarn 550 Denier",
+          "category": "fancy",
+          "categoryLabel": "Fancy Yarn",
+          "countOrDenier": "550 Denier",
+          "description": "Heavy textured polyester yarn designed for structured winterwear, thick knits, jacket fabrics, and high-durability textiles.",
+          "recommendedUses": [
+            "Heavy Sweaters",
+            "Jacket Fabrics",
+            "Furnishing Fabrics",
+            "Outerwear"
+          ],
+          "features": [
+            "High Bulk",
+            "Rich Texture",
+            "Shape Retention",
+            "Pilling Resistant"
+          ],
+          "sampleAvailable": true,
+          "origin": "Specialty Textured",
+          "popularFor": "Heavy Winter Garments",
+          "imageUrl": "/src/assets/images/vislon_imported_yarn_1785307557035.jpg"
+        },
+        "quantityKg": 100
+      }
+    ]
+  },
+  {
+    "referenceId": "VED-164151",
+    "timestamp": "2026-08-05T19:25:22.781Z",
+    "fullName": "harsh",
+    "companyName": "harsh",
+    "city": "noida",
+    "state": "Delhi NCR",
+    "phone": "8795376727",
+    "email": "",
+    "yarnRequirement": "",
+    "quantityTonsOrKg": "100 Kg",
+    "comments": "fabric",
+    "requestSample": true,
+    "items": [
+      {
+        "product": {
+          "id": "fy-1",
+          "name": "MX Lurex 50/85 Fine Count",
+          "category": "fancy",
+          "categoryLabel": "Fancy Yarn",
+          "countOrDenier": "50/85 Fine Count",
+          "description": "High-lustre metallic shimmer Lurex yarn engineered for high-end garment borders, luxury knitwear, sarees, shawls, and decorative embroidery.",
+          "recommendedUses": [
+            "Knitwear Borders",
+            "Shawls & Sarees",
+            "Fancy Sweaters",
+            "Embroidery"
+          ],
+          "features": [
+            "Metallic Shine",
+            "Tarnish Resistant",
+            "Smooth Runnability",
+            "Soft Hand Feel"
+          ],
+          "sampleAvailable": true,
+          "origin": "Ved Exclusive Fancy",
+          "popularFor": "Festive & Premium Fashion Apparel",
+          "imageUrl": "/src/assets/images/lurex_fancy_yarn_1785307540278.jpg",
+          "badge": "Popular Fancy"
+        },
+        "quantityKg": 100
+      },
+      {
+        "product": {
+          "id": "fy-2",
+          "name": "Space Polyester Yarn (300D - 550D)",
+          "category": "fancy",
+          "categoryLabel": "Fancy Yarn",
+          "countOrDenier": "300 Denier to 550 Denier",
+          "description": "Multi-tone space-dyed polyester yarn delivering vibrant rainbow and ombre effects for designer sweaters, scarves, and woven textiles.",
+          "recommendedUses": [
+            "Designer Sweaters",
+            "Scarves & Stoles",
+            "Jacquard Weaving",
+            "Upholstery"
+          ],
+          "features": [
+            "Multi-Color Gradient",
+            "High Tenacity",
+            "Colorfastness",
+            "Uniform Dyeing"
+          ],
+          "sampleAvailable": true,
+          "origin": "Ved Premium Selection",
+          "popularFor": "Multi-color Winter Wear",
+          "imageUrl": "https://images.unsplash.com/photo-1584992236310-6edddc08acff?auto=format&fit=crop&w=800&q=80"
+        },
+        "quantityKg": 100
+      },
+      {
+        "product": {
+          "id": "fy-3",
+          "name": "Poly Enigma Yarn 550 Denier",
+          "category": "fancy",
+          "categoryLabel": "Fancy Yarn",
+          "countOrDenier": "550 Denier",
+          "description": "Heavy textured polyester yarn designed for structured winterwear, thick knits, jacket fabrics, and high-durability textiles.",
+          "recommendedUses": [
+            "Heavy Sweaters",
+            "Jacket Fabrics",
+            "Furnishing Fabrics",
+            "Outerwear"
+          ],
+          "features": [
+            "High Bulk",
+            "Rich Texture",
+            "Shape Retention",
+            "Pilling Resistant"
+          ],
+          "sampleAvailable": true,
+          "origin": "Specialty Textured",
+          "popularFor": "Heavy Winter Garments",
+          "imageUrl": "/src/assets/images/vislon_imported_yarn_1785307557035.jpg"
+        },
+        "quantityKg": 100
+      },
+      {
+        "product": {
+          "id": "fy-4",
+          "name": "Stretch Yarn (Polyester Vislon)",
+          "category": "fancy",
+          "categoryLabel": "Fancy Yarn",
+          "countOrDenier": "Variable Stretch Counts",
+          "description": "Engineered Vislon polyester stretch yarn providing elastic recovery, perfect for ribbing, body-hugging knits, activewear, and socks.",
+          "recommendedUses": [
+            "Collar & Cuff Ribs",
+            "Fitted Knitwear",
+            "Socks & Legwear",
+            "Activewear"
+          ],
+          "features": [
+            "Superior Elasticity",
+            "Dimensional Stability",
+            "Soft Stretch",
+            "Durable Recovery"
+          ],
+          "sampleAvailable": true,
+          "origin": "Imported Specialty",
+          "popularFor": "Elastic Ribbing & Active Wear",
+          "imageUrl": "/src/assets/images/vislon_imported_yarn_1785307557035.jpg",
+          "badge": "High Demand"
+        },
+        "quantityKg": 100
+      }
+    ]
+  },
+  {
+    "referenceId": "VED-739869",
+    "timestamp": "2026-08-05T19:33:37.438Z",
+    "fullName": "Harsh Pratap Maurya",
+    "companyName": "Harsh",
+    "city": "Pratapgarh",
+    "state": "Uttar Pradesh (Kanpur / Varanasi)",
+    "phone": "87995376727",
+    "email": "",
+    "yarnRequirement": "",
+    "quantityTonsOrKg": "100 Kg",
+    "comments": "New fabrics ",
+    "requestSample": true,
+    "items": [
+      {
+        "product": {
+          "id": "fy-1",
+          "name": "MX Lurex 50/85 Fine Count",
+          "category": "fancy",
+          "categoryLabel": "Fancy Yarn",
+          "countOrDenier": "50/85 Fine Count",
+          "description": "High-lustre metallic shimmer Lurex yarn engineered for high-end garment borders, luxury knitwear, sarees, shawls, and decorative embroidery.",
+          "recommendedUses": [
+            "Knitwear Borders",
+            "Shawls & Sarees",
+            "Fancy Sweaters",
+            "Embroidery"
+          ],
+          "features": [
+            "Metallic Shine",
+            "Tarnish Resistant",
+            "Smooth Runnability",
+            "Soft Hand Feel"
+          ],
+          "sampleAvailable": true,
+          "origin": "Ved Exclusive Fancy",
+          "popularFor": "Festive & Premium Fashion Apparel",
+          "imageUrl": "/src/assets/images/lurex_fancy_yarn_1785307540278.jpg",
+          "badge": "Popular Fancy"
+        },
+        "quantityKg": 100
+      },
+      {
+        "product": {
+          "id": "fy-2",
+          "name": "Space Polyester Yarn (300D - 550D)",
+          "category": "fancy",
+          "categoryLabel": "Fancy Yarn",
+          "countOrDenier": "300 Denier to 550 Denier",
+          "description": "Multi-tone space-dyed polyester yarn delivering vibrant rainbow and ombre effects for designer sweaters, scarves, and woven textiles.",
+          "recommendedUses": [
+            "Designer Sweaters",
+            "Scarves & Stoles",
+            "Jacquard Weaving",
+            "Upholstery"
+          ],
+          "features": [
+            "Multi-Color Gradient",
+            "High Tenacity",
+            "Colorfastness",
+            "Uniform Dyeing"
+          ],
+          "sampleAvailable": true,
+          "origin": "Ved Premium Selection",
+          "popularFor": "Multi-color Winter Wear",
+          "imageUrl": "https://images.unsplash.com/photo-1584992236310-6edddc08acff?auto=format&fit=crop&w=800&q=80"
+        },
+        "quantityKg": 100
+      },
+      {
+        "product": {
+          "id": "fy-3",
+          "name": "Poly Enigma Yarn 550 Denier",
+          "category": "fancy",
+          "categoryLabel": "Fancy Yarn",
+          "countOrDenier": "550 Denier",
+          "description": "Heavy textured polyester yarn designed for structured winterwear, thick knits, jacket fabrics, and high-durability textiles.",
+          "recommendedUses": [
+            "Heavy Sweaters",
+            "Jacket Fabrics",
+            "Furnishing Fabrics",
+            "Outerwear"
+          ],
+          "features": [
+            "High Bulk",
+            "Rich Texture",
+            "Shape Retention",
+            "Pilling Resistant"
+          ],
+          "sampleAvailable": true,
+          "origin": "Specialty Textured",
+          "popularFor": "Heavy Winter Garments",
+          "imageUrl": "/src/assets/images/vislon_imported_yarn_1785307557035.jpg"
+        },
+        "quantityKg": 100
+      }
+    ]
+  },
+  {
+    "referenceId": "VED-439094",
+    "timestamp": "2026-08-05T19:42:16.433Z",
+    "fullName": "Harsh Pratap Maurya",
+    "companyName": "Harsh",
+    "city": "Pratapgarh",
+    "state": "Uttar Pradesh (Kanpur / Varanasi)",
+    "phone": "8795376727",
+    "email": "",
+    "yarnRequirement": "",
+    "quantityTonsOrKg": "100 Kg",
+    "comments": "New fabrics ",
+    "requestSample": true,
+    "items": [
+      {
+        "product": {
+          "id": "fy-1",
+          "name": "MX Lurex 50/85 Fine Count",
+          "category": "fancy",
+          "categoryLabel": "Fancy Yarn",
+          "countOrDenier": "50/85 Fine Count",
+          "description": "High-lustre metallic shimmer Lurex yarn engineered for high-end garment borders, luxury knitwear, sarees, shawls, and decorative embroidery.",
+          "recommendedUses": [
+            "Knitwear Borders",
+            "Shawls & Sarees",
+            "Fancy Sweaters",
+            "Embroidery"
+          ],
+          "features": [
+            "Metallic Shine",
+            "Tarnish Resistant",
+            "Smooth Runnability",
+            "Soft Hand Feel"
+          ],
+          "sampleAvailable": true,
+          "origin": "Ved Exclusive Fancy",
+          "popularFor": "Festive & Premium Fashion Apparel",
+          "imageUrl": "/src/assets/images/lurex_fancy_yarn_1785307540278.jpg",
+          "badge": "Popular Fancy"
+        },
+        "quantityKg": 100
+      },
+      {
+        "product": {
+          "id": "fy-2",
+          "name": "Space Polyester Yarn (300D - 550D)",
+          "category": "fancy",
+          "categoryLabel": "Fancy Yarn",
+          "countOrDenier": "300 Denier to 550 Denier",
+          "description": "Multi-tone space-dyed polyester yarn delivering vibrant rainbow and ombre effects for designer sweaters, scarves, and woven textiles.",
+          "recommendedUses": [
+            "Designer Sweaters",
+            "Scarves & Stoles",
+            "Jacquard Weaving",
+            "Upholstery"
+          ],
+          "features": [
+            "Multi-Color Gradient",
+            "High Tenacity",
+            "Colorfastness",
+            "Uniform Dyeing"
+          ],
+          "sampleAvailable": true,
+          "origin": "Ved Premium Selection",
+          "popularFor": "Multi-color Winter Wear",
+          "imageUrl": "https://images.unsplash.com/photo-1584992236310-6edddc08acff?auto=format&fit=crop&w=800&q=80"
+        },
+        "quantityKg": 100
+      },
+      {
+        "product": {
+          "id": "fy-3",
+          "name": "Poly Enigma Yarn 550 Denier",
+          "category": "fancy",
+          "categoryLabel": "Fancy Yarn",
+          "countOrDenier": "550 Denier",
+          "description": "Heavy textured polyester yarn designed for structured winterwear, thick knits, jacket fabrics, and high-durability textiles.",
+          "recommendedUses": [
+            "Heavy Sweaters",
+            "Jacket Fabrics",
+            "Furnishing Fabrics",
+            "Outerwear"
+          ],
+          "features": [
+            "High Bulk",
+            "Rich Texture",
+            "Shape Retention",
+            "Pilling Resistant"
+          ],
+          "sampleAvailable": true,
+          "origin": "Specialty Textured",
+          "popularFor": "Heavy Winter Garments",
+          "imageUrl": "/src/assets/images/vislon_imported_yarn_1785307557035.jpg"
+        },
+        "quantityKg": 100
+      }
+    ]
+  },
+  {
+    "referenceId": "VED-843214",
+    "timestamp": "2026-08-05T20:21:11.443Z",
+    "fullName": "Google Sheet Test User",
+    "companyName": "Ved Enterprises Test Ltd",
+    "phone": "9876543210",
+    "city": "Ludhiana",
+    "state": "Punjab",
+    "email": "testsheet@ved.enterprises",
+    "comments": "Testing automatic Google Sheet row insertion",
+    "items": [
+      {
+        "product": {
+          "name": "Space Polyester Yarn 300 Denier",
+          "countOrDenier": "300 Denier"
+        },
+        "quantityKg": 250
+      }
+    ]
+  },
+  {
+    "referenceId": "VED-599899",
+    "timestamp": "2026-08-05T20:21:29.409Z",
+    "fullName": "Harsh Maurya",
+    "companyName": "Ved Enterprises Ludhiana",
+    "phone": "9876543210",
+    "city": "Ludhiana",
+    "state": "Punjab",
+    "email": "admin@ved.enterprises",
+    "comments": "Google Sheets Live Auto Sync Test",
+    "items": [
+      {
+        "product": {
+          "name": "MX Lurex 50/85 Fine Count",
+          "countOrDenier": "50/85 Count"
+        },
+        "quantityKg": 150
+      }
+    ]
+  },
+  {
+    "referenceId": "VED-930793",
+    "timestamp": "2026-08-05T20:23:15.663Z",
+    "fullName": "Harsh Pratap Maurya",
+    "companyName": "JJ",
+    "city": "Pratapgarh",
+    "state": "Uttar Pradesh (Kanpur / Varanasi)",
+    "phone": "56464634649",
+    "email": "",
+    "yarnRequirement": "",
+    "quantityTonsOrKg": "100 Kg",
+    "comments": "",
+    "requestSample": true,
+    "items": [
+      {
+        "product": {
+          "id": "fy-1",
+          "name": "MX Lurex 50/85 Fine Count",
+          "category": "fancy",
+          "categoryLabel": "Fancy Yarn",
+          "countOrDenier": "50/85 Fine Count",
+          "description": "High-lustre metallic shimmer Lurex yarn engineered for high-end garment borders, luxury knitwear, sarees, shawls, and decorative embroidery.",
+          "recommendedUses": [
+            "Knitwear Borders",
+            "Shawls & Sarees",
+            "Fancy Sweaters",
+            "Embroidery"
+          ],
+          "features": [
+            "Metallic Shine",
+            "Tarnish Resistant",
+            "Smooth Runnability",
+            "Soft Hand Feel"
+          ],
+          "sampleAvailable": true,
+          "origin": "Ved Exclusive Fancy",
+          "popularFor": "Festive & Premium Fashion Apparel",
+          "imageUrl": "/src/assets/images/lurex_fancy_yarn_1785307540278.jpg",
+          "badge": "Popular Fancy"
+        },
+        "quantityKg": 100
+      },
+      {
+        "product": {
+          "id": "fy-2",
+          "name": "Space Polyester Yarn (300D - 550D)",
+          "category": "fancy",
+          "categoryLabel": "Fancy Yarn",
+          "countOrDenier": "300 Denier to 550 Denier",
+          "description": "Multi-tone space-dyed polyester yarn delivering vibrant rainbow and ombre effects for designer sweaters, scarves, and woven textiles.",
+          "recommendedUses": [
+            "Designer Sweaters",
+            "Scarves & Stoles",
+            "Jacquard Weaving",
+            "Upholstery"
+          ],
+          "features": [
+            "Multi-Color Gradient",
+            "High Tenacity",
+            "Colorfastness",
+            "Uniform Dyeing"
+          ],
+          "sampleAvailable": true,
+          "origin": "Ved Premium Selection",
+          "popularFor": "Multi-color Winter Wear",
+          "imageUrl": "https://images.unsplash.com/photo-1584992236310-6edddc08acff?auto=format&fit=crop&w=800&q=80"
+        },
+        "quantityKg": 100
+      },
+      {
+        "product": {
+          "id": "fy-3",
+          "name": "Poly Enigma Yarn 550 Denier",
+          "category": "fancy",
+          "categoryLabel": "Fancy Yarn",
+          "countOrDenier": "550 Denier",
+          "description": "Heavy textured polyester yarn designed for structured winterwear, thick knits, jacket fabrics, and high-durability textiles.",
+          "recommendedUses": [
+            "Heavy Sweaters",
+            "Jacket Fabrics",
+            "Furnishing Fabrics",
+            "Outerwear"
+          ],
+          "features": [
+            "High Bulk",
+            "Rich Texture",
+            "Shape Retention",
+            "Pilling Resistant"
+          ],
+          "sampleAvailable": true,
+          "origin": "Specialty Textured",
+          "popularFor": "Heavy Winter Garments",
+          "imageUrl": "/src/assets/images/vislon_imported_yarn_1785307557035.jpg"
+        },
+        "quantityKg": 100
+      }
+    ]
+  },
+  {
+    "referenceId": "VED-828687",
+    "timestamp": "2026-08-05T20:35:25.354Z",
+    "fullName": "Harsh Maurya",
+    "companyName": "Ved Enterprises",
+    "phone": "8795376727",
+    "city": "Ludhiana",
+    "state": "Punjab",
+    "email": "harsh.vedenterprises@gmail.com",
+    "comments": "Testing live Web3Forms email delivery with key a663db33-cccc-4a3f-9176-76b5457854da",
+    "items": [
+      {
+        "product": {
+          "name": "2/48 Vislon Lurex Yarn",
+          "countOrDenier": "2/48 Nm"
+        },
+        "quantityKg": 200
+      }
+    ]
+  },
+  {
+    "referenceId": "VED-204994",
+    "timestamp": "2026-08-05T20:38:50.083Z",
+    "fullName": "harsh ",
+    "companyName": "nonw",
+    "city": "dsvub",
+    "state": "Karnataka (Bengaluru)",
+    "phone": "595626",
+    "email": "kcbsz@hd.com",
+    "yarnRequirement": "",
+    "quantityTonsOrKg": "100 Kg",
+    "comments": "scjk dzvj",
+    "requestSample": true,
+    "items": []
+  },
+  {
+    "referenceId": "VED-681488",
+    "timestamp": "2026-08-05T20:44:25.552Z",
+    "fullName": "ohvgfbcvbnm",
+    "companyName": "kojilkhjvg",
+    "city": "hugyjft",
+    "state": "Uttar Pradesh (Kanpur / Varanasi)",
+    "phone": "86551",
+    "email": "ddayadnvl@gj.cod",
+    "yarnRequirement": "",
+    "quantityTonsOrKg": "100 Kg",
+    "comments": "ukgjcghfxb",
+    "requestSample": true,
+    "items": []
+  },
+  {
+    "referenceId": "VED-494901",
+    "timestamp": "2026-08-05T20:50:40.857Z",
+    "fullName": "hugjfhxgd",
+    "companyName": "njbkhjvgchfx",
+    "city": "hougfyi",
+    "state": "Punjab (Ludhiana / Amritsar)",
+    "phone": "jihu961",
+    "email": "gfhcgnvhf@gfhcg.com",
+    "yarnRequirement": "",
+    "quantityTonsOrKg": "100 Kg",
+    "comments": "ugofyituuogiy",
+    "requestSample": true,
+    "items": []
+  },
+  {
+    "referenceId": "VED-456613",
+    "timestamp": "2026-08-05T20:51:50.265Z",
+    "fullName": "iuhiygut",
+    "companyName": "uyv",
+    "city": "uf",
+    "state": "Punjab (Ludhiana / Amritsar)",
+    "phone": "5962+",
+    "email": "jbvg@vg",
+    "yarnRequirement": "",
+    "quantityTonsOrKg": "100 Kg",
+    "comments": "hbgv",
+    "requestSample": true,
+    "items": []
+  },
+  {
+    "referenceId": "VED-163046",
+    "timestamp": "2026-08-05T21:10:36.390Z",
+    "fullName": "Excel Test User",
+    "companyName": "Ved Enterprises Excel Ltd",
+    "phone": "9876543210",
+    "city": "Ludhiana",
+    "state": "Punjab",
+    "email": "exceltest@ved.enterprises",
+    "comments": "Testing automatic Excel .xlsx sheet generation",
+    "items": [
+      {
+        "product": {
+          "name": "Cotton Combed Hosiery Yarn 30s",
+          "countOrDenier": "30s Ne"
+        },
+        "quantityKg": 300
+      }
+    ]
+  },
+  {
+    "referenceId": "VED-717720",
+    "timestamp": "2026-08-05T21:12:20.429Z",
+    "fullName": "Live Excel Verification",
+    "companyName": "Ved Enterprises",
+    "phone": "9876543210",
+    "city": "Ludhiana",
+    "state": "Punjab",
+    "email": "excel@ved.enterprises",
+    "comments": "Verifying Excel sheet auto creation",
+    "items": [
+      {
+        "product": {
+          "name": "Cotton Combed Yarn 40s",
+          "countOrDenier": "40s Ne"
+        },
+        "quantityKg": 400
+      }
+    ]
+  }
+]

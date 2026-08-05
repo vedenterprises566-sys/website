@@ -1,0 +1,6 @@
+{
+  "name": "Ved Enterprises",
+  "description": "Interactive yarn and fabric catalog, nationwide inquiry portal, and AI assistant for Ved Enterprises - Ludhiana.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
