@@ -15,10 +15,15 @@ import { FlyToBasketAnimation, FlyingItem } from './components/FlyToBasketAnimat
 import { BasketToast } from './components/BasketToast';
 import { ShadeCardModal } from './components/ShadeCardModal';
 import { YarnBackgroundPattern } from './components/YarnBackgroundPattern';
+import { LaunchCountdown } from './components/LaunchCountdown';
 import { Product, InquiryItem, YarnCategory } from './types';
 import { PRODUCTS_CATALOG } from './data/products';
 
 export default function App() {
+  // Launch countdown state for August 7, 2026 00:00 IST
+  const targetLaunch = new Date('2026-08-07T00:00:00+05:30').getTime();
+  const [showCountdown, setShowCountdown] = useState<boolean>(Date.now() < targetLaunch);
+
   const [currentPage, setCurrentPage] = useState<'home' | 'catalog' | 'basket' | 'garments'>('home');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<YarnCategory | 'all'>('all');
@@ -189,6 +194,10 @@ export default function App() {
     setActiveSection('catalog');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  if (showCountdown) {
+    return <LaunchCountdown onBypass={() => setShowCountdown(false)} />;
+  }
 
   return (
     <div className="min-h-screen bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans antialiased selection:bg-red-500 selection:text-white overflow-x-hidden relative">
