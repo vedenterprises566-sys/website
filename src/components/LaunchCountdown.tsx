@@ -193,18 +193,11 @@ export const LaunchCountdown: React.FC<LaunchCountdownProps> = ({ onPreviewLaunc
                 </div>
               </div>
 
-              {/* Date Target & Test Button */}
+              {/* Date Target */}
               <div className="space-y-4">
                 <p className="text-xs sm:text-sm text-slate-400 font-medium tracking-widest uppercase">
                   7 August 2026 • 00:00 Midnight IST
                 </p>
-
-                <button
-                  onClick={handleStart10sPreview}
-                  className="inline-flex items-center gap-2 bg-gradient-to-r from-red-600 to-amber-500 hover:from-red-700 hover:to-amber-600 text-white font-bold px-6 py-2.5 rounded-full text-xs transition-all shadow-lg cursor-pointer backdrop-blur-md hover:scale-105 active:scale-95"
-                >
-                  <span>🚀 Test Final 10-Second Launch Countdown</span>
-                </button>
               </div>
             </motion.div>
           )}
