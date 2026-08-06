@@ -49,26 +49,28 @@ export const Hero: React.FC<HeroProps> = ({
             </motion.div>
 
             {/* Main Title with Clean Accent */}
-            <div className="space-y-1.5 sm:space-y-2">
-              <div className="flex items-center">
-                <motion.span
-                  initial={{ height: 0 }}
-                  animate={{ height: 40 }}
-                  transition={{ delay: 0.2, duration: 0.4 }}
-                  className="w-1.5 bg-slate-900 dark:bg-red-600 mr-2.5 rounded-full hidden sm:block"
-                />
-                <h1 className="text-2xl sm:text-5xl font-bold tracking-tight text-slate-900 dark:text-white font-serif leading-tight">
-                  VED <span className="text-red-600">ENTERPRISES</span>
-                </h1>
+            <div className="space-y-4">
+              {/* Sub-headline badge */}
+              <div className="inline-flex items-center gap-2 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-200 px-3 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider border border-slate-200 dark:border-slate-700 shadow-2xs">
+                <span className="w-2 h-2 rounded-full bg-slate-900 dark:bg-red-500 animate-pulse"></span>
+                <span>Established Wholesale Yarn Stockist</span>
               </div>
-              <p className="text-base sm:text-2xl font-bold text-slate-700 dark:text-slate-300 font-sans tracking-tight leading-snug">
-                Fancy & China Yarn Distributors for All India Textile Industry
+
+              {/* Main Headline */}
+              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold font-serif text-slate-900 dark:text-white tracking-tight leading-[1.1]">
+                Leading Wholesale Supplier of <br />
+                <span className="text-slate-900 dark:text-red-600 font-extrabold italic">
+                  Cotton & Fancy Yarns
+                </span>
+              </h1>
+              <p className="text-slate-700 dark:text-slate-300 font-semibold text-xs sm:text-sm tracking-wide uppercase">
+                Stockist & Trader of Premium Mill Yarns for All India Textile Industry
               </p>
             </div>
 
             {/* Description */}
             <p className="text-slate-600 dark:text-slate-400 text-xs sm:text-base max-w-2xl font-normal leading-relaxed">
-              Authorised trade partner for India's premier spinning mills. Direct supply of <b>Vislon, Lurex, Wooly, Chenille, Eyelash Hair Yarns, Stretch, and Blended Yarns</b> directly to garment manufacturers and weavers nationwide.
+              Wholesale stockist & supplier of yarns from India's leading spinning mills. Bulk supply of <b>Vislon, Lurex, Wooly, Chenille, Eyelash Hair Yarns, Stretch, and Blended Yarns</b> directly to garment manufacturers and weavers nationwide.
             </p>
 
             {/* Search Input Bar */}
@@ -178,7 +180,7 @@ export const Hero: React.FC<HeroProps> = ({
               <div className="grid grid-cols-2 gap-3 text-xs">
                 {[
                   { value: '20+ Qualities', label: 'Yarns & Deniers' },
-                  { value: '6 Major Mills', label: 'Authorised Partner' },
+                  { value: '6 Major Mills', label: 'Quality Yarns Stocked' },
                   { value: 'Pan India', label: 'Direct Dispatch' },
                   { value: 'Sample Hanks', label: 'Delivered to Hubs' },
                 ].map((stat, i) => (

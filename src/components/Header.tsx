@@ -70,7 +70,7 @@ export const Header: React.FC<HeaderProps> = ({
   const navLinks = [
     { id: 'catalog', label: 'Yarn Catalog', icon: Layers, desc: 'Browse all cotton, fancy & china yarns' },
     { id: 'garments', label: 'Sweater Directory', icon: Shirt, desc: 'Finished sweater garments showcase' },
-    { id: 'partners', label: 'Mill Partners', icon: Building2, desc: 'Direct mill associations & certifications' },
+    { id: 'partners', label: 'Spinning Mills', icon: Building2, desc: 'Top mill yarn brands stocked & supplied' },
     { id: 'inquiry', label: 'Nationwide Inquiry', icon: FileText, desc: 'Request bulk rates & sample hanks' },
     { id: 'card', label: 'Visiting Card', icon: CreditCard, desc: 'Contact numbers & distribution hub' },
   ];

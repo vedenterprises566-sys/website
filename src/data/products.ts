@@ -335,7 +335,7 @@ export const PRODUCTS_CATALOG: Product[] = [
     recommendedUses: ['All-Season Sweaters', 'Knit Polos', 'Kids Apparel', 'Socks'],
     features: ['Breathable Softness', 'Low Shrinkage', 'Sweat Absorbent', 'Vivid Color Fastness'],
     sampleAvailable: true,
-    origin: 'Partner Mill Produced',
+    origin: 'Leading Mill Sourced',
     popularFor: 'All-Season Apparel',
     imageUrl: imgFabricRolls
   },
@@ -349,7 +349,7 @@ export const PRODUCTS_CATALOG: Product[] = [
     recommendedUses: ['Uniform Fabrics', 'Suitings', 'Heavy Weaving', 'Industrial Garments'],
     features: ['Wrinkle Resistant', 'High Tear Strength', 'Quick Dry', 'Color Stability'],
     sampleAvailable: true,
-    origin: 'Partner Mill Produced',
+    origin: 'Leading Mill Sourced',
     popularFor: 'High Durability Fabrics',
     imageUrl: imgFabricRolls
   },

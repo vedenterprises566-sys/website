@@ -72,7 +72,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onSelectCategory }) 
           {/* Mill Partners */}
           <div className="space-y-3">
             <h4 className="text-xs font-bold uppercase tracking-wider text-white">
-              Authorised Mill Partners
+              Major Mill Brands Sourced
             </h4>
             <ul className="space-y-2 text-xs text-slate-400">
               {[

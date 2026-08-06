@@ -21,13 +21,13 @@ export const MillPartners: React.FC<MillPartnersProps> = () => {
           className="text-center max-w-3xl mx-auto space-y-3"
         >
           <div className="inline-flex items-center gap-2 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 text-xs font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-full">
-            <Factory className="w-3.5 h-3.5 text-red-600" /> Authorised Trade Relationships
+            <Factory className="w-3.5 h-3.5 text-red-600" /> Premier Spinning Mill Yarns
           </div>
           <h2 className="text-2xl sm:text-4xl font-bold text-slate-900 dark:text-white font-serif tracking-tight">
-            Spinning Mill Partners
+            Leading Spinning Mills Sourced
           </h2>
           <p className="text-slate-600 dark:text-slate-300 text-xs sm:text-sm leading-relaxed max-w-2xl mx-auto">
-            Ved Enterprises represents India’s premier textile mills, bringing direct factory pricing, guaranteed lot consistency, and rapid dispatch across India.
+            Ved Enterprises stocks and supplies premium yarns from India’s leading textile mills, bringing competitive wholesale rates, guaranteed lot consistency, and rapid dispatch across India.
           </p>
         </motion.div>
 
@@ -99,7 +99,7 @@ export const MillPartners: React.FC<MillPartnersProps> = () => {
         >
           <div className="space-y-1 text-center md:text-left">
             <div className="inline-flex items-center gap-1.5 text-amber-300 text-xs font-bold uppercase tracking-wider">
-              <Shield className="w-4 h-4" /> Direct Mill Warranty & Quality Verification
+              <Shield className="w-4 h-4" /> Mill Quality Verification & Lot Consistency
             </div>
             <h3 className="text-xl sm:text-2xl font-bold font-serif">
               Original Packaging, Factory Invoices & GST Compliant Billing

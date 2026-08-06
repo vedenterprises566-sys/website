@@ -13,7 +13,7 @@ const STARTER_PROMPTS = [
   'What Fancy Yarns do you recommend for winter knitwear?',
   'Explain China Chenille Yarn (13 NM vs 18 NM)',
   'How do I request yarn sample hanks dispatched to Surat / Tirupur?',
-  'Which mill partners produce 100% Acrylic and Blended Yarns?',
+  'Which mill brands do you stock for 100% Acrylic and Blended Yarns?',
   'What is the difference between 300D and 550D Space Polyester Yarn?',
 ];
 
@@ -27,7 +27,7 @@ export const AiAssistantModal: React.FC<AiAssistantModalProps> = ({
     {
       id: 'msg-1',
       sender: 'assistant',
-      text: 'Namaste! I am the Ved Enterprises AI Yarn & Textile Specialist. How can I assist you with yarn counts, denier selection, mill partner options, or sample dispatches today?',
+      text: 'Namaste! I am the Ved Enterprises AI Yarn & Textile Specialist. How can I assist you with yarn counts, denier selection, stocked mill yarn brands, or sample dispatches today?',
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     },
   ]);
