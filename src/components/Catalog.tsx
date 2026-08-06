@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Search, Filter, Sparkles, Check, Plus, Eye, PackageCheck, Layers, Tag, ArrowRight, Palette, FileText } from 'lucide-react';
+import { Search, Filter, Sparkles, Check, Plus, Eye, PackageCheck, Layers, Tag, ArrowRight, Palette, FileText, Package } from 'lucide-react';
 import { Product, YarnCategory } from '../types';
 import { PRODUCTS_CATALOG } from '../data/products';
 import { ProductModal } from './ProductModal';
