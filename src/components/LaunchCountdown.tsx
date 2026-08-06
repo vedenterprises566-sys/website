@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { motion } from 'motion/react';
 import { LogoGraphic } from './LogoGraphic';
 
 export const LaunchCountdown: React.FC = () => {
@@ -34,13 +35,28 @@ export const LaunchCountdown: React.FC = () => {
   }, [targetDate]);
 
   return (
-    <div className="fixed inset-0 z-50 bg-black text-white flex flex-col items-center justify-center p-4 font-sans select-none overflow-hidden">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{
+        opacity: 0,
+        scale: 1.08,
+        filter: 'blur(16px)',
+        transition: { duration: 1.2, ease: [0.16, 1, 0.3, 1] }
+      }}
+      className="fixed inset-0 z-50 bg-black text-white flex flex-col items-center justify-center p-4 font-sans select-none overflow-hidden"
+    >
       {/* Subtle Ambient Red Glow */}
-      <div className="absolute w-[500px] h-[500px] bg-red-600/10 rounded-full blur-[140px] pointer-events-none"></div>
+      <div className="absolute w-[600px] h-[600px] bg-red-600/15 rounded-full blur-[140px] pointer-events-none animate-pulse"></div>
 
       <main className="relative z-10 text-center space-y-8 max-w-3xl mx-auto px-4">
         {/* Brand Logo & Name */}
-        <div className="flex flex-col items-center gap-4">
+        <motion.div
+          initial={{ y: -20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          className="flex flex-col items-center gap-4"
+        >
           <LogoGraphic className="w-16 h-16 shadow-2xl rounded-2xl border border-white/10" />
           <div>
             <h1 className="font-serif text-2xl sm:text-4xl font-bold tracking-widest uppercase text-white">
@@ -50,10 +66,15 @@ export const LaunchCountdown: React.FC = () => {
               Official Website Launching Soon
             </p>
           </div>
-        </div>
+        </motion.div>
 
         {/* Minimalist Full Screen Countdown Timer */}
-        <div className="grid grid-cols-4 gap-3 sm:gap-6 py-6">
+        <motion.div
+          initial={{ scale: 0.95, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="grid grid-cols-4 gap-3 sm:gap-6 py-6"
+        >
           {/* Days */}
           <div className="flex flex-col items-center justify-center bg-white/5 border border-white/10 rounded-2xl sm:rounded-3xl p-4 sm:p-8 backdrop-blur-md">
             <span className="text-4xl sm:text-7xl md:text-8xl font-black font-mono tracking-tight text-white">
@@ -93,13 +114,18 @@ export const LaunchCountdown: React.FC = () => {
               Seconds
             </span>
           </div>
-        </div>
+        </motion.div>
 
         {/* Clean Date Target */}
-        <div className="text-xs sm:text-sm text-slate-400 font-medium tracking-widest uppercase">
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+          className="text-xs sm:text-sm text-slate-400 font-medium tracking-widest uppercase"
+        >
           7 August 2026 • 00:00 Midnight IST
-        </div>
+        </motion.div>
       </main>
-    </div>
+    </motion.div>
   );
 };

@@ -210,12 +210,18 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  if (showCountdown) {
-    return <LaunchCountdown />;
-  }
-
   return (
-    <div className="min-h-screen bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans antialiased selection:bg-red-500 selection:text-white overflow-x-hidden relative">
+    <AnimatePresence mode="wait">
+      {showCountdown ? (
+        <LaunchCountdown key="countdown" />
+      ) : (
+        <motion.div
+          key="main-website"
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1, ease: 'easeOut' }}
+          className="min-h-screen bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans antialiased selection:bg-red-500 selection:text-white overflow-x-hidden relative"
+        >
       {/* Decorative Yarn & Textile Background Animation */}
       <YarnBackgroundPattern />
 
@@ -425,7 +431,9 @@ export default function App() {
           onSelectCategory={(cat) => setSelectedCategory(cat as any)}
         />
       </div>
-    </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
 
