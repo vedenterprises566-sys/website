@@ -154,36 +154,73 @@ export default function App() {
     setBasket([]);
   };
 
-  const handleNavigate = (sectionId: string) => {
+  // Helper to parse route from window.location.pathname for Clean URLs (/home, /catalog, /garments, /inquiry)
+  const getRouteFromPath = (path: string): { page: 'home' | 'catalog' | 'basket' | 'garments'; section: string } => {
+    const cleanPath = path.toLowerCase().replace(/\/$/, '');
+    if (cleanPath.endsWith('/catalog')) return { page: 'catalog', section: 'catalog' };
+    if (cleanPath.endsWith('/garments')) return { page: 'garments', section: 'garments' };
+    if (cleanPath.endsWith('/inquiry') || cleanPath.endsWith('/basket')) return { page: 'basket', section: 'inquiry' };
+    if (cleanPath.endsWith('/card')) return { page: 'home', section: 'card' };
+    if (cleanPath.endsWith('/mills') || cleanPath.endsWith('/partners')) return { page: 'home', section: 'mills' };
+    return { page: 'home', section: 'hero' };
+  };
+
+  // Sync state with browser URL bar on initial load & popstate (Back/Forward buttons)
+  useEffect(() => {
+    const syncWithUrl = () => {
+      const { page, section } = getRouteFromPath(window.location.pathname);
+      setCurrentPage(page);
+      setActiveSection(section);
+      if (page === 'home' && section !== 'hero') {
+        setTimeout(() => {
+          const elem = document.getElementById(`${section}-section`);
+          if (elem) elem.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+      }
+    };
+
+    syncWithUrl();
+    window.addEventListener('popstate', syncWithUrl);
+    return () => window.removeEventListener('popstate', syncWithUrl);
+  }, []);
+
+  const handleNavigate = (sectionId: string, pushUrl = true) => {
+    let targetPage: 'home' | 'catalog' | 'basket' | 'garments' = 'home';
+    let targetPath = '/home';
+
     if (sectionId === 'catalog') {
-      setCurrentPage('catalog');
-      setActiveSection('catalog');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      return;
+      targetPage = 'catalog';
+      targetPath = '/catalog';
+    } else if (sectionId === 'inquiry' || sectionId === 'basket') {
+      targetPage = 'basket';
+      targetPath = '/inquiry';
+    } else if (sectionId === 'garments') {
+      targetPage = 'garments';
+      targetPath = '/garments';
+    } else if (sectionId === 'card') {
+      targetPage = 'home';
+      targetPath = '/card';
+    } else if (sectionId === 'mills') {
+      targetPage = 'home';
+      targetPath = '/mills';
+    } else if (sectionId === 'hero' || sectionId === 'home') {
+      targetPage = 'home';
+      targetPath = '/home';
     }
 
-    if (sectionId === 'inquiry' || sectionId === 'basket') {
-      setCurrentPage('basket');
-      setActiveSection('inquiry');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      return;
-    }
-
-    if (sectionId === 'garments') {
-      setCurrentPage('garments');
-      setActiveSection('garments');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      return;
-    }
-
-    setCurrentPage('home');
+    setCurrentPage(targetPage);
     setActiveSection(sectionId);
 
+    if (pushUrl && window.location.pathname !== targetPath) {
+      window.history.pushState({}, '', targetPath);
+    }
+
+    if (targetPage === 'catalog' || targetPage === 'basket' || targetPage === 'garments' || sectionId === 'hero') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
     setTimeout(() => {
-      if (sectionId === 'hero') {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        return;
-      }
       const elem = document.getElementById(`${sectionId}-section`);
       if (elem) {
         elem.scrollIntoView({ behavior: 'smooth' });
