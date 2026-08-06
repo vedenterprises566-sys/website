@@ -20,9 +20,9 @@ import { Product, InquiryItem, YarnCategory } from './types';
 import { PRODUCTS_CATALOG } from './data/products';
 
 export default function App() {
-  // Launch countdown state for August 7, 2026 00:00 IST
+  // Launch countdown disabled to preview full website on Localhost & Production
   const targetLaunch = new Date('2026-08-07T00:00:00+05:30').getTime();
-  const [showCountdown, setShowCountdown] = useState<boolean>(() => Date.now() < targetLaunch);
+  const [showCountdown, setShowCountdown] = useState<boolean>(false);
 
   // Auto-remove countdown overlay the exact second timer hits August 7 00:00 IST
   useEffect(() => {
