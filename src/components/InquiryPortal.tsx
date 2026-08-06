@@ -23,7 +23,31 @@ const INDIAN_STATES = [
   'Delhi NCR',
   'Madhya Pradesh (Indore)',
   'Karnataka (Bengaluru)',
-  'Other Indian State / Union Territory',
+  'Andhra Pradesh',
+  'Arunachal Pradesh',
+  'Assam',
+  'Bihar',
+  'Chhattisgarh',
+  'Goa',
+  'Himachal Pradesh',
+  'Jharkhand',
+  'Kerala',
+  'Manipur',
+  'Meghalaya',
+  'Mizoram',
+  'Nagaland',
+  'Odisha',
+  'Sikkim',
+  'Telangana (Hyderabad)',
+  'Tripura',
+  'Uttarakhand',
+  'Andaman and Nicobar Islands (UT)',
+  'Chandigarh (UT)',
+  'Dadra & Nagar Haveli and Daman & Diu (UT)',
+  'Jammu and Kashmir (UT)',
+  'Ladakh (UT)',
+  'Lakshadweep (UT)',
+  'Puducherry (UT)',
 ];
 
 export const InquiryPortal: React.FC<InquiryPortalProps> = ({
@@ -270,24 +294,13 @@ export const InquiryPortal: React.FC<InquiryPortalProps> = ({
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2.5">
-            <a
-              href="/api/inquiry/excel"
-              download="Ved_Enterprises_Inquiries.xlsx"
-              className="inline-flex items-center gap-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-4 py-2.5 rounded-xl text-xs sm:text-sm transition-all shadow-xs"
-            >
-              <FileText className="w-4 h-4 text-emerald-200" />
-              <span>Download Inquiries Excel (.xlsx)</span>
-            </a>
-
-            <button
-              onClick={onOpenAi}
-              className="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white dark:bg-red-600 dark:hover:bg-red-700 font-bold px-4 py-2.5 rounded-xl text-xs sm:text-sm transition-all shadow-xs"
-            >
-              <Sparkles className="w-4 h-4 text-amber-400" />
-              <span>Need advice on count selection? Ask AI</span>
-            </button>
-          </div>
+          <button
+            onClick={onOpenAi}
+            className="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white dark:bg-red-600 dark:hover:bg-red-700 font-bold px-4 py-2.5 rounded-xl text-xs sm:text-sm transition-all shadow-xs"
+          >
+            <Sparkles className="w-4 h-4 text-amber-400" />
+            <span>Need advice on count selection? Ask AI</span>
+          </button>
         </div>
 
         {submittedResponse ? (
