@@ -345,11 +345,6 @@ export default function App() {
               transition={{ duration: 0.35, ease: 'easeOut' }}
             >
               <GarmentsPage
-                onAddToBasket={handleAddToBasket}
-                onOpenAiForProduct={handleOpenAiForProduct}
-                onOpenShadesModal={handleOpenShadesModal}
-                inquiryItemIds={basket.map((b) => b.product.id)}
-                onGoToBasket={() => handleNavigate('basket')}
                 onBackToHome={() => handleNavigate('catalog')}
                 onOpenAi={() => {
                   setAiTopic('Garments & Sweater Manufacturing Inquiry');

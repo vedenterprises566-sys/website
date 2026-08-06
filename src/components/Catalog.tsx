@@ -109,7 +109,7 @@ export const Catalog: React.FC<CatalogProps> = ({
         <div className="flex overflow-x-auto gap-2 border-b border-slate-200 dark:border-slate-800 pb-3 scrollbar-none -mx-4 px-4 sm:mx-0 sm:px-0">
           {[
             { id: 'all', label: 'ALL PRODUCTS (25+)' },
-            { id: 'garments', label: '👕 GARMENTS (SWEATERS)' },
+            { id: 'garments', label: '👕 GARMENTS (COMING SOON)' },
             { id: 'fancy', label: 'FANCY YARNS' },
             { id: 'china', label: 'CHINA YARNS' },
             { id: 'acrylic-blends', label: 'ACRYLIC BLENDS' },
