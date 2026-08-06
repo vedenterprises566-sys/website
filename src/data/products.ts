@@ -1,11 +1,6 @@
 import { Product } from '../types';
-import imgLurexFancy from '../assets/images/lurex_fancy_yarn_1785307540278.jpg';
-import imgVislonImported from '../assets/images/vislon_imported_yarn_1785307557035.jpg';
-import imgChenillePlush from '../assets/images/chenille_plush_yarn_1785307573790.jpg';
-import imgFabricRolls from '../assets/images/textile_fabric_rolls_1785307587188.jpg';
-import imgDaffodil from '../assets/images/daffodil_acrylic_yarn_1785724012217.jpg';
 
-// Real Product Photos Sourced from Desktop Setup (C:\Users\ddaya\OneDrive\Desktop\ved _enterprises)
+// Real Product Photos Sourced DIRECTLY from Desktop Setup (C:\Users\ddaya\OneDrive\Desktop\ved _enterprises)
 import imgFancyJari from '../assets/products/our_fancy_yarns_fancy_jari_available_in_finest_count_4697aaee-b8f3-42e9-aaaf-85d1f0637969.jpg';
 import imgGraceYarn from '../assets/products/our_fancy_yarns_grace_yarn_d6a6eb49-74c3-454e-af0f-7b0cca3b504a.jpg';
 import imgSpacePoly from '../assets/products/our_fancy_yarns_space_polyster_yarn_300_denier_to_550_denier_ceefe0f8-9541-4e93-bef3-1e36bc1b794b.jpg';
@@ -34,7 +29,7 @@ export const PRODUCTS_CATALOG: Product[] = [
     sampleAvailable: true,
     origin: 'Ved Exclusive Fancy',
     popularFor: 'Festive & Premium Fashion Apparel',
-    imageUrl: imgLurexFancy,
+    imageUrl: '',
     badge: 'Popular Fancy'
   },
   {
@@ -63,7 +58,7 @@ export const PRODUCTS_CATALOG: Product[] = [
     sampleAvailable: true,
     origin: 'Specialty Textured',
     popularFor: 'Heavy Winter Garments',
-    imageUrl: imgVislonImported
+    imageUrl: ''
   },
   {
     id: 'fy-4',
@@ -77,7 +72,7 @@ export const PRODUCTS_CATALOG: Product[] = [
     sampleAvailable: true,
     origin: 'Ved Specialty Stretch',
     popularFor: 'Knitwear Ribbing & Activewear',
-    imageUrl: imgVislon248
+    imageUrl: ''
   },
   {
     id: 'fy-5',
@@ -241,7 +236,7 @@ export const PRODUCTS_CATALOG: Product[] = [
     sampleAvailable: true,
     origin: 'Direct China Import',
     popularFor: 'Chunky Velvet Sweaters & Throws',
-    imageUrl: imgChenillePlush
+    imageUrl: ''
   },
   {
     id: 'cy-10',
@@ -270,7 +265,7 @@ export const PRODUCTS_CATALOG: Product[] = [
     sampleAvailable: true,
     origin: 'Direct China Import',
     popularFor: 'Mohair Look Oversized Sweaters',
-    imageUrl: imgChenillePlush
+    imageUrl: ''
   },
   {
     id: 'cy-12',
@@ -298,7 +293,7 @@ export const PRODUCTS_CATALOG: Product[] = [
     sampleAvailable: true,
     origin: 'Direct China Import',
     popularFor: 'Thermal Fleece Garments',
-    imageUrl: imgDaffodil
+    imageUrl: ''
   },
   {
     id: 'cy-14',
@@ -312,7 +307,7 @@ export const PRODUCTS_CATALOG: Product[] = [
     sampleAvailable: true,
     origin: 'Direct China Import',
     popularFor: 'Textured Rustic Knitwear',
-    imageUrl: imgRingYarns
+    imageUrl: ''
   },
   {
     id: 'cy-15',
@@ -326,7 +321,7 @@ export const PRODUCTS_CATALOG: Product[] = [
     sampleAvailable: true,
     origin: 'Direct Import / Raw Stock',
     popularFor: 'Custom Dye Houses & Mills',
-    imageUrl: imgVislonImported
+    imageUrl: ''
   },
 
   // ACRYLIC & BLENDS
@@ -342,7 +337,7 @@ export const PRODUCTS_CATALOG: Product[] = [
     sampleAvailable: true,
     origin: 'Vikasdeep / Garg Acrylics',
     popularFor: 'Hosiery Sweaters & School Uniforms',
-    imageUrl: imgDaffodil,
+    imageUrl: '',
     badge: 'Mill Bestseller'
   },
   {
@@ -357,7 +352,7 @@ export const PRODUCTS_CATALOG: Product[] = [
     sampleAvailable: true,
     origin: 'Leading Mill Sourced',
     popularFor: 'All-Season Apparel',
-    imageUrl: imgFabricRolls
+    imageUrl: ''
   },
   {
     id: 'ab-3',
@@ -371,7 +366,7 @@ export const PRODUCTS_CATALOG: Product[] = [
     sampleAvailable: true,
     origin: 'Leading Mill Sourced',
     popularFor: 'High Durability Fabrics',
-    imageUrl: imgFabricRolls
+    imageUrl: ''
   },
   {
     id: 'ab-4',
@@ -385,6 +380,6 @@ export const PRODUCTS_CATALOG: Product[] = [
     sampleAvailable: true,
     origin: 'Ved Textile Division',
     popularFor: 'Garment Factories & Exporters',
-    imageUrl: imgFabricRolls
+    imageUrl: ''
   }
 ];

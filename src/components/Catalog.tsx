@@ -233,8 +233,10 @@ export const Catalog: React.FC<CatalogProps> = ({
                           referrerPolicy="no-referrer"
                         />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center text-slate-400 font-medium text-xs">
-                          Product Sample Image
+                        <div className="w-full h-full bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 flex flex-col items-center justify-center p-4 text-center">
+                          <Package className="w-8 h-8 text-red-500/80 mb-1" />
+                          <span className="text-white font-bold text-xs font-serif truncate max-w-full px-2">{product.name}</span>
+                          <span className="text-[0.625rem] text-slate-400 font-semibold tracking-wider uppercase mt-1">Sample Photo On Inquiry</span>
                         </div>
                       )}
                       
