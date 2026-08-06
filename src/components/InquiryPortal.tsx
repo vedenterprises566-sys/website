@@ -137,27 +137,27 @@ export const InquiryPortal: React.FC<InquiryPortalProps> = ({
 
   // Generate WhatsApp Message text for direct chat
   const generateWhatsAppText = (itemsList = basket) => {
-    let text = `*NEW YARN INQUIRY - VED ENTERPRISES*\n`;
-    text += `*Name:* ${formData.fullName || 'Customer'}\n`;
-    if (formData.companyName) text += `*Firm:* ${formData.companyName}\n`;
-    text += `*Phone:* ${formData.phone}\n`;
-    if (formData.email) text += `*Email:* ${formData.email}\n`;
-    if (formData.address) text += `*Delivery Address:* ${formData.address}\n`;
-    if (formData.pincode) text += `*Pincode:* ${formData.pincode}\n`;
-    text += `*Location:* ${formData.city}, ${formData.state}\n`;
-    if (formData.requestSample) text += `*Sample Requested:* YES\n`;
+    let text = `NEW YARN INQUIRY - VED ENTERPRISES\n`;
+    text += `Name: ${formData.fullName || 'Customer'}\n`;
+    if (formData.companyName) text += `Firm: ${formData.companyName}\n`;
+    text += `Phone: ${formData.phone}\n`;
+    if (formData.email) text += `Email: ${formData.email}\n`;
+    if (formData.address) text += `Delivery Address: ${formData.address}\n`;
+    if (formData.pincode) text += `Pincode: ${formData.pincode}\n`;
+    text += `Location: ${formData.city}, ${formData.state}\n`;
+    if (formData.requestSample) text += `Sample Requested: YES\n`;
 
     const currentItems = (submittedResponse?.items && submittedResponse.items.length > 0) ? submittedResponse.items : itemsList;
     if (currentItems && currentItems.length > 0) {
-      text += `\n*Selected Products / Yarns:* \n`;
+      text += `\nSelected Products / Yarns:\n`;
       currentItems.forEach((item: any, i: number) => {
-        text += `${i + 1}. *${item.product?.name || 'Yarn'}* (${item.product?.countOrDenier || 'Specs'}) - ${item.quantityKg} Kg\n`;
+        text += `${i + 1}. ${item.product?.name || 'Yarn'} (${item.product?.countOrDenier || 'Specs'}) - ${item.quantityKg} Kg\n`;
       });
     } else {
-      text += `\n*Selected Products:* General Wholesale Inquiry\n`;
+      text += `\nSelected Products: General Wholesale Inquiry\n`;
     }
 
-    if (formData.comments) text += `\n*Note:* ${formData.comments}\n`;
+    if (formData.comments) text += `\nNote: ${formData.comments}\n`;
 
     return encodeURIComponent(text);
   };
