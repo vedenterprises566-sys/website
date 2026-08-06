@@ -213,7 +213,7 @@ export default function App() {
   return (
     <AnimatePresence mode="wait">
       {showCountdown ? (
-        <LaunchCountdown key="countdown" />
+        <LaunchCountdown key="countdown" onPreviewLaunch={() => setShowCountdown(false)} />
       ) : (
         <motion.div
           key="main-website"

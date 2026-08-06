@@ -2,7 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { LogoGraphic } from './LogoGraphic';
 
-export const LaunchCountdown: React.FC = () => {
+interface LaunchCountdownProps {
+  onPreviewLaunch?: () => void;
+}
+
+export const LaunchCountdown: React.FC<LaunchCountdownProps> = ({ onPreviewLaunch }) => {
   // Target Launch Date: 7 August 2026 00:00:00 IST
   const targetDate = new Date('2026-08-07T00:00:00+05:30').getTime();
 
@@ -116,14 +120,25 @@ export const LaunchCountdown: React.FC = () => {
           </div>
         </motion.div>
 
-        {/* Clean Date Target */}
+        {/* Clean Date Target & Preview Button */}
         <motion.div
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.3 }}
-          className="text-xs sm:text-sm text-slate-400 font-medium tracking-widest uppercase"
+          className="space-y-4"
         >
-          7 August 2026 • 00:00 Midnight IST
+          <p className="text-xs sm:text-sm text-slate-400 font-medium tracking-widest uppercase">
+            7 August 2026 • 00:00 Midnight IST
+          </p>
+
+          {onPreviewLaunch && (
+            <button
+              onClick={onPreviewLaunch}
+              className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white font-bold px-6 py-2.5 rounded-full text-xs border border-white/20 transition-all shadow-lg cursor-pointer backdrop-blur-md hover:scale-105 active:scale-95"
+            >
+              <span>✨ Preview Launch Transition Animation</span>
+            </button>
+          )}
         </motion.div>
       </main>
     </motion.div>
