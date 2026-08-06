@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShoppingBag, Trash2, Send, CheckCircle2, MapPin, Truck, Phone, FileText, Building, Sparkles, ArrowLeft } from 'lucide-react';
+import { ShoppingBag, Trash2, Send, CheckCircle2, MapPin, Truck, Phone, FileText, Building, Sparkles, ArrowLeft, Navigation } from 'lucide-react';
 import { InquiryItem, InquiryFormData } from '../types';
 
 interface InquiryPortalProps {
@@ -37,6 +37,8 @@ export const InquiryPortal: React.FC<InquiryPortalProps> = ({
   const [formData, setFormData] = useState<InquiryFormData>({
     fullName: '',
     companyName: '',
+    address: '',
+    pincode: '',
     city: '',
     state: 'Punjab (Ludhiana / Amritsar)',
     phone: '',
@@ -49,16 +51,76 @@ export const InquiryPortal: React.FC<InquiryPortalProps> = ({
   });
 
   const [loading, setLoading] = useState<boolean>(false);
+  const [isLocating, setIsLocating] = useState<boolean>(false);
+  const [locationStatus, setLocationStatus] = useState<string>('');
   const [submittedResponse, setSubmittedResponse] = useState<any>(null);
+
+  // Optional GPS Location Fetcher
+  const handleFetchLocation = () => {
+    if (!navigator.geolocation) {
+      alert('Geolocation is not supported by your browser.');
+      return;
+    }
+
+    setIsLocating(true);
+    setLocationStatus('Locating your position...');
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+        setLocationStatus('Fetching address & city details...');
+        try {
+          const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
+          const data = await res.json();
+          
+          const addr = data.address || {};
+          const detectedCity = addr.city || addr.town || addr.village || addr.county || addr.suburb || '';
+          const detectedState = addr.state || '';
+          const detectedPostcode = addr.postcode || '';
+          const detectedRoad = [addr.road, addr.suburb, addr.neighbourhood].filter(Boolean).join(', ');
+
+          setFormData(prev => ({
+            ...prev,
+            city: detectedCity || prev.city,
+            pincode: detectedPostcode ? detectedPostcode.replace(/\D/g, '').slice(0, 6) : prev.pincode,
+            address: detectedRoad ? `${detectedRoad}${detectedCity ? ', ' + detectedCity : ''}` : prev.address,
+          }));
+
+          if (detectedState) {
+            const matchedState = INDIAN_STATES.find(s => s.toLowerCase().includes(detectedState.toLowerCase()));
+            if (matchedState) {
+              setFormData(prev => ({ ...prev, state: matchedState }));
+            }
+          }
+
+          setLocationStatus('📍 Location detected & filled!');
+          setTimeout(() => setLocationStatus(''), 4000);
+        } catch (err) {
+          setLocationStatus('📍 Position retrieved.');
+          setTimeout(() => setLocationStatus(''), 3000);
+        } finally {
+          setIsLocating(false);
+        }
+      },
+      (error) => {
+        setIsLocating(false);
+        setLocationStatus('');
+        alert('Unable to retrieve current location. Please type your city and address manually.');
+      },
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
+  };
 
   // Generate WhatsApp Message text for direct chat
   const generateWhatsAppText = (itemsList = basket) => {
     let text = `*NEW YARN INQUIRY - VED ENTERPRISES*\n`;
     text += `*Name:* ${formData.fullName || 'Customer'}\n`;
     if (formData.companyName) text += `*Firm:* ${formData.companyName}\n`;
-    text += `*Location:* ${formData.city}, ${formData.state}\n`;
     text += `*Phone:* ${formData.phone}\n`;
     if (formData.email) text += `*Email:* ${formData.email}\n`;
+    if (formData.address) text += `*Delivery Address:* ${formData.address}\n`;
+    if (formData.pincode) text += `*Pincode:* ${formData.pincode}\n`;
+    text += `*Location:* ${formData.city}, ${formData.state}\n`;
     if (formData.requestSample) text += `*Sample Requested:* YES\n`;
 
     const currentItems = (submittedResponse?.items && submittedResponse.items.length > 0) ? submittedResponse.items : itemsList;
@@ -84,6 +146,8 @@ export const InquiryPortal: React.FC<InquiryPortalProps> = ({
     if (formData.companyName) body += `Company: ${formData.companyName}\n`;
     body += `Phone: ${formData.phone}\n`;
     if (formData.email) body += `Email: ${formData.email}\n`;
+    if (formData.address) body += `Delivery Address: ${formData.address}\n`;
+    if (formData.pincode) body += `Pincode: ${formData.pincode}\n`;
     body += `Location: ${formData.city}, ${formData.state}\n`;
     body += `Sample Requested: ${formData.requestSample ? 'YES' : 'NO'}\n\n`;
 
@@ -107,6 +171,11 @@ export const InquiryPortal: React.FC<InquiryPortalProps> = ({
     e.preventDefault();
     if (!formData.fullName || !formData.phone) {
       alert('Please enter your name and phone number to submit an inquiry.');
+      return;
+    }
+
+    if (formData.phone.length !== 10) {
+      alert('Please enter a valid 10-digit mobile number (e.g. 9876543210).');
       return;
     }
 
@@ -475,17 +544,24 @@ export const InquiryPortal: React.FC<InquiryPortalProps> = ({
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">
-                      Mobile / WhatsApp Number *
+                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1 flex items-center justify-between">
+                      <span>Mobile / WhatsApp Number *</span>
+                      <span className="text-[0.625rem] text-slate-400 font-semibold">{formData.phone.length}/10 Digits</span>
                     </label>
                     <input
                       type="tel"
                       required
+                      maxLength={10}
                       value={formData.phone}
-                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                      placeholder="e.g. 9876543210"
-                      className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 dark:text-white focus:ring-2 focus:ring-red-500 outline-none"
+                      onChange={(e) => setFormData({ ...formData, phone: e.target.value.replace(/\D/g, '').slice(0, 10) })}
+                      placeholder="10-digit number e.g. 9876543210"
+                      className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-xs font-medium text-slate-900 dark:text-white focus:ring-2 focus:ring-red-500 outline-none"
                     />
+                    {formData.phone.length > 0 && formData.phone.length < 10 && (
+                      <p className="text-[0.65rem] text-red-500 font-semibold mt-1">
+                        ⚠️ Please enter complete 10-digit mobile number ({10 - formData.phone.length} digits remaining)
+                      </p>
+                    )}
                   </div>
 
                   <div>
@@ -503,36 +579,84 @@ export const InquiryPortal: React.FC<InquiryPortalProps> = ({
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">
-                      City / Textile Hub *
+                {/* Delivery & Factory Address Section */}
+                <div className="pt-2 border-t border-slate-200 dark:border-slate-800 space-y-3">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <label className="block text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
+                      Factory / Warehouse Delivery Address
                     </label>
+                    <button
+                      type="button"
+                      onClick={handleFetchLocation}
+                      disabled={isLocating}
+                      className="inline-flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-[0.6875rem] font-bold px-2.5 py-1 rounded-lg transition-all cursor-pointer"
+                    >
+                      <Navigation className={`w-3 h-3 text-red-600 ${isLocating ? 'animate-spin' : ''}`} />
+                      <span>{isLocating ? 'Detecting Location...' : '📍 Fetch Location (GPS)'}</span>
+                    </button>
+                  </div>
+
+                  {locationStatus && (
+                    <p className="text-[0.6875rem] text-emerald-600 dark:text-emerald-400 font-semibold">
+                      {locationStatus}
+                    </p>
+                  )}
+
+                  <div>
                     <input
                       type="text"
-                      required
-                      value={formData.city}
-                      onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                      placeholder="e.g. Surat / Ludhiana / Tirupur"
+                      value={formData.address || ''}
+                      onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                      placeholder="Shop / Unit / Plot No., Industrial Area, Street Name..."
                       className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 dark:text-white focus:ring-2 focus:ring-red-500 outline-none"
                     />
                   </div>
 
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">
-                      State / Indian Region *
-                    </label>
-                    <select
-                      value={formData.state}
-                      onChange={(e) => setFormData({ ...formData, state: e.target.value })}
-                      className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 dark:text-white focus:ring-2 focus:ring-red-500 outline-none"
-                    >
-                      {INDIAN_STATES.map((st) => (
-                        <option key={st} value={st}>
-                          {st}
-                        </option>
-                      ))}
-                    </select>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div>
+                      <label className="block text-[0.6875rem] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">
+                        Pincode (6-Digits)
+                      </label>
+                      <input
+                        type="text"
+                        maxLength={6}
+                        value={formData.pincode || ''}
+                        onChange={(e) => setFormData({ ...formData, pincode: e.target.value.replace(/\D/g, '').slice(0, 6) })}
+                        placeholder="e.g. 141008"
+                        className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2 text-xs font-mono font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-red-500 outline-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[0.6875rem] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">
+                        City / Textile Hub *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={formData.city}
+                        onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                        placeholder="e.g. Ludhiana / Surat"
+                        className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:ring-2 focus:ring-red-500 outline-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[0.6875rem] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">
+                        State / Region *
+                      </label>
+                      <select
+                        value={formData.state}
+                        onChange={(e) => setFormData({ ...formData, state: e.target.value })}
+                        className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white focus:ring-2 focus:ring-red-500 outline-none"
+                      >
+                        {INDIAN_STATES.map((st) => (
+                          <option key={st} value={st}>
+                            {st}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
                   </div>
                 </div>
 

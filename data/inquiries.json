@@ -695,5 +695,131 @@
         "quantityKg": 400
       }
     ]
+  },
+  {
+    "referenceId": "VED-449657",
+    "timestamp": "2026-08-06T03:50:49.880Z",
+    "fullName": "Ved",
+    "companyName": "Enterprises",
+    "city": "uoiiou",
+    "state": "Punjab (Ludhiana / Amritsar)",
+    "phone": "8995898787",
+    "email": "vedenterprises566@gmail.com",
+    "yarnRequirement": "",
+    "quantityTonsOrKg": "100 Kg",
+    "comments": "hiugu",
+    "requestSample": true,
+    "items": [
+      {
+        "product": {
+          "id": "fy-1",
+          "name": "MX Lurex 50/85 Fine Count",
+          "category": "fancy",
+          "categoryLabel": "Fancy Yarn",
+          "countOrDenier": "50/85 Fine Count",
+          "description": "High-lustre metallic shimmer Lurex yarn engineered for high-end garment borders, luxury knitwear, sarees, shawls, and decorative embroidery.",
+          "recommendedUses": [
+            "Knitwear Borders",
+            "Shawls & Sarees",
+            "Fancy Sweaters",
+            "Embroidery"
+          ],
+          "features": [
+            "Metallic Shine",
+            "Tarnish Resistant",
+            "Smooth Runnability",
+            "Soft Hand Feel"
+          ],
+          "sampleAvailable": true,
+          "origin": "Ved Exclusive Fancy",
+          "popularFor": "Festive & Premium Fashion Apparel",
+          "imageUrl": "/src/assets/images/lurex_fancy_yarn_1785307540278.jpg",
+          "badge": "Popular Fancy"
+        },
+        "quantityKg": 100
+      },
+      {
+        "product": {
+          "id": "fy-2",
+          "name": "Space Polyester Yarn (300D - 550D)",
+          "category": "fancy",
+          "categoryLabel": "Fancy Yarn",
+          "countOrDenier": "300 Denier to 550 Denier",
+          "description": "Multi-tone space-dyed polyester yarn delivering vibrant rainbow and ombre effects for designer sweaters, scarves, and woven textiles.",
+          "recommendedUses": [
+            "Designer Sweaters",
+            "Scarves & Stoles",
+            "Jacquard Weaving",
+            "Upholstery"
+          ],
+          "features": [
+            "Multi-Color Gradient",
+            "High Tenacity",
+            "Colorfastness",
+            "Uniform Dyeing"
+          ],
+          "sampleAvailable": true,
+          "origin": "Ved Premium Selection",
+          "popularFor": "Multi-color Winter Wear",
+          "imageUrl": "https://images.unsplash.com/photo-1584992236310-6edddc08acff?auto=format&fit=crop&w=800&q=80"
+        },
+        "quantityKg": 100
+      },
+      {
+        "product": {
+          "id": "fy-3",
+          "name": "Poly Enigma Yarn 550 Denier",
+          "category": "fancy",
+          "categoryLabel": "Fancy Yarn",
+          "countOrDenier": "550 Denier",
+          "description": "Heavy textured polyester yarn designed for structured winterwear, thick knits, jacket fabrics, and high-durability textiles.",
+          "recommendedUses": [
+            "Heavy Sweaters",
+            "Jacket Fabrics",
+            "Furnishing Fabrics",
+            "Outerwear"
+          ],
+          "features": [
+            "High Bulk",
+            "Rich Texture",
+            "Shape Retention",
+            "Pilling Resistant"
+          ],
+          "sampleAvailable": true,
+          "origin": "Specialty Textured",
+          "popularFor": "Heavy Winter Garments",
+          "imageUrl": "/src/assets/images/vislon_imported_yarn_1785307557035.jpg"
+        },
+        "quantityKg": 100
+      },
+      {
+        "product": {
+          "id": "fy-4",
+          "name": "Stretch Yarn (Polyester Vislon)",
+          "category": "fancy",
+          "categoryLabel": "Fancy Yarn",
+          "countOrDenier": "Variable Stretch Counts",
+          "description": "Engineered Vislon polyester stretch yarn providing elastic recovery, perfect for ribbing, body-hugging knits, activewear, and socks.",
+          "recommendedUses": [
+            "Collar & Cuff Ribs",
+            "Fitted Knitwear",
+            "Socks & Legwear",
+            "Activewear"
+          ],
+          "features": [
+            "Superior Elasticity",
+            "Dimensional Stability",
+            "Soft Stretch",
+            "Durable Recovery"
+          ],
+          "sampleAvailable": true,
+          "origin": "Imported Specialty",
+          "popularFor": "Elastic Ribbing & Active Wear",
+          "imageUrl": "/src/assets/images/vislon_imported_yarn_1785307557035.jpg",
+          "badge": "High Demand"
+        },
+        "quantityKg": 100
+      }
+    ]
   }
 ]

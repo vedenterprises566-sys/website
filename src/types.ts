@@ -51,6 +51,8 @@ export interface InquiryItem {
 export interface InquiryFormData {
   fullName: string;
   companyName: string;
+  address?: string;
+  pincode?: string;
   city: string;
   state: string;
   phone: string;

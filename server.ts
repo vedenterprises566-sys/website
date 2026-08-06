@@ -94,6 +94,8 @@ async function startServer() {
           'Firm / Company': inquiryData.companyName || '',
           'Phone / WhatsApp': inquiryData.phone || '',
           'Gmail / Email': inquiryData.email || '',
+          'Delivery Address': inquiryData.address || '',
+          'Pincode': inquiryData.pincode || '',
           'City': inquiryData.city || '',
           'State': inquiryData.state || '',
           'Sample Requested': inquiryData.requestSample ? 'YES' : 'NO',
@@ -127,6 +129,8 @@ async function startServer() {
           { wch: 22 },
           { wch: 16 },
           { wch: 24 },
+          { wch: 35 },
+          { wch: 12 },
           { wch: 16 },
           { wch: 22 },
           { wch: 16 },
@@ -164,12 +168,14 @@ async function startServer() {
           </div>
           
           <div style="padding: 24px; color: #1e293b;">
-            <h3 style="margin-top: 0; color: #0f172a; border-bottom: 2px solid #dc2626; padding-bottom: 8px; font-size: 16px;">Customer Information</h3>
+            <h3 style="margin-top: 0; color: #0f172a; border-bottom: 2px solid #dc2626; padding-bottom: 8px; font-size: 16px;">Customer & Delivery Details</h3>
             <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 14px;">
               <tr><td style="padding: 6px 0; color: #64748b; width: 140px;"><strong>Full Name:</strong></td><td style="padding: 6px 0; font-weight: bold; color: #0f172a;">${inquiryData.fullName || 'N/A'}</td></tr>
               <tr><td style="padding: 6px 0; color: #64748b;"><strong>Company / Firm:</strong></td><td style="padding: 6px 0; color: #0f172a;">${inquiryData.companyName || 'N/A'}</td></tr>
               <tr><td style="padding: 6px 0; color: #64748b;"><strong>Mobile / Phone:</strong></td><td style="padding: 6px 0;"><a href="tel:${inquiryData.phone}" style="color: #dc2626; font-weight: bold; text-decoration: none;">+91 ${inquiryData.phone}</a></td></tr>
               <tr><td style="padding: 6px 0; color: #64748b;"><strong>Email:</strong></td><td style="padding: 6px 0; color: #0f172a;">${inquiryData.email || 'Not Provided'}</td></tr>
+              <tr><td style="padding: 6px 0; color: #64748b;"><strong>Delivery Address:</strong></td><td style="padding: 6px 0; color: #0f172a;">${inquiryData.address || 'Not Specified'}</td></tr>
+              <tr><td style="padding: 6px 0; color: #64748b;"><strong>Pincode:</strong></td><td style="padding: 6px 0; font-weight: bold; color: #0f172a;">${inquiryData.pincode || 'N/A'}</td></tr>
               <tr><td style="padding: 6px 0; color: #64748b;"><strong>Location / Hub:</strong></td><td style="padding: 6px 0; color: #0f172a;"><strong>${inquiryData.city || 'N/A'}</strong>, ${inquiryData.state || 'India'}</td></tr>
               <tr><td style="padding: 6px 0; color: #64748b;"><strong>Sample Requested:</strong></td><td style="padding: 6px 0; font-weight: bold; color: ${inquiryData.requestSample ? '#16a34a' : '#64748b'};">${inquiryData.requestSample ? 'YES (Hank / Shade Card Dispatch)' : 'NO'}</td></tr>
             </table>

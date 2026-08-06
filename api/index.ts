@@ -49,6 +49,8 @@ CUSTOMER DETAILS:
 - Company / Firm: ${inquiryData.companyName || 'N/A'}
 - Mobile / WhatsApp: +91 ${inquiryData.phone || 'N/A'}
 - Gmail / Email: ${inquiryData.email || 'Not Provided'}
+- Delivery Address: ${inquiryData.address || 'Not Specified'}
+- Pincode: ${inquiryData.pincode || 'N/A'}
 - Location: ${inquiryData.city || 'N/A'}, ${inquiryData.state || 'India'}
 - Physical Sample Requested: ${inquiryData.requestSample ? 'YES (Hank / Shade Card)' : 'NO'}
 
