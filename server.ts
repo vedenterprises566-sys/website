@@ -4,7 +4,6 @@ import { fileURLToPath } from 'url';
 import { GoogleGenAI } from '@google/genai';
 import fs from 'fs';
 import nodemailer from 'nodemailer';
-import XLSX from 'xlsx';
 import dotenv from 'dotenv';
 import os from 'os';
 
@@ -60,94 +59,7 @@ async function startServer() {
         ...inquiryData,
       };
 
-      // 1. Save Inquiry to JSON and Excel (.xlsx) files for 100% persistence
-      try {
-        const inquiriesDir = path.join(process.cwd(), 'data');
-        if (!fs.existsSync(inquiriesDir)) {
-          fs.mkdirSync(inquiriesDir, { recursive: true });
-        }
-        
-        // 1a. JSON Storage
-        const inquiriesFile = path.join(inquiriesDir, 'inquiries.json');
-        let existingInquiries: any[] = [];
-        if (fs.existsSync(inquiriesFile)) {
-          try {
-            existingInquiries = JSON.parse(fs.readFileSync(inquiriesFile, 'utf-8'));
-          } catch (e) {
-            existingInquiries = [];
-          }
-        }
-        existingInquiries.push(inquiryRecord);
-        fs.writeFileSync(inquiriesFile, JSON.stringify(existingInquiries, null, 2));
-        console.log(`[STORAGE SUCCESS] Saved inquiry ${referenceId} to data/inquiries.json`);
-
-        // 1b. Excel (.xlsx) Storage
-        const excelPath = path.join(inquiriesDir, 'inquiries.xlsx');
-        const productsFormatted = inquiryData.items && inquiryData.items.length > 0
-          ? inquiryData.items.map((i: any) => `${i.product?.name || 'Yarn'} (${i.product?.countOrDenier || ''}): ${i.quantityKg}Kg`).join('; ')
-          : 'General Wholesale Inquiry';
-
-        const rowObj = {
-          'Date & Time': new Date(timestamp).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }),
-          'Reference ID': referenceId,
-          'Customer Name': inquiryData.fullName || '',
-          'Firm / Company': inquiryData.companyName || '',
-          'Phone / WhatsApp': inquiryData.phone || '',
-          'Gmail / Email': inquiryData.email || '',
-          'Delivery Address': inquiryData.address || '',
-          'Pincode': inquiryData.pincode || '',
-          'City': inquiryData.city || '',
-          'State': inquiryData.state || '',
-          'Sample Requested': inquiryData.requestSample ? 'YES' : 'NO',
-          'Selected Products': productsFormatted,
-          'Notes & Requirements': inquiryData.comments || '',
-        };
-
-        let workbook: XLSX.WorkBook;
-        let sheetData: any[] = [];
-
-        if (fs.existsSync(excelPath)) {
-          try {
-            workbook = XLSX.readFile(excelPath);
-            const sheetName = workbook.SheetNames[0] || 'Wholesale Inquiries';
-            const worksheet = workbook.Sheets[sheetName];
-            sheetData = XLSX.utils.sheet_to_json(worksheet);
-          } catch (e) {
-            workbook = XLSX.utils.book_new();
-          }
-        } else {
-          workbook = XLSX.utils.book_new();
-        }
-
-        sheetData.push(rowObj);
-
-        const newWorksheet = XLSX.utils.json_to_sheet(sheetData);
-        newWorksheet['!cols'] = [
-          { wch: 22 },
-          { wch: 14 },
-          { wch: 20 },
-          { wch: 22 },
-          { wch: 16 },
-          { wch: 24 },
-          { wch: 35 },
-          { wch: 12 },
-          { wch: 16 },
-          { wch: 22 },
-          { wch: 16 },
-          { wch: 45 },
-          { wch: 35 },
-        ];
-
-        workbook.SheetNames = ['Wholesale Inquiries'];
-        workbook.Sheets['Wholesale Inquiries'] = newWorksheet;
-
-        XLSX.writeFile(workbook, excelPath);
-        console.log(`[EXCEL SUCCESS] Appended inquiry ${referenceId} to data/inquiries.xlsx`);
-      } catch (storageErr) {
-        console.error('[STORAGE ERROR] Failed to write inquiry files:', storageErr);
-      }
-
-      // 2. Format HTML & Text for Email Notification to admin@ved.enterprises
+      // Email notification formatting and delivery (no local disk storage)
       const itemsListHtml = inquiryData.items && inquiryData.items.length > 0
         ? inquiryData.items.map((i: any) => `
             <tr style="border-bottom: 1px solid #f1f5f9;">
@@ -353,18 +265,6 @@ Address: # 66/2, Near Shingar Cinema, Dharampura, Ludhiana - 141008
       });
     } catch (err: any) {
       return res.status(500).json({ success: false, error: err.message });
-    }
-  });
-
-  // API Route: Download Excel Sheet of Inquiries
-  app.get('/api/inquiry/excel', (req, res) => {
-    const excelPath = path.join(process.cwd(), 'data', 'inquiries.xlsx');
-    if (fs.existsSync(excelPath)) {
-      res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-      res.setHeader('Content-Disposition', 'attachment; filename="Ved_Enterprises_Inquiries.xlsx"');
-      return res.sendFile(excelPath);
-    } else {
-      return res.status(404).json({ error: 'No Excel inquiry sheet found yet.' });
     }
   });
 
