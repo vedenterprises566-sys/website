@@ -1,14 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowRight, Layers } from 'lucide-react';
 import { Header } from './components/Header';
-import { Hero } from './components/Hero';
-import { Catalog } from './components/Catalog';
-import { GarmentsPage } from './components/GarmentsPage';
-import { MillPartners } from './components/MillPartners';
-import { InquiryPortal } from './components/InquiryPortal';
-import { VisitingCard } from './components/VisitingCard';
-import { AiAssistantModal } from './components/AiAssistantModal';
 import { Footer } from './components/Footer';
 import { MobileBottomNav } from './components/MobileBottomNav';
 import { FlyToBasketAnimation, FlyingItem } from './components/FlyToBasketAnimation';
@@ -16,10 +9,19 @@ import { BasketToast } from './components/BasketToast';
 import { ShadeCardModal } from './components/ShadeCardModal';
 import { YarnBackgroundPattern } from './components/YarnBackgroundPattern';
 import { LaunchCountdown } from './components/LaunchCountdown';
+import { AiAssistantModal } from './components/AiAssistantModal';
 import { Product, InquiryItem, YarnCategory } from './types';
-import { PRODUCTS_CATALOG } from './data/products';
+
+// Page Imports from src/pages
+import { Home } from './pages/Home';
+import { CatalogPage } from './pages/CatalogPage';
+import { GarmentsPage } from './pages/GarmentsPage';
+import { InquiryPage } from './pages/InquiryPage';
 
 export default function App() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
   // Launch countdown state active until August 7, 2026 00:00 IST
   const targetLaunch = new Date('2026-08-07T00:00:00+05:30').getTime();
   const [showCountdown, setShowCountdown] = useState<boolean>(() => Date.now() < targetLaunch);
@@ -39,7 +41,6 @@ export default function App() {
     return () => clearInterval(interval);
   }, [showCountdown, targetLaunch]);
 
-  const [currentPage, setCurrentPage] = useState<'home' | 'catalog' | 'basket' | 'garments'>('home');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<YarnCategory | 'all'>('all');
   const [basket, setBasket] = useState<InquiryItem[]>([]);
@@ -154,80 +155,36 @@ export default function App() {
     setBasket([]);
   };
 
-  // Helper to parse route from window.location.pathname for Clean URLs (/home, /catalog, /garments, /inquiry)
-  const getRouteFromPath = (path: string): { page: 'home' | 'catalog' | 'basket' | 'garments'; section: string } => {
+  // Derive current page name from URL pathname
+  const getCurrentPageFromPath = (path: string): 'home' | 'catalog' | 'basket' | 'garments' => {
     const cleanPath = path.toLowerCase().replace(/\/$/, '');
-    if (cleanPath.endsWith('/catalog')) return { page: 'catalog', section: 'catalog' };
-    if (cleanPath.endsWith('/garments')) return { page: 'garments', section: 'garments' };
-    if (cleanPath.endsWith('/inquiry') || cleanPath.endsWith('/basket')) return { page: 'basket', section: 'inquiry' };
-    if (cleanPath.endsWith('/card')) return { page: 'home', section: 'card' };
-    if (cleanPath.endsWith('/mills') || cleanPath.endsWith('/partners')) return { page: 'home', section: 'mills' };
-    return { page: 'home', section: 'hero' };
+    if (cleanPath === '/catalog') return 'catalog';
+    if (cleanPath === '/garments') return 'garments';
+    if (cleanPath === '/inquiry' || cleanPath === '/basket') return 'basket';
+    return 'home';
   };
 
-  // Sync state with browser URL bar on initial load & popstate (Back/Forward buttons)
-  useEffect(() => {
-    const syncWithUrl = () => {
-      const { page, section } = getRouteFromPath(window.location.pathname);
-      setCurrentPage(page);
-      setActiveSection(section);
-      if (page === 'home' && section !== 'hero') {
-        setTimeout(() => {
-          const elem = document.getElementById(`${section}-section`);
-          if (elem) elem.scrollIntoView({ behavior: 'smooth' });
-        }, 100);
-      }
-    };
+  const currentPage = getCurrentPageFromPath(location.pathname);
 
-    syncWithUrl();
-    window.addEventListener('popstate', syncWithUrl);
-    return () => window.removeEventListener('popstate', syncWithUrl);
-  }, []);
-
-  const handleNavigate = (sectionId: string, pushUrl = true) => {
-    let targetPage: 'home' | 'catalog' | 'basket' | 'garments' = 'home';
-    let targetPath = '/home';
+  const handleNavigate = (sectionId: string) => {
+    let targetPath = '/';
 
     if (sectionId === 'catalog') {
-      targetPage = 'catalog';
       targetPath = '/catalog';
     } else if (sectionId === 'inquiry' || sectionId === 'basket') {
-      targetPage = 'basket';
       targetPath = '/inquiry';
     } else if (sectionId === 'garments') {
-      targetPage = 'garments';
       targetPath = '/garments';
     } else if (sectionId === 'card') {
-      targetPage = 'home';
       targetPath = '/card';
     } else if (sectionId === 'mills') {
-      targetPage = 'home';
       targetPath = '/mills';
     } else if (sectionId === 'hero' || sectionId === 'home') {
-      targetPage = 'home';
-      targetPath = '/home';
+      targetPath = '/';
     }
 
-    setCurrentPage(targetPage);
     setActiveSection(sectionId);
-
-    if (pushUrl && window.location.pathname !== targetPath) {
-      window.history.pushState({}, '', targetPath);
-    }
-
-    if (targetPage === 'catalog' || targetPage === 'basket' || targetPage === 'garments' || sectionId === 'hero') {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      return;
-    }
-
-    setTimeout(() => {
-      const elem = document.getElementById(`${sectionId}-section`);
-      if (elem) {
-        elem.scrollIntoView({ behavior: 'smooth' });
-      } else {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
-    }, 50);
+    navigate(targetPath);
   };
 
   const handleOpenAiForProduct = (productName: string) => {
@@ -242,7 +199,7 @@ export default function App() {
 
   const handleCategoryChange = (category: YarnCategory | 'all') => {
     setSelectedCategory(category);
-    setCurrentPage('catalog');
+    navigate('/catalog');
     setActiveSection('catalog');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -259,218 +216,186 @@ export default function App() {
           transition={{ duration: 1, ease: 'easeOut' }}
           className="min-h-screen bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans antialiased selection:bg-red-500 selection:text-white overflow-x-hidden relative"
         >
-      {/* Decorative Yarn & Textile Background Animation */}
-      <YarnBackgroundPattern />
+          {/* Decorative Yarn & Textile Background Animation */}
+          <YarnBackgroundPattern />
 
-      {/* Header Navigation */}
-      <Header
-        basketCount={basket.length}
-        onOpenBasket={() => handleNavigate('basket')}
-        onOpenAi={() => {
-          setAiTopic('');
-          setIsAiOpen(true);
-        }}
-        onOpenShadesModal={() => handleOpenShadesModal()}
-        onNavigate={handleNavigate}
-        activeSection={currentPage === 'basket' ? 'inquiry' : currentPage === 'garments' ? 'garments' : currentPage === 'catalog' ? 'catalog' : activeSection}
-        onMenuChange={setIsHeaderMenuOpen}
-      />
+          {/* Header Navigation */}
+          <Header
+            basketCount={basket.length}
+            onOpenBasket={() => handleNavigate('inquiry')}
+            onOpenAi={() => {
+              setAiTopic('');
+              setIsAiOpen(true);
+            }}
+            onOpenShadesModal={() => handleOpenShadesModal()}
+            onNavigate={handleNavigate}
+            activeSection={
+              currentPage === 'basket'
+                ? 'inquiry'
+                : currentPage === 'garments'
+                ? 'garments'
+                : currentPage === 'catalog'
+                ? 'catalog'
+                : activeSection
+            }
+            onMenuChange={setIsHeaderMenuOpen}
+          />
 
-      {/* Main Content Area with Smooth Page Transitions */}
-      <main className={`pb-20 md:pb-0 transition-all duration-300 ${isHeaderMenuOpen ? 'filter blur-md pointer-events-none select-none opacity-80' : ''}`}>
-        <AnimatePresence mode="wait">
-          {currentPage === 'home' ? (
-            <motion.div
-              key="home"
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -12 }}
-              transition={{ duration: 0.35, ease: 'easeOut' }}
-            >
-              {/* Hero Section */}
-              <Hero
-                searchQuery={searchQuery}
-                onSearchChange={setSearchQuery}
-                onExploreCatalog={() => handleNavigate('catalog')}
-                onOpenAi={() => {
-                  setAiTopic('');
-                  setIsAiOpen(true);
-                }}
-                onSelectCategory={(cat) => handleCategoryChange(cat as any)}
-              />
+          {/* Main Content Area with Smooth Page Transitions & React Router */}
+          <main className={`pb-20 md:pb-0 transition-all duration-300 ${isHeaderMenuOpen ? 'filter blur-md pointer-events-none select-none opacity-80' : ''}`}>
+            <AnimatePresence mode="wait">
+              <Routes location={location}>
+                <Route
+                  path="/"
+                  element={
+                    <Home
+                      searchQuery={searchQuery}
+                      onSearchChange={setSearchQuery}
+                      onExploreCatalog={() => handleNavigate('catalog')}
+                      onOpenAi={() => {
+                        setAiTopic('');
+                        setIsAiOpen(true);
+                      }}
+                      onSelectCategory={(cat) => handleCategoryChange(cat as any)}
+                      onSelectPartnerYarns={handleSelectPartnerYarns}
+                      scrollSection={activeSection}
+                    />
+                  }
+                />
+                <Route path="/home" element={<Navigate to="/" replace />} />
+                <Route
+                  path="/mills"
+                  element={
+                    <Home
+                      searchQuery={searchQuery}
+                      onSearchChange={setSearchQuery}
+                      onExploreCatalog={() => handleNavigate('catalog')}
+                      onOpenAi={() => {
+                        setAiTopic('');
+                        setIsAiOpen(true);
+                      }}
+                      onSelectCategory={(cat) => handleCategoryChange(cat as any)}
+                      onSelectPartnerYarns={handleSelectPartnerYarns}
+                      scrollSection="mills"
+                    />
+                  }
+                />
+                <Route
+                  path="/card"
+                  element={
+                    <Home
+                      searchQuery={searchQuery}
+                      onSearchChange={setSearchQuery}
+                      onExploreCatalog={() => handleNavigate('catalog')}
+                      onOpenAi={() => {
+                        setAiTopic('');
+                        setIsAiOpen(true);
+                      }}
+                      onSelectCategory={(cat) => handleCategoryChange(cat as any)}
+                      onSelectPartnerYarns={handleSelectPartnerYarns}
+                      scrollSection="card"
+                    />
+                  }
+                />
+                <Route
+                  path="/catalog"
+                  element={
+                    <CatalogPage
+                      searchQuery={searchQuery}
+                      onSearchChange={setSearchQuery}
+                      selectedCategory={selectedCategory}
+                      onCategoryChange={handleCategoryChange}
+                      onAddToBasket={handleAddToBasket}
+                      onOpenAiForProduct={handleOpenAiForProduct}
+                      onOpenShadesModal={handleOpenShadesModal}
+                      inquiryItemIds={basket.map((b) => b.product.id)}
+                      onGoToBasket={() => handleNavigate('inquiry')}
+                    />
+                  }
+                />
+                <Route
+                  path="/garments"
+                  element={
+                    <GarmentsPage
+                      onBackToHome={() => handleNavigate('hero')}
+                      onOpenAi={() => {
+                        setAiTopic('Garments & Sweater Manufacturing Inquiry');
+                        setIsAiOpen(true);
+                      }}
+                    />
+                  }
+                />
+                <Route
+                  path="/inquiry"
+                  element={
+                    <InquiryPage
+                      basket={basket}
+                      onUpdateQty={handleUpdateQty}
+                      onRemoveItem={handleRemoveItem}
+                      onClearBasket={handleClearBasket}
+                      onOpenAi={() => {
+                        setAiTopic('');
+                        setIsAiOpen(true);
+                      }}
+                      onBackToCatalog={() => handleNavigate('catalog')}
+                    />
+                  }
+                />
+                <Route path="/basket" element={<Navigate to="/inquiry" replace />} />
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
+            </AnimatePresence>
+          </main>
 
-              {/* Featured Yarn Catalog Banner on Home */}
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-8 sm:my-12">
-                <div className="bg-gradient-to-r from-red-900 via-slate-900 to-red-950 rounded-3xl p-6 sm:p-10 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-6 border border-red-700/50 relative overflow-hidden">
-                  <div className="absolute -right-12 -top-12 w-64 h-64 bg-red-600/10 rounded-full blur-2xl pointer-events-none" />
-                  <div className="space-y-3 max-w-2xl relative z-10 text-center md:text-left">
-                    <span className="inline-flex items-center gap-1.5 bg-red-600/80 text-white px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider">
-                      <Layers className="w-3.5 h-3.5 text-amber-300" /> Complete Catalog
-                    </span>
-                    <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight font-serif leading-snug">
-                      Fancy & China Yarn Catalog Page
-                    </h2>
-                    <p className="text-slate-200 text-xs sm:text-sm font-normal leading-relaxed">
-                      Browse 100+ yarn varieties including Vislon, Lurex, Wooly, Chenille, Eyelash Hair Yarns, Stretch & Lycra Blends directly supplied to Ludhiana & All India garment manufacturers.
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => handleNavigate('catalog')}
-                    className="shrink-0 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-slate-950 font-black px-6 py-3.5 rounded-2xl text-xs sm:text-sm shadow-lg hover:shadow-amber-500/20 transition-all flex items-center gap-2 group cursor-pointer"
-                  >
-                    <span>Browse Full Yarn Catalog</span>
-                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                  </button>
-                </div>
-              </div>
+          {/* Mobile Sticky Bottom Navigation Bar */}
+          <MobileBottomNav
+            currentPage={currentPage}
+            activeSection={activeSection}
+            basketCount={basket.length}
+            onNavigate={handleNavigate}
+            onOpenAi={() => {
+              setAiTopic('');
+              setIsAiOpen(true);
+            }}
+          />
 
-              {/* Mill Partners Section */}
-              <MillPartners onSelectPartnerYarns={handleSelectPartnerYarns} />
+          {/* AI Assistant Chat Modal */}
+          <AiAssistantModal
+            isOpen={isAiOpen}
+            onClose={() => setIsAiOpen(false)}
+            initialTopic={aiTopic}
+          />
 
-              {/* Digital Visiting Card Section */}
-              <VisitingCard />
-            </motion.div>
-          ) : currentPage === 'catalog' ? (
-            /* Dedicated Yarn Catalog Page */
-            <motion.div
-              key="catalog"
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -12 }}
-              transition={{ duration: 0.35, ease: 'easeOut' }}
-            >
-              {/* Top Page Header Banner for Catalog */}
-              <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-red-950 text-white py-8 sm:py-10 px-4 sm:px-8 border-b border-slate-800">
-                <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-                  <div>
-                    <div className="flex items-center gap-2 text-xs text-slate-400 mb-1.5 font-medium">
-                      <button onClick={() => handleNavigate('hero')} className="hover:text-amber-300 transition-colors">Home</button>
-                      <span>/</span>
-                      <span className="text-amber-400 font-bold">Yarn Catalog</span>
-                    </div>
-                    <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight font-serif text-white flex items-center gap-3">
-                      <Layers className="w-7 h-7 sm:w-8 sm:h-8 text-red-500 shrink-0" />
-                      Yarn Catalog & Swatch Directory
-                    </h1>
-                    <p className="text-slate-300 text-xs sm:text-sm mt-1 max-w-2xl font-normal leading-relaxed">
-                      Explore our complete inventory of Cotton, Fancy & China Yarns. Filter by count, category, or tag and add sample requests directly to your Inquiry Basket.
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => handleNavigate('hero')}
-                    className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold transition-all border border-white/15 shrink-0"
-                  >
-                    ← Back to Home
-                  </button>
-                </div>
-              </div>
+          {/* Yarn Shade Cards & PDF Storage Modal */}
+          <ShadeCardModal
+            product={shadeModalProduct}
+            isOpen={isShadeModalOpen}
+            onClose={() => setIsShadeModalOpen(false)}
+            onSelectProduct={(p) => setShadeModalProduct(p)}
+          />
 
-              {/* Standalone Product Catalog Component */}
-              <Catalog
-                searchQuery={searchQuery}
-                onSearchChange={setSearchQuery}
-                selectedCategory={selectedCategory}
-                onCategoryChange={handleCategoryChange}
-                onAddToBasket={handleAddToBasket}
-                onOpenAiForProduct={handleOpenAiForProduct}
-                onOpenShadesModal={handleOpenShadesModal}
-                inquiryItemIds={basket.map((b) => b.product.id)}
-                onGoToBasket={() => handleNavigate('basket')}
-              />
-            </motion.div>
-          ) : currentPage === 'garments' ? (
-            /* Dedicated Sweater Garment Directory Page */
-            <motion.div
-              key="garments"
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -12 }}
-              transition={{ duration: 0.35, ease: 'easeOut' }}
-            >
-              <GarmentsPage
-                onBackToHome={() => handleNavigate('catalog')}
-                onOpenAi={() => {
-                  setAiTopic('Garments & Sweater Manufacturing Inquiry');
-                  setIsAiOpen(true);
-                }}
-              />
-            </motion.div>
-          ) : (
-            /* Dedicated Basket & Inquiry Page */
-            <motion.div
-              key="basket"
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -12 }}
-              transition={{ duration: 0.35, ease: 'easeOut' }}
-            >
-              <InquiryPortal
-                basket={basket}
-                onUpdateQty={handleUpdateQty}
-                onRemoveItem={handleRemoveItem}
-                onClearBasket={handleClearBasket}
-                onOpenAi={() => {
-                  setAiTopic('');
-                  setIsAiOpen(true);
-                }}
-                onBackToCatalog={() => handleNavigate('catalog')}
-              />
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </main>
+          {/* Flying Item Arc Animation Layer */}
+          <FlyToBasketAnimation
+            flyingItems={flyingItems}
+            onAnimationComplete={handleAnimationComplete}
+          />
 
-      {/* Mobile Sticky Bottom Navigation Bar */}
-      <MobileBottomNav
-        currentPage={currentPage}
-        activeSection={activeSection}
-        basketCount={basket.length}
-        onNavigate={handleNavigate}
-        onOpenAi={() => {
-          setAiTopic('');
-          setIsAiOpen(true);
-        }}
-      />
+          {/* Floating Confirmation Toast */}
+          <BasketToast
+            toast={activeToast}
+            onClose={() => setActiveToast(null)}
+            onGoToBasket={() => handleNavigate('inquiry')}
+          />
 
-      {/* AI Assistant Chat Modal */}
-      <AiAssistantModal
-        isOpen={isAiOpen}
-        onClose={() => setIsAiOpen(false)}
-        initialTopic={aiTopic}
-      />
-
-      {/* Yarn Shade Cards & PDF Storage Modal */}
-      <ShadeCardModal
-        product={shadeModalProduct}
-        productsCatalog={PRODUCTS_CATALOG}
-        isOpen={isShadeModalOpen}
-        onClose={() => setIsShadeModalOpen(false)}
-        onSelectProduct={(p) => setShadeModalProduct(p)}
-      />
-
-      {/* Flying Item Arc Animation Layer */}
-      <FlyToBasketAnimation
-        flyingItems={flyingItems}
-        onAnimationComplete={handleAnimationComplete}
-      />
-
-      {/* Floating Confirmation Toast */}
-      <BasketToast
-        toast={activeToast}
-        onClose={() => setActiveToast(null)}
-        onGoToBasket={() => handleNavigate('basket')}
-      />
-
-      {/* Footer */}
-      <div className={`transition-all duration-300 ${isHeaderMenuOpen ? 'filter blur-md pointer-events-none select-none opacity-80' : ''}`}>
-        <Footer
-          onNavigate={handleNavigate}
-          onSelectCategory={(cat) => setSelectedCategory(cat as any)}
-        />
-      </div>
+          {/* Footer */}
+          <div className={`transition-all duration-300 ${isHeaderMenuOpen ? 'filter blur-md pointer-events-none select-none opacity-80' : ''}`}>
+            <Footer
+              onNavigate={handleNavigate}
+              onSelectCategory={(cat) => handleCategoryChange(cat as any)}
+            />
+          </div>
         </motion.div>
       )}
     </AnimatePresence>
   );
 }
-
