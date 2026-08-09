@@ -36,10 +36,9 @@ export const PRODUCTS_CATALOG: Product[] = [
     sampleAvailable: true,
     origin: 'Ved Domestic Premium Mill',
     popularFor: 'Hosiery Sweaters & School Uniforms',
-    imageUrl: imgDaffodil,
     pictureUrl: 'https://drive.google.com/file/d/105xFBP96hHxXid9H5sMwnbyF2hvwdwGu/view?usp=drivesdk',
     shadeUrl: 'https://drive.google.com/file/d/1kE3ZUTNp_e5W5jiWraookdT-Z7CvJVpa/view?usp=drivesdk',
-    badge: 'Bundled Asset'
+    badge: 'Direct Drive Photo'
   },
   {
     id: 'sheet-rainbow',
@@ -53,10 +52,9 @@ export const PRODUCTS_CATALOG: Product[] = [
     sampleAvailable: true,
     origin: 'Ved Premium Selection',
     popularFor: 'Shiny Designer Sweaters',
-    imageUrl: imgRainbow,
     pictureUrl: 'https://drive.google.com/file/d/11anqCKDMGU6GIIA41DdsBxm0hEyrbj9E/view?usp=drivesdk',
     shadeUrl: 'https://drive.google.com/file/d/1IukDyi5hAo-yjA9irRcGUqriTXsZKa1n/view?usp=drivesdk',
-    badge: 'Bundled Asset'
+    badge: 'Direct Drive Photo'
   },
   {
     id: 'sheet-hazel',
@@ -70,10 +68,9 @@ export const PRODUCTS_CATALOG: Product[] = [
     sampleAvailable: true,
     origin: 'Ved Premium Selection',
     popularFor: 'Luxury Viscose Cardigans',
-    imageUrl: imgHazel,
     pictureUrl: 'https://drive.google.com/file/d/1DuvmcVCblRxuW75iPo_soJvM_E0u2sax/view?usp=drivesdk',
     shadeUrl: 'https://drive.google.com/file/d/134SO7mr_mqw8mdxNKJVChzDNg8xiUnb8/view?usp=drivesdk',
-    badge: 'Bundled Asset'
+    badge: 'Direct Drive Photo'
   },
   {
     id: 'sheet-megamix',
@@ -87,10 +84,9 @@ export const PRODUCTS_CATALOG: Product[] = [
     sampleAvailable: true,
     origin: 'Ved Exclusive Fancy',
     popularFor: 'Textured Slub Knitwear',
-    imageUrl: imgMegamix,
     pictureUrl: 'https://drive.google.com/file/d/1vhIj1-GOFMQaweHv_c0c3sBsT8WVHv1Z/view?usp=drivesdk',
     shadeUrl: 'https://drive.google.com/file/d/1ZfmZqQCSK6dDRb4NqOVYV19ohN4dArZn/view?usp=drivesdk',
-    badge: 'Bundled Asset'
+    badge: 'Direct Drive Photo'
   },
   {
     id: 'sheet-woolly',
@@ -104,9 +100,9 @@ export const PRODUCTS_CATALOG: Product[] = [
     sampleAvailable: true,
     origin: 'Direct China Import',
     popularFor: 'Soft Winter Pullovers & Thermals',
-    imageUrl: imgWooly218,
     pictureUrl: 'https://drive.google.com/file/d/1dD9JwdUvvFiMg1kJ9gFbgKvxFehzeutE/view?usp=drivesdk',
-    badge: 'Bundled Asset'
+    imageUrl: imgWooly218,
+    badge: 'Direct Drive Photo'
   },
   {
     id: 'sheet-vislon248',
@@ -120,10 +116,10 @@ export const PRODUCTS_CATALOG: Product[] = [
     sampleAvailable: true,
     origin: 'Direct China Import',
     popularFor: '12GG & 14GG Sweater Production',
-    imageUrl: imgVislon248,
     pictureUrl: 'https://drive.google.com/file/d/1lP7-J8DnnKSWyv-BM_3lrJgoXLC_byC8/view?usp=drivesdk',
+    imageUrl: imgVislon248,
     shadeUrl: 'https://drive.google.com/file/d/1SjCUksE2lg4kzjthW2z3uwWbQY9fIdX7/view?usp=drivesdk',
-    badge: 'Bundled Asset'
+    badge: 'Direct Drive Photo'
   },
   {
     id: 'sheet-enigma',
@@ -137,10 +133,9 @@ export const PRODUCTS_CATALOG: Product[] = [
     sampleAvailable: true,
     origin: 'Specialty Textured',
     popularFor: 'Heavy Winter Garments',
-    imageUrl: imgEnigma,
     pictureUrl: 'https://drive.google.com/file/d/161s9fGr99CdQidBqqxMe32la67SRu70D/view?usp=drivesdk',
     shadeUrl: 'https://drive.google.com/file/d/1mAeTXu6kj6GZ7DpfXcz-OJxIg8B49MNG/view?usp=drivesdk',
-    badge: 'Bundled Asset'
+    badge: 'Direct Drive Photo'
   },
   {
     id: 'sheet-nylonhair',
@@ -154,10 +149,10 @@ export const PRODUCTS_CATALOG: Product[] = [
     sampleAvailable: true,
     origin: 'Direct China Import',
     popularFor: 'Fuzzy Fashion Sweaters & Jackets',
-    imageUrl: imgHair13,
     pictureUrl: 'https://drive.google.com/file/d/1nD0zc8CX0lZm8v20-i-gwkKxG-WYghvO/view?usp=drivesdk',
+    imageUrl: imgHair13,
     shadeUrl: 'https://drive.google.com/file/d/1C27i0vtHYUmLzoim58kWTV3WLVVaztUR/view?usp=drivesdk',
-    badge: 'Bundled Asset'
+    badge: 'Direct Drive Photo'
   },
 
   // ADDITIONAL VED CATALOG ITEMS

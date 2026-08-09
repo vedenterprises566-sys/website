@@ -5,10 +5,6 @@ let cachedCatalog: Product[] | null = null;
 let lastFetchTime = 0;
 const CACHE_DURATION_MS = 60 * 1000; // 1 minute in-memory cache
 
-export class ProductService {
-  /**
-   * Loads product catalog from static /catalog.json with fallback to local PRODUCTS_CATALOG
-   */
 const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/13dYmzJoPkpLGCDt7gZ7znKJARPSknghUzcEmG2PKtFM/export?format=csv';
 
 function parseCSV(text: string): string[][] {
@@ -62,7 +58,6 @@ export function parseLiveGoogleSheetProducts(csvText: string): Product[] {
   const products: Product[] = [];
 
   dataRows.forEach((r, idx) => {
-    const timestamp = r[0] || '';
     const rawName = r[1] || '';
     const description = r[2] || '';
     const shadeUrl = r[3] || '';
@@ -126,7 +121,7 @@ export function parseLiveGoogleSheetProducts(csvText: string): Product[] {
 
 export class ProductService {
   /**
-   * Loads product catalog with automatic live Google Sheet CSV sync & local fallback
+   * Loads product catalog from live Google Sheet CSV or static catalog with fallback
    */
   static async getCatalog(forceRefresh = false): Promise<Product[]> {
     const now = Date.now();
@@ -145,14 +140,12 @@ export class ProductService {
         const liveSheetProducts = parseLiveGoogleSheetProducts(csvText);
 
         if (liveSheetProducts.length > 0) {
-          // Merge live sheet products with static bundled catalog to ensure zero duplicates
           const liveIds = new Set(liveSheetProducts.map(p => p.name.toLowerCase().trim()));
           const extraStaticProducts = PRODUCTS_CATALOG.filter(p => !liveIds.has(p.name.toLowerCase().trim()));
 
           const mergedCatalog = [...liveSheetProducts, ...extraStaticProducts];
           cachedCatalog = mergedCatalog;
           lastFetchTime = now;
-          console.log(`[ProductService] Auto-synced ${liveSheetProducts.length} live products directly from Google Sheet!`);
           return mergedCatalog;
         }
       }
