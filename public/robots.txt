@@ -1,0 +1,6 @@
+# Robots.txt for Ved Enterprises - Ludhiana Yarn Directory
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://www.ved.enterprises/sitemap.xml
