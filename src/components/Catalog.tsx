@@ -257,9 +257,9 @@ export const Catalog: React.FC<CatalogProps> = ({
             <AnimatePresence mode="popLayout">
               {filteredProducts.map((product, idx) => {
                 const isInBasket = inquiryItemIds.includes(product.id);
-                const resolvedPhoto = product.pictureUrl
-                  ? (getGoogleDriveThumbnail(product.pictureUrl) || product.pictureUrl)
-                  : (product.imageUrl || product.image || '');
+                const resolvedPhoto = (product.imageUrl || product.image)
+                  ? (product.imageUrl || product.image)
+                  : (product.pictureUrl ? (getGoogleDriveThumbnail(product.pictureUrl) || product.pictureUrl) : '');
                 const shadeTargetUrl = product.shadeUrl || product.shadeCardUrl || product.shadePdfUrl || '';
                 const pictureTargetUrl = product.pictureUrl || product.imageUrl || product.image || '';
 
