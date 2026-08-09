@@ -11,10 +11,9 @@
     "sampleAvailable": true,
     "origin": "Ved Domestic Premium Mill",
     "popularFor": "Hosiery Sweaters & School Uniforms",
-    "imageUrl": "/products/daffodil.jpg",
     "pictureUrl": "https://drive.google.com/file/d/105xFBP96hHxXid9H5sMwnbyF2hvwdwGu/view?usp=drivesdk",
     "shadeUrl": "https://drive.google.com/file/d/1kE3ZUTNp_e5W5jiWraookdT-Z7CvJVpa/view?usp=drivesdk",
-    "badge": "Fast Local Load"
+    "badge": "Live Sheet Item"
   },
   {
     "id": "sheet-rainbow",
@@ -28,10 +27,9 @@
     "sampleAvailable": true,
     "origin": "Ved Premium Selection",
     "popularFor": "Shiny Designer Sweaters",
-    "imageUrl": "/products/rainbow.jpg",
     "pictureUrl": "https://drive.google.com/file/d/11anqCKDMGU6GIIA41DdsBxm0hEyrbj9E/view?usp=drivesdk",
     "shadeUrl": "https://drive.google.com/file/d/1IukDyi5hAo-yjA9irRcGUqriTXsZKa1n/view?usp=drivesdk",
-    "badge": "Fast Local Load"
+    "badge": "Live Sheet Item"
   },
   {
     "id": "sheet-hazel",
@@ -45,10 +43,9 @@
     "sampleAvailable": true,
     "origin": "Ved Premium Selection",
     "popularFor": "Luxury Viscose Cardigans",
-    "imageUrl": "/products/hazel.jpg",
     "pictureUrl": "https://drive.google.com/file/d/1DuvmcVCblRxuW75iPo_soJvM_E0u2sax/view?usp=drivesdk",
     "shadeUrl": "https://drive.google.com/file/d/134SO7mr_mqw8mdxNKJVChzDNg8xiUnb8/view?usp=drivesdk",
-    "badge": "Fast Local Load"
+    "badge": "Live Sheet Item"
   },
   {
     "id": "sheet-megamix",
@@ -62,27 +59,11 @@
     "sampleAvailable": true,
     "origin": "Ved Exclusive Fancy",
     "popularFor": "Textured Slub Knitwear",
-    "imageUrl": "/products/megamix.jpg",
     "pictureUrl": "https://drive.google.com/file/d/1vhIj1-GOFMQaweHv_c0c3sBsT8WVHv1Z/view?usp=drivesdk",
     "shadeUrl": "https://drive.google.com/file/d/1ZfmZqQCSK6dDRb4NqOVYV19ohN4dArZn/view?usp=drivesdk",
-    "badge": "Fast Local Load"
+    "badge": "Live Sheet Item"
   },
-  {
-    "id": "sheet-woolly",
-    "name": "Woolly Yarn (2/18 & 2/48 Fine)",
-    "category": "china",
-    "categoryLabel": "China / Imported Yarn",
-    "countOrDenier": "2/18 Nm & 2/48 Nm Fine",
-    "description": "The Blend of Acrylic/PBT/Nylon engineered for warmth, high elasticity, and fine 12GG/14GG knits.",
-    "recommendedUses": ["Heavy Sweaters", "Flat Knitting 12GG/14GG", "Caps & Mufflers"],
-    "features": ["Acrylic/PBT/Nylon Blend", "High Thermal Insulation", "Soft Cashmere Touch", "Shape Recovery"],
-    "sampleAvailable": true,
-    "origin": "Direct China Import",
-    "popularFor": "Soft Winter Pullovers & Thermals",
-    "imageUrl": "/products/woolly.jpg",
-    "pictureUrl": "https://drive.google.com/file/d/1dD9JwdUvvFiMg1kJ9gFbgKvxFehzeutE/view?usp=drivesdk",
-    "badge": "Fast Local Load"
-  },
+
   {
     "id": "sheet-vislon248",
     "name": "Vislon 2/48 Yarn",
@@ -95,10 +76,9 @@
     "sampleAvailable": true,
     "origin": "Direct China Import",
     "popularFor": "12GG & 14GG Sweater Production",
-    "imageUrl": "/products/vislon.jpg",
     "pictureUrl": "https://drive.google.com/file/d/1lP7-J8DnnKSWyv-BM_3lrJgoXLC_byC8/view?usp=drivesdk",
     "shadeUrl": "https://drive.google.com/file/d/1SjCUksE2lg4kzjthW2z3uwWbQY9fIdX7/view?usp=drivesdk",
-    "badge": "Fast Local Load"
+    "badge": "Live Sheet Item"
   },
   {
     "id": "sheet-enigma",
@@ -112,10 +92,9 @@
     "sampleAvailable": true,
     "origin": "Specialty Textured",
     "popularFor": "Heavy Winter Garments",
-    "imageUrl": "/products/enigma.jpg",
     "pictureUrl": "https://drive.google.com/file/d/161s9fGr99CdQidBqqxMe32la67SRu70D/view?usp=drivesdk",
     "shadeUrl": "https://drive.google.com/file/d/1mAeTXu6kj6GZ7DpfXcz-OJxIg8B49MNG/view?usp=drivesdk",
-    "badge": "Fast Local Load"
+    "badge": "Live Sheet Item"
   },
   {
     "id": "sheet-nylonhair",
@@ -129,10 +108,9 @@
     "sampleAvailable": true,
     "origin": "Direct China Import",
     "popularFor": "Fuzzy Fashion Sweaters & Jackets",
-    "imageUrl": "/products/nylonhair.jpg",
     "pictureUrl": "https://drive.google.com/file/d/1nD0zc8CX0lZm8v20-i-gwkKxG-WYghvO/view?usp=drivesdk",
     "shadeUrl": "https://drive.google.com/file/d/1C27i0vtHYUmLzoim58kWTV3WLVVaztUR/view?usp=drivesdk",
-    "badge": "Fast Local Load"
+    "badge": "Live Sheet Item"
   },
   {
     "id": "fy-1",
@@ -149,49 +127,82 @@
     "badge": "Popular Fancy"
   },
   {
-    "id": "fy-2",
-    "name": "Space Polyester Yarn (300D - 550D)",
-    "category": "fancy",
-    "categoryLabel": "Fancy Yarn",
-    "countOrDenier": "300 Denier to 550 Denier",
-    "description": "Multi-tone space-dyed polyester yarn delivering vibrant rainbow and ombre effects for designer sweaters, scarves, and woven textiles.",
-    "recommendedUses": ["Designer Sweaters", "Scarves & Stoles", "Jacquard Weaving", "Upholstery"],
-    "features": ["Multi-Color Gradient", "High Tenacity", "Colorfastness", "Uniform Dyeing"],
-    "sampleAvailable": true,
-    "origin": "Ved Premium Selection",
-    "popularFor": "Multi-color Winter Wear",
-    "image": "/src/assets/products/our_fancy_yarns_space_polyster_yarn_300_denier_to_550_denier_ceefe0f8-9541-4e93-bef3-1e36bc1b794b.jpg",
-    "imageUrl": "/src/assets/products/our_fancy_yarns_space_polyster_yarn_300_denier_to_550_denier_ceefe0f8-9541-4e93-bef3-1e36bc1b794b.jpg"
-  },
-  {
     "id": "fy-5",
     "name": "Fancy Jari Available in Finest Count",
     "category": "fancy",
-    "categoryLabel": "Fancy Yarn",
+    categoryLabel: "Fancy Yarn",
     "countOrDenier": "Finest Gauge Counts",
     "description": "Premium gold and silver fancy zari thread in ultra-fine gauges for luxury embroidery, bridalwear, border embellishments, and lace.",
-    "recommendedUses": ["Bridalwear", "Zardozi Embroidery", "Laces & Trims", "Royal Borders"],
-    "features": ["Ultra-Fine Gauge", "High Lustre Gold/Silver", "Non-Oxidizing", "High Speed Running"],
-    "sampleAvailable": true,
-    "origin": "Ved Fancy Collection",
-    "popularFor": "Embroidery & Zari Work",
-    "image": "/src/assets/products/our_fancy_yarns_fancy_jari_available_in_finest_count_4697aaee-b8f3-42e9-aaaf-85d1f0637969.jpg",
-    "imageUrl": "/src/assets/products/our_fancy_yarns_fancy_jari_available_in_finest_count_4697aaee-b8f3-42e9-aaaf-85d1f0637969.jpg",
-    "badge": "Finest Count"
+    recommendedUses: ["Bridalwear", "Zardozi Embroidery", "Laces & Trims", "Royal Borders"],
+    features: ["Ultra-Fine Gauge", "High Lustre Gold/Silver", "Non-Oxidizing", "High Speed Running"],
+    sampleAvailable: true,
+    origin: "Ved Fancy Collection",
+    popularFor: "Embroidery & Zari Work",
+    badge": "Finest Count"
   },
   {
-    "id": "fy-6",
-    "name": "Grace Yarn",
-    "category": "fancy",
-    categoryLabel: "Fancy Yarn",
-    "countOrDenier": "Boutique Fine Gauge",
-    "description": "Silky smooth boutique fancy yarn designed for ultra-soft ladies cardigans, shawls, and premium fashion knitwear.",
-    "recommendedUses": ["Ladies Cardigans", "Soft Shawls", "Fashion Tops", "Boutique Wear"],
-    "features": ["Silky Feel", "Feather Light", "Elegant Drape", "Vivid Color Range"],
-    "sampleAvailable": true,
-    "origin": "Ved Luxury Line",
-    "popularFor": "Ladies Boutique Knitwear",
-    "image": "/src/assets/products/our_fancy_yarns_grace_yarn_d6a6eb49-74c3-454e-af0f-7b0cca3b504a.jpg",
-    "imageUrl": "/src/assets/products/our_fancy_yarns_grace_yarn_d6a6eb49-74c3-454e-af0f-7b0cca3b504a.jpg"
+    "id": "cy-2",
+    "name": "2/48 Vislon Lurex Yarn",
+    category": "china",
+    categoryLabel: "China / Imported Yarn",
+    countOrDenier: "2/48 Nm + Lurex Metallic",
+    description: "Combination of fine 2/48 Vislon yarn with embedded metallic Lurex sparkle. Delivers subtle shimmer for partywear sweaters and festive apparel.",
+    recommendedUses: ["Partywear Sweaters", "Glitter Knitwear", "Designer Tops", "Fashion Trims"],
+    features: ["Shimmer Effect", "No Skin Irritation", "High Tensile Strength", "Vivid Shades"],
+    sampleAvailable: true,
+    origin: "Direct China Import",
+    popularFor: "Shimmer Sweaters & Cardigans"
+  },
+  {
+    "id": "cy-7",
+    "name": "0.9 Suede Yarn",
+    category: "china",
+    categoryLabel: "China / Imported Yarn",
+    countOrDenier: "0.9 NM Suede",
+    description: "Peach-skin velvety suede yarn offering a matte, smooth leather-touch finish for high-end knitwear, hoodies, and luxury home textiles.",
+    recommendedUses: ["Velvet Hoodies", "Premium Sweaters", "Cushion Covers", "Blankets"],
+    features: ["Velvety Peach Finish", "Matte Sheen", "Pilling Resistance", "Dense Soft Pile"],
+    sampleAvailable: true,
+    origin: "Direct China Import",
+    popularFor: "Velvety Smooth Knitwear"
+  },
+  {
+    "id": "cy-8",
+    "name": "0.7 Suede Yarn",
+    category: "china",
+    categoryLabel: "China / Imported Yarn",
+    countOrDenier: "0.7 NM Suede",
+    description: "Fine gauge suede yarn delivering ultra-dense plush pile with smooth touch for fine luxury garments and plush accessories.",
+    recommendedUses: ["Fine Suede Tops", "Kids Plush Wear", "Soft Gloves & Beanies", "Crafts"],
+    features: ["Dense Fine Pile", "Super Soft Suede", "Color Consistency", "Anti-Static"],
+    sampleAvailable: true,
+    origin: "Direct China Import",
+    popularFor: "Fine Suede Apparels"
+  },
+  {
+    "id": "cy-10",
+    "name": "18 NM Chenille Yarn",
+    category: "china",
+    categoryLabel: "China / Imported Yarn",
+    countOrDenier: "18 NM",
+    description: "Fine velvet chenille yarn delivering smooth texture and light weight for standard sweater gauge production and fashion apparel.",
+    recommendedUses: ["Standard Sweaters", "Ladies Tops", "Baby Blankets", "Fashion Scarves"],
+    features: ["Fine Velvet Feel", "Lightweight Comfort", "Vibrant Color Range", "Uniform Core"],
+    sampleAvailable: true,
+    origin: "Direct China Import",
+    popularFor: "Lightweight Velvet Sweaters"
+  },
+  {
+    "id": "cy-12",
+    "name": "Ring Spun Yarns",
+    category: "china",
+    categoryLabel: "China / Imported Yarn",
+    countOrDenier: "Various Spun Counts",
+    description: "High tensile strength ring spun yarn for heavy-duty weaving, circular knitting, warp threads, and industrial garment production.",
+    recommendedUses: ["Circular Knitting", "Warp Weaving", "Industrial Garments", "Heavy Canvas"],
+    features: ["High Tensile Strength", "Low Hairiness", "Even Twist", "Abrasion Resistant"],
+    sampleAvailable: true,
+    origin: "Direct China Import",
+    popularFor: "High Strength Weaving & Knitting"
   }
 ]

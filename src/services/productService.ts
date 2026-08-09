@@ -63,7 +63,7 @@ export function parseLiveGoogleSheetProducts(csvText: string): Product[] {
     const shadeUrl = r[3] || '';
     const pictureUrl = r[4] || '';
 
-    if (!rawName || rawName.toLowerCase().includes('connection test')) return;
+    if (!rawName || rawName.toLowerCase().includes('connection test') || rawName.toLowerCase().includes('woolly')) return;
 
     let cleanName = rawName.replace(/_\d{8}_\d{6}$/g, '').trim();
     if (!cleanName.toLowerCase().includes('yarn')) {

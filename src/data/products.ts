@@ -2,28 +2,16 @@ import { Product } from '../types';
 
 // Real Product Photos Sourced & Imported DIRECTLY from src/assets/products/
 import imgFancyJari from '../assets/products/our_fancy_yarns_fancy_jari_available_in_finest_count_4697aaee-b8f3-42e9-aaaf-85d1f0637969.jpg';
-import imgGraceYarn from '../assets/products/our_fancy_yarns_grace_yarn_d6a6eb49-74c3-454e-af0f-7b0cca3b504a.jpg';
-import imgSpacePoly from '../assets/products/our_fancy_yarns_space_polyster_yarn_300_denier_to_550_denier_ceefe0f8-9541-4e93-bef3-1e36bc1b794b.jpg';
 import imgSuede09 from '../assets/products/our_china_yarn_0.9_swead_yarn_a72713db-f14a-42bf-b84a-87ef3e829fe5.jpg';
 import imgSuede07 from '../assets/products/our_china_yarn_0.9_swead_yarn_a0c9e39c-57c4-4fba-9bb8-4a96b44481c9.jpg';
-import imgHair13 from '../assets/products/our_china_yarn_1.3_cm_hair_yarn_e70baceb-e2fb-4271-8c3c-76ecdffa3ba8.jpg';
-import imgSpaceHair13 from '../assets/products/our_china_yarn_1.3_cm_space_dyed_hair_yarn_c43b4b8c-28f4-43ac-9864-cb041184da31.jpg';
 import imgChenille18 from '../assets/products/our_china_yarn_18_nm_chennile_yarn_4febbbe6-cc4a-43ca-af3a-c6d9ea2aa4cb.jpg';
 import imgWooly218 from '../assets/products/our_china_yarn_2-18_wooly_yarn_352df72e-85ca-4f4b-a410-a9858b7676ca.jpg';
 import imgVislon248Lurex from '../assets/products/our_china_yarn_2-48_vislon_lurex_yarn_352df72e-85ca-4f4b-a410-a9858b7676ca.jpg';
 import imgVislon248 from '../assets/products/our_china_yarn_2-48_vislon_yarn_352df72e-85ca-4f4b-a410-a9858b7676ca.jpg';
-import imgWooly248 from '../assets/products/our_china_yarn_2-48_wooly_yarn_435e14cd-d59a-4802-8b59-7ced20e6e3b2.jpg';
 import imgRingYarns from '../assets/products/our_china_yarn_ring_yarns_035ae3aa-3e07-4277-8dda-d83578757a0a.jpg';
 
-// Asset Images Sourced for Spreadsheet Products
-import imgDaffodil from '../assets/products/our_fancy_yarns_space_polyster_yarn_300_denier_to_550_denier_ceefe0f8-9541-4e93-bef3-1e36bc1b794b.jpg';
-import imgRainbow from '../assets/products/our_fancy_yarns_space_polyster_yarn_300_denier_to_550_denier_ceefe0f8-9541-4e93-bef3-1e36bc1b794b.jpg';
-import imgHazel from '../assets/products/our_fancy_yarns_grace_yarn_d6a6eb49-74c3-454e-af0f-7b0cca3b504a.jpg';
-import imgMegamix from '../assets/products/our_china_yarn_0.9_swead_yarn_a72713db-f14a-42bf-b84a-87ef3e829fe5.jpg';
-import imgEnigma from '../assets/products/our_china_yarn_0.9_swead_yarn_a0c9e39c-57c4-4fba-9bb8-4a96b44481c9.jpg';
-
 export const PRODUCTS_CATALOG: Product[] = [
-  // SPREADSHEET PRODUCTS WITH DIRECT ASSETS & GOOGLE DRIVE SHADE CARD LINKS
+  // 1. DAFFODIL YARN (Google Sheet Entry)
   {
     id: 'sheet-daffodil',
     name: 'Daffodil Yarn',
@@ -38,8 +26,10 @@ export const PRODUCTS_CATALOG: Product[] = [
     popularFor: 'Hosiery Sweaters & School Uniforms',
     pictureUrl: 'https://drive.google.com/file/d/105xFBP96hHxXid9H5sMwnbyF2hvwdwGu/view?usp=drivesdk',
     shadeUrl: 'https://drive.google.com/file/d/1kE3ZUTNp_e5W5jiWraookdT-Z7CvJVpa/view?usp=drivesdk',
-    badge: 'Direct Drive Photo'
+    badge: 'Live Sheet Item'
   },
+
+  // 2. RAINBOW YARN (Google Sheet Entry)
   {
     id: 'sheet-rainbow',
     name: 'Rainbow Yarn',
@@ -54,8 +44,10 @@ export const PRODUCTS_CATALOG: Product[] = [
     popularFor: 'Shiny Designer Sweaters',
     pictureUrl: 'https://drive.google.com/file/d/11anqCKDMGU6GIIA41DdsBxm0hEyrbj9E/view?usp=drivesdk',
     shadeUrl: 'https://drive.google.com/file/d/1IukDyi5hAo-yjA9irRcGUqriTXsZKa1n/view?usp=drivesdk',
-    badge: 'Direct Drive Photo'
+    badge: 'Live Sheet Item'
   },
+
+  // 3. HAZEL YARN (Google Sheet Entry)
   {
     id: 'sheet-hazel',
     name: 'Hazel Yarn',
@@ -70,8 +62,10 @@ export const PRODUCTS_CATALOG: Product[] = [
     popularFor: 'Luxury Viscose Cardigans',
     pictureUrl: 'https://drive.google.com/file/d/1DuvmcVCblRxuW75iPo_soJvM_E0u2sax/view?usp=drivesdk',
     shadeUrl: 'https://drive.google.com/file/d/134SO7mr_mqw8mdxNKJVChzDNg8xiUnb8/view?usp=drivesdk',
-    badge: 'Direct Drive Photo'
+    badge: 'Live Sheet Item'
   },
+
+  // 4. MEGAMIX YARN (Google Sheet Entry)
   {
     id: 'sheet-megamix',
     name: 'Megamix Yarn',
@@ -86,24 +80,10 @@ export const PRODUCTS_CATALOG: Product[] = [
     popularFor: 'Textured Slub Knitwear',
     pictureUrl: 'https://drive.google.com/file/d/1vhIj1-GOFMQaweHv_c0c3sBsT8WVHv1Z/view?usp=drivesdk',
     shadeUrl: 'https://drive.google.com/file/d/1ZfmZqQCSK6dDRb4NqOVYV19ohN4dArZn/view?usp=drivesdk',
-    badge: 'Direct Drive Photo'
+    badge: 'Live Sheet Item'
   },
-  {
-    id: 'sheet-woolly',
-    name: 'Woolly Yarn (2/18 & 2/48 Fine)',
-    category: 'china',
-    categoryLabel: 'China / Imported Yarn',
-    countOrDenier: '2/18 Nm & 2/48 Nm Fine',
-    description: 'The Blend of Acrylic/PBT/Nylon engineered for warmth, high elasticity, and fine 12GG/14GG knits.',
-    recommendedUses: ['Heavy Sweaters', 'Flat Knitting 12GG/14GG', 'Caps & Mufflers'],
-    features: ['Acrylic/PBT/Nylon Blend', 'High Thermal Insulation', 'Soft Cashmere Touch', 'Shape Recovery'],
-    sampleAvailable: true,
-    origin: 'Direct China Import',
-    popularFor: 'Soft Winter Pullovers & Thermals',
-    pictureUrl: 'https://drive.google.com/file/d/1dD9JwdUvvFiMg1kJ9gFbgKvxFehzeutE/view?usp=drivesdk',
-    imageUrl: imgWooly218,
-    badge: 'Direct Drive Photo'
-  },
+
+  // 6. VISLON 2/48 YARN (Google Sheet Entry - Replaces old 2/48 Vislon duplicate)
   {
     id: 'sheet-vislon248',
     name: 'Vislon 2/48 Yarn',
@@ -119,8 +99,10 @@ export const PRODUCTS_CATALOG: Product[] = [
     pictureUrl: 'https://drive.google.com/file/d/1lP7-J8DnnKSWyv-BM_3lrJgoXLC_byC8/view?usp=drivesdk',
     imageUrl: imgVislon248,
     shadeUrl: 'https://drive.google.com/file/d/1SjCUksE2lg4kzjthW2z3uwWbQY9fIdX7/view?usp=drivesdk',
-    badge: 'Direct Drive Photo'
+    badge: 'Live Sheet Item'
   },
+
+  // 7. E NIGMA YARN (Google Sheet Entry - Replaces old Poly Enigma duplicate)
   {
     id: 'sheet-enigma',
     name: 'E Nigma Yarn',
@@ -135,8 +117,10 @@ export const PRODUCTS_CATALOG: Product[] = [
     popularFor: 'Heavy Winter Garments',
     pictureUrl: 'https://drive.google.com/file/d/161s9fGr99CdQidBqqxMe32la67SRu70D/view?usp=drivesdk',
     shadeUrl: 'https://drive.google.com/file/d/1mAeTXu6kj6GZ7DpfXcz-OJxIg8B49MNG/view?usp=drivesdk',
-    badge: 'Direct Drive Photo'
+    badge: 'Live Sheet Item'
   },
+
+  // 8. NYLON HAIR YARN (Google Sheet Entry - Replaces old Hair Yarn duplicates)
   {
     id: 'sheet-nylonhair',
     name: 'Nylon Hair Yarn (0.9 Swad, 0.7 Crystal, 1.3 cm)',
@@ -150,12 +134,11 @@ export const PRODUCTS_CATALOG: Product[] = [
     origin: 'Direct China Import',
     popularFor: 'Fuzzy Fashion Sweaters & Jackets',
     pictureUrl: 'https://drive.google.com/file/d/1nD0zc8CX0lZm8v20-i-gwkKxG-WYghvO/view?usp=drivesdk',
-    imageUrl: imgHair13,
     shadeUrl: 'https://drive.google.com/file/d/1C27i0vtHYUmLzoim58kWTV3WLVVaztUR/view?usp=drivesdk',
-    badge: 'Direct Drive Photo'
+    badge: 'Live Sheet Item'
   },
 
-  // ADDITIONAL VED CATALOG ITEMS
+  // SPECIALTY VED CATALOG ITEMS (Distinct Non-Duplicates)
   {
     id: 'fy-1',
     name: 'MX Lurex 50/85 Fine Count',
@@ -172,20 +155,6 @@ export const PRODUCTS_CATALOG: Product[] = [
     badge: 'Popular Fancy'
   },
   {
-    id: 'fy-2',
-    name: 'Space Polyester Yarn (300D - 550D)',
-    category: 'fancy',
-    categoryLabel: 'Fancy Yarn',
-    countOrDenier: '300 Denier to 550 Denier',
-    description: 'Multi-tone space-dyed polyester yarn delivering vibrant rainbow and ombre effects for designer sweaters, scarves, and woven textiles.',
-    recommendedUses: ['Designer Sweaters', 'Scarves & Stoles', 'Jacquard Weaving', 'Upholstery'],
-    features: ['Multi-Color Gradient', 'High Tenacity', 'Colorfastness', 'Uniform Dyeing'],
-    sampleAvailable: true,
-    origin: 'Ved Premium Selection',
-    popularFor: 'Multi-color Winter Wear',
-    imageUrl: imgSpacePoly
-  },
-  {
     id: 'fy-5',
     name: 'Fancy Jari Available in Finest Count',
     category: 'fancy',
@@ -199,20 +168,6 @@ export const PRODUCTS_CATALOG: Product[] = [
     popularFor: 'Embroidery & Zari Work',
     imageUrl: imgFancyJari,
     badge: 'Finest Count'
-  },
-  {
-    id: 'fy-6',
-    name: 'Grace Yarn',
-    category: 'fancy',
-    categoryLabel: 'Fancy Yarn',
-    countOrDenier: 'Boutique Fine Gauge',
-    description: 'Silky smooth boutique fancy yarn designed for ultra-soft ladies cardigans, shawls, and premium fashion knitwear.',
-    recommendedUses: ['Ladies Cardigans', 'Soft Shawls', 'Fashion Tops', 'Boutique Wear'],
-    features: ['Silky Feel', 'Feather Light', 'Elegant Drape', 'Vivid Color Range'],
-    sampleAvailable: true,
-    origin: 'Ved Luxury Line',
-    popularFor: 'Ladies Boutique Knitwear',
-    imageUrl: imgGraceYarn
   },
   {
     id: 'cy-2',
