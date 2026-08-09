@@ -31,6 +31,22 @@ export function useProducts(): UseProductsResult {
 
   useEffect(() => {
     fetchProducts();
+
+    // Auto-poll Google Sheet for new products every 30 seconds
+    const interval = setInterval(() => {
+      fetchProducts(true);
+    }, 30000);
+
+    // Sync when user re-focuses tab
+    const handleFocus = () => {
+      fetchProducts(true);
+    };
+    window.addEventListener('focus', handleFocus);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('focus', handleFocus);
+    };
   }, [fetchProducts]);
 
   const categories: (YarnCategory | 'all')[] = ['all', 'fancy', 'china', 'acrylic-blends', 'fabrics', 'garments'];
