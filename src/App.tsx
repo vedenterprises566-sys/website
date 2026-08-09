@@ -22,24 +22,8 @@ export default function App() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Launch countdown state active until August 7, 2026 00:00 IST
-  const targetLaunch = new Date('2026-08-07T00:00:00+05:30').getTime();
-  const [showCountdown, setShowCountdown] = useState<boolean>(() => Date.now() < targetLaunch);
-
-  // Auto-remove countdown overlay the exact second timer hits August 7 00:00 IST
-  useEffect(() => {
-    if (!showCountdown) return;
-
-    const checkLaunch = () => {
-      if (Date.now() >= targetLaunch) {
-        setShowCountdown(false);
-      }
-    };
-
-    checkLaunch();
-    const interval = setInterval(checkLaunch, 1000);
-    return () => clearInterval(interval);
-  }, [showCountdown, targetLaunch]);
+  // Website is 100% LIVE
+  const [showCountdown, setShowCountdown] = useState<boolean>(false);
 
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<YarnCategory | 'all'>('all');

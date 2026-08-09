@@ -1,9 +1,10 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Search, Filter, Sparkles, Check, Plus, Eye, PackageCheck, Layers, Tag, ArrowRight, Palette, FileText, Package } from 'lucide-react';
+import { Search, Filter, Sparkles, Check, Plus, Eye, PackageCheck, Layers, Tag, ArrowRight, Palette, FileText, Package, RefreshCw, AlertTriangle, Image as ImageIcon, MessageSquare, ExternalLink } from 'lucide-react';
 import { Product, YarnCategory } from '../types';
-import { PRODUCTS_CATALOG } from '../data/products';
+import { useProducts } from '../hooks/useProducts';
 import { ProductModal } from './ProductModal';
+import { MediaPreviewModal, getGoogleDriveThumbnail } from './MediaPreviewModal';
 import { HangingYarnThreads } from './HangingYarnThreads';
 
 interface CatalogProps {
@@ -16,6 +17,8 @@ interface CatalogProps {
   onOpenShadesModal?: (product?: Product) => void;
   inquiryItemIds: string[];
   onGoToBasket?: () => void;
+  productsProp?: Product[];
+  loadingProp?: boolean;
 }
 
 export const Catalog: React.FC<CatalogProps> = ({
@@ -28,39 +31,59 @@ export const Catalog: React.FC<CatalogProps> = ({
   onOpenShadesModal,
   inquiryItemIds,
   onGoToBasket,
+  productsProp,
+  loadingProp,
 }) => {
+  const { products: hookProducts, loading: hookLoading, error, refreshProducts } = useProducts();
+  const products = productsProp || hookProducts;
+  const isLoading = loadingProp !== undefined ? loadingProp : hookLoading;
+
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const [previewMedia, setPreviewMedia] = useState<{
+    isOpen: boolean;
+    title: string;
+    url: string;
+    type: 'shade' | 'picture';
+    productName?: string;
+  }>({
+    isOpen: false,
+    title: '',
+    url: '',
+    type: 'picture',
+  });
 
   // Extract unique recommended uses tags
   const allTags = useMemo(() => {
     const set = new Set<string>();
-    PRODUCTS_CATALOG.forEach((p) => {
-      p.recommendedUses.forEach((use) => set.add(use));
+    products.forEach((p) => {
+      if (Array.isArray(p.recommendedUses)) {
+        p.recommendedUses.forEach((use) => set.add(use));
+      }
     });
     return Array.from(set).slice(0, 10);
-  }, []);
+  }, [products]);
 
   // Filter products
   const filteredProducts = useMemo(() => {
-    return PRODUCTS_CATALOG.filter((p) => {
+    return products.filter((p) => {
       // Category filter
       if (selectedCategory !== 'all' && p.category !== selectedCategory) {
         return false;
       }
 
       // Tag filter
-      if (selectedTag && !p.recommendedUses.includes(selectedTag)) {
+      if (selectedTag && Array.isArray(p.recommendedUses) && !p.recommendedUses.includes(selectedTag)) {
         return false;
       }
 
       // Search query
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase();
-        const matchesName = p.name.toLowerCase().includes(q);
-        const matchesCount = p.countOrDenier.toLowerCase().includes(q);
-        const matchesDesc = p.description.toLowerCase().includes(q);
-        const matchesUses = p.recommendedUses.some((u) => u.toLowerCase().includes(q));
+        const matchesName = (p.name || '').toLowerCase().includes(q);
+        const matchesCount = (p.countOrDenier || '').toLowerCase().includes(q);
+        const matchesDesc = (p.description || '').toLowerCase().includes(q);
+        const matchesUses = Array.isArray(p.recommendedUses) && p.recommendedUses.some((u) => u.toLowerCase().includes(q));
         if (!matchesName && !matchesCount && !matchesDesc && !matchesUses) {
           return false;
         }
@@ -68,7 +91,7 @@ export const Catalog: React.FC<CatalogProps> = ({
 
       return true;
     });
-  }, [selectedCategory, selectedTag, searchQuery]);
+  }, [products, selectedCategory, selectedTag, searchQuery]);
 
   return (
     <section id="catalog-section" className="py-8 sm:py-12 bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 m-2.5 sm:m-6 md:m-[2.5rem] rounded-2xl sm:rounded-3xl shadow-sm min-h-screen relative overflow-hidden">
@@ -181,7 +204,30 @@ export const Catalog: React.FC<CatalogProps> = ({
         </div>
 
         {/* Product Cards Grid with Motion */}
-        {filteredProducts.length === 0 ? (
+        {isLoading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-6 py-4">
+            {[1, 2, 3, 4, 5, 6].map((sk) => (
+              <div key={sk} className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 space-y-4 animate-pulse">
+                <div className="h-44 bg-slate-200 dark:bg-slate-800 rounded-xl" />
+                <div className="h-5 bg-slate-200 dark:bg-slate-800 rounded w-3/4" />
+                <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded w-1/2" />
+                <div className="h-12 bg-slate-200 dark:bg-slate-800 rounded" />
+              </div>
+            ))}
+          </div>
+        ) : error ? (
+          <div className="text-center py-12 bg-amber-50 dark:bg-amber-950/30 rounded-3xl border border-amber-200 dark:border-amber-900/50 p-8 space-y-3">
+            <AlertTriangle className="w-10 h-10 text-amber-600 dark:text-amber-400 mx-auto" />
+            <h3 className="text-lg font-bold text-amber-900 dark:text-amber-200">Catalog Refresh Notice</h3>
+            <p className="text-xs text-amber-700 dark:text-amber-400 max-w-md mx-auto">{error}</p>
+            <button
+              onClick={() => refreshProducts(true)}
+              className="inline-flex items-center gap-2 bg-amber-600 text-white font-bold text-xs px-4 py-2 rounded-xl hover:bg-amber-700 transition-colors shadow-xs"
+            >
+              <RefreshCw className="w-3.5 h-3.5" /> Try Reloading Catalog
+            </button>
+          </div>
+        ) : filteredProducts.length === 0 ? (
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -206,11 +252,19 @@ export const Catalog: React.FC<CatalogProps> = ({
         ) : (
           <motion.div
             layout
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-6"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
           >
             <AnimatePresence mode="popLayout">
               {filteredProducts.map((product, idx) => {
                 const isInBasket = inquiryItemIds.includes(product.id);
+                const resolvedPhoto = product.pictureUrl
+                  ? (getGoogleDriveThumbnail(product.pictureUrl) || product.pictureUrl)
+                  : (product.imageUrl || product.image || '');
+                const shadeTargetUrl = product.shadeUrl || product.shadeCardUrl || product.shadePdfUrl || '';
+                const pictureTargetUrl = product.pictureUrl || product.imageUrl || product.image || '';
+
+                const whatsappMsg = `Hello Ved Enterprises, I am interested in inquiring about ${product.name} (${product.countOrDenier}). Please share available bulk lots and pricing.`;
+                const whatsappUrl = `https://wa.me/917986716117?text=${encodeURIComponent(whatsappMsg)}`;
 
                 return (
                   <motion.div
@@ -221,73 +275,101 @@ export const Catalog: React.FC<CatalogProps> = ({
                     exit={{ opacity: 0, scale: 0.9 }}
                     transition={{ duration: 0.3, delay: Math.min(idx * 0.04, 0.3) }}
                     whileHover={{ y: -6, transition: { duration: 0.2 } }}
-                    className="group bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs hover:shadow-lg transition-shadow flex flex-col justify-between relative overflow-hidden"
+                    className="group bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all flex flex-col justify-between relative overflow-hidden"
                   >
                     {/* Product Image Header Container */}
-                    <div className="relative h-44 w-full bg-slate-100 dark:bg-slate-800 overflow-hidden cursor-pointer" onClick={() => setSelectedProduct(product)}>
-                      {product.imageUrl ? (
+                    <div
+                      className="relative h-48 w-full bg-slate-100 dark:bg-slate-850 overflow-hidden cursor-pointer group/img"
+                      onClick={() => {
+                        if (pictureTargetUrl) {
+                          setPreviewMedia({
+                            isOpen: true,
+                            title: 'Genuine Product Photo',
+                            url: pictureTargetUrl,
+                            type: 'picture',
+                            productName: product.name,
+                          });
+                        } else {
+                          setSelectedProduct(product);
+                        }
+                      }}
+                    >
+                      {resolvedPhoto ? (
                         <img
-                          src={product.imageUrl}
+                          src={resolvedPhoto}
                           alt={product.name}
+                          loading="lazy"
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                           referrerPolicy="no-referrer"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                          }}
                         />
                       ) : (
                         <div className="w-full h-full bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 flex flex-col items-center justify-center p-4 text-center">
-                          <Package className="w-8 h-8 text-red-500/80 mb-1" />
+                          <Package className="w-9 h-9 text-red-500/80 mb-1" />
                           <span className="text-white font-bold text-xs font-serif truncate max-w-full px-2">{product.name}</span>
                           <span className="text-[0.625rem] text-slate-400 font-semibold tracking-wider uppercase mt-1">Sample Photo On Inquiry</span>
                         </div>
                       )}
-                      
-                      {/* Dark gradient overlay for badge legibility */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-slate-950/20" />
 
-                      {/* Top Overlay Category Tag */}
-                      <div className="absolute top-2.5 left-2.5 bg-slate-900/80 backdrop-blur-md text-white font-bold text-[0.625rem] uppercase tracking-wider px-2.5 py-1 rounded-md border border-white/20">
+                      {/* Dynamic Dark Gradient Overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-slate-950/30 group-hover/img:opacity-90 transition-opacity" />
+
+                      {/* Top Left Category Pill */}
+                      <div className="absolute top-3 left-3 bg-slate-900/85 backdrop-blur-md text-white font-black text-[0.625rem] uppercase tracking-widest px-2.5 py-1 rounded-xl border border-white/15 shadow-xs">
                         {product.categoryLabel}
                       </div>
 
                       {/* Top Right Badges */}
-                      <div className="absolute top-2.5 right-2.5 flex flex-col items-end gap-1">
+                      <div className="absolute top-3 right-3 flex flex-col items-end gap-1">
                         {product.badge && (
-                          <div className="bg-red-600 text-white font-black text-[0.625rem] uppercase tracking-wider px-2.5 py-1 rounded-md shadow-xs">
+                          <div className="bg-red-600 text-white font-black text-[0.625rem] uppercase tracking-wider px-2.5 py-1 rounded-xl shadow-md border border-red-500/50">
                             {product.badge}
                           </div>
                         )}
-                        {product.category !== 'garments' && (product.shades?.length || product.shadeCardUrl) ? (
-                          <div className="bg-amber-400 text-slate-950 font-black text-[0.625rem] uppercase tracking-wider px-2 py-0.5 rounded-md shadow-xs flex items-center gap-1">
-                            🎨 {product.shades?.length ? `${product.shades.length} Shades` : 'Shade Card'}
+                        {shadeTargetUrl ? (
+                          <div className="bg-amber-400 text-slate-950 font-black text-[0.625rem] uppercase tracking-wider px-2 py-0.5 rounded-lg shadow-xs flex items-center gap-1">
+                            🎨 Shade Card
                           </div>
                         ) : null}
                       </div>
 
-                      {/* Bottom overlay: Origin */}
-                      <div className="absolute bottom-2.5 left-2.5 text-slate-200 text-[0.6875rem] font-semibold flex items-center gap-1">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                        <span>{product.origin}</span>
+                      {/* Bottom Bar: Origin Pill & Quick Preview Hint */}
+                      <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-white text-[0.6875rem] font-semibold">
+                        <div className="flex items-center gap-1.5 bg-slate-950/70 backdrop-blur-md px-2.5 py-1 rounded-lg border border-white/10">
+                          <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
+                          <span className="truncate max-w-[130px] sm:max-w-[160px]">{product.origin}</span>
+                        </div>
+
+                        <div className="opacity-0 group-hover/img:opacity-100 transition-opacity bg-red-600/90 text-white px-2 py-1 rounded-lg text-[0.625rem] font-bold flex items-center gap-1 shadow-md">
+                          <ImageIcon className="w-3 h-3" /> Photo
+                        </div>
                       </div>
                     </div>
 
-                    <div className="p-5 flex-1 flex flex-col justify-between">
+                    {/* Card Content Body */}
+                    <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between space-y-4">
                       <div>
-                        {/* Product Name */}
-                        <h3 
-                          onClick={() => setSelectedProduct(product)}
-                          className="text-base font-bold text-slate-900 dark:text-white font-serif group-hover:text-red-600 transition-colors cursor-pointer line-clamp-1"
-                        >
-                          {product.name}
-                        </h3>
+                        {/* Header & Title */}
+                        <div className="flex items-start justify-between gap-2">
+                          <h3
+                            onClick={() => setSelectedProduct(product)}
+                            className="text-base font-bold text-slate-900 dark:text-white font-serif group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors cursor-pointer line-clamp-1"
+                          >
+                            {product.name}
+                          </h3>
+                        </div>
 
-                        {/* Count / Denier Pill */}
-                        <div className="mt-2 inline-flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 font-bold text-xs px-2.5 py-1 rounded-md">
-                          <span className="text-slate-500 font-medium">Count:</span>
-                          <span className="text-red-600 dark:text-red-400 font-extrabold">
+                        {/* Count / Denier Highlight Pill */}
+                        <div className="mt-2 inline-flex items-center gap-1.5 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/50 text-slate-900 dark:text-red-200 font-extrabold text-xs px-2.5 py-1 rounded-xl">
+                          <span className="text-slate-500 dark:text-slate-400 font-medium">Count:</span>
+                          <span className="text-red-600 dark:text-red-400 font-black">
                             {product.countOrDenier}
                           </span>
                         </div>
 
-                        {/* Description */}
+                        {/* Concise Description */}
                         <p className="text-slate-600 dark:text-slate-300 text-xs mt-2.5 line-clamp-2 leading-relaxed">
                           {product.description}
                         </p>
@@ -297,7 +379,7 @@ export const Catalog: React.FC<CatalogProps> = ({
                           {product.recommendedUses.slice(0, 3).map((use, i) => (
                             <span
                               key={i}
-                              className="bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/60 text-slate-600 dark:text-slate-300 text-[0.625rem] font-medium px-2 py-0.5 rounded-md"
+                              className="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-[0.625rem] font-semibold px-2 py-0.5 rounded-lg border border-slate-200 dark:border-slate-700/60"
                             >
                               {use}
                             </span>
@@ -305,61 +387,128 @@ export const Catalog: React.FC<CatalogProps> = ({
                         </div>
                       </div>
 
-                      {/* Actions Footer */}
-                      <div className="pt-3.5 mt-4 border-t border-slate-100 dark:border-slate-800/80 flex flex-col gap-2">
-                        {onOpenShadesModal && product.category !== 'garments' && (
+                      {/* Structured Required Action Buttons Toolbar */}
+                      <div className="pt-3 border-t border-slate-100 dark:border-slate-800 space-y-2">
+                        
+                        {/* Row 1: Resource & Drive Buttons (Shade Card & View Photo) */}
+                        <div className="grid grid-cols-2 gap-2">
+                          {/* 🎨 Shade Card Button */}
                           <motion.button
-                            whileHover={{ scale: 1.01 }}
-                            whileTap={{ scale: 0.98 }}
-                            onClick={() => onOpenShadesModal(product)}
-                            className="w-full bg-amber-500/15 hover:bg-amber-500/25 text-slate-900 dark:text-amber-300 border border-amber-400/40 font-bold text-xs py-1.5 px-3 rounded-lg transition-all flex items-center justify-center gap-1.5"
-                            id={`shades-pdf-${product.id}`}
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.96 }}
+                            onClick={() => {
+                              if (shadeTargetUrl) {
+                                setPreviewMedia({
+                                  isOpen: true,
+                                  title: 'Shade Card / Color Spectrum',
+                                  url: shadeTargetUrl,
+                                  type: 'shade',
+                                  productName: product.name,
+                                });
+                              } else if (onOpenShadesModal && product.category !== 'garments') {
+                                onOpenShadesModal(product);
+                              } else {
+                                setSelectedProduct(product);
+                              }
+                            }}
+                            className={`w-full text-xs font-bold py-1.5 px-2 rounded-xl transition-all flex items-center justify-center gap-1.5 border ${
+                              shadeTargetUrl
+                                ? 'bg-amber-500/15 hover:bg-amber-500/25 text-amber-900 dark:text-amber-300 border-amber-400/40 shadow-2xs'
+                                : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700 opacity-70'
+                            }`}
+                            id={`shade-card-btn-${product.id}`}
+                            title={shadeTargetUrl ? 'View Google Drive Shade Card' : 'Shade Card on Inquiry'}
                           >
-                            <Palette className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
-                            <span>🎨 Shades & PDF Card</span>
+                            <Palette className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 shrink-0" />
+                            <span className="truncate">🎨 Shade Card</span>
                           </motion.button>
-                        )}
 
-                        <div className="flex items-center gap-2">
+                          {/* 📷 View Photo Button */}
+                          <motion.button
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.96 }}
+                            onClick={() => {
+                              if (pictureTargetUrl) {
+                                setPreviewMedia({
+                                  isOpen: true,
+                                  title: 'Genuine Product Photo',
+                                  url: pictureTargetUrl,
+                                  type: 'picture',
+                                  productName: product.name,
+                                });
+                              } else {
+                                setSelectedProduct(product);
+                              }
+                            }}
+                            className={`w-full text-xs font-bold py-1.5 px-2 rounded-xl transition-all flex items-center justify-center gap-1.5 border ${
+                              pictureTargetUrl
+                                ? 'bg-blue-500/15 hover:bg-blue-500/25 text-blue-900 dark:text-blue-300 border-blue-400/40 shadow-2xs'
+                                : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700 opacity-70'
+                            }`}
+                            id={`picture-btn-${product.id}`}
+                            title={pictureTargetUrl ? 'View Product Picture' : 'Picture on Request'}
+                          >
+                            <ImageIcon className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 shrink-0" />
+                            <span className="truncate">📷 View Photo</span>
+                          </motion.button>
+                        </div>
+
+                        {/* Row 2: Main Engagement Buttons (Specs, WhatsApp, + Inquire) */}
+                        <div className="grid grid-cols-3 gap-1.5">
+                          {/* View Specs Button */}
                           <motion.button
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={() => setSelectedProduct(product)}
-                            className="flex-1 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-900 dark:text-white font-bold text-xs py-2 rounded-lg transition-colors flex items-center justify-center gap-1.5"
+                            className="bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-900 dark:text-white font-bold text-xs py-2 rounded-xl transition-colors flex items-center justify-center gap-1 shadow-2xs"
                             id={`view-specs-${product.id}`}
+                            title="View Complete Specifications"
                           >
-                            <Eye className="w-3.5 h-3.5" />
-                            <span>View Specs</span>
+                            <Eye className="w-3.5 h-3.5 shrink-0" />
+                            <span>Specs</span>
                           </motion.button>
 
+                          {/* Direct WhatsApp Button */}
+                          <a
+                            href={whatsappUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs py-2 rounded-xl transition-colors flex items-center justify-center gap-1 shadow-2xs"
+                            id={`whatsapp-btn-${product.id}`}
+                            title="Quick WhatsApp Inquiry"
+                          >
+                            <MessageSquare className="w-3.5 h-3.5 shrink-0" />
+                            <span>Chat</span>
+                          </a>
+
+                          {/* + Inquire / In Basket Button */}
                           <motion.button
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.93 }}
                             onClick={(e) => onAddToBasket(product, 100, e)}
-                            className={`flex-1 font-bold text-xs py-2 rounded-lg transition-all flex items-center justify-center gap-1.5 shadow-xs ${
+                            className={`font-bold text-xs py-2 rounded-xl transition-all flex items-center justify-center gap-1 shadow-2xs ${
                               isInBasket
-                                ? 'bg-emerald-600 text-white'
+                                ? 'bg-emerald-500 text-white'
                                 : 'bg-slate-900 hover:bg-slate-800 text-white dark:bg-red-600 dark:hover:bg-red-700'
                             }`}
                             id={`add-basket-${product.id}`}
                           >
                             {isInBasket ? (
                               <>
-                                <PackageCheck className="w-3.5 h-3.5" />
-                                <span>In Basket</span>
+                                <PackageCheck className="w-3.5 h-3.5 shrink-0" />
+                                <span>Added</span>
                               </>
                             ) : (
                               <>
-                                <Plus className="w-3.5 h-3.5" />
+                                <Plus className="w-3.5 h-3.5 shrink-0" />
                                 <span>Inquire</span>
                               </>
                             )}
                           </motion.button>
                         </div>
+
                       </div>
-
                     </div>
-
                   </motion.div>
                 );
               })}
@@ -405,6 +554,16 @@ export const Catalog: React.FC<CatalogProps> = ({
         onClose={() => setSelectedProduct(null)}
         onAddToBasket={onAddToBasket}
         onOpenAiForProduct={onOpenAiForProduct}
+      />
+
+      {/* Google Drive Media & Shade Card Preview Lightbox */}
+      <MediaPreviewModal
+        isOpen={previewMedia.isOpen}
+        onClose={() => setPreviewMedia({ ...previewMedia, isOpen: false })}
+        title={previewMedia.title}
+        url={previewMedia.url}
+        type={previewMedia.type}
+        productName={previewMedia.productName}
       />
     </section>
   );

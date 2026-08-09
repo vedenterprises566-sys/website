@@ -19,10 +19,14 @@ export interface Product {
   sampleAvailable: boolean;
   origin: string; // e.g. "Imported / China", "Domestic Premium Mill", "Ved Exclusive", "Ved Garment Collection"
   popularFor: string;
+  shade?: string;
+  image?: string;
   imageUrl?: string;
   shadeCardUrl?: string;
   shadePdfUrl?: string;
   shadePdfName?: string;
+  shadeUrl?: string; // Google Drive link or direct URL for Shade Card from spreadsheet
+  pictureUrl?: string; // Google Drive link or direct URL for Picture from spreadsheet
   shades?: YarnShade[];
   badge?: string;
   // Garment specific optional fields (for Sweaters)
@@ -30,6 +34,7 @@ export interface Product {
   yarnUsed?: string;
   availableSizes?: string[];
   garmentStyle?: 'Men Sweater' | 'Ladies Cardigan' | 'High-Neck Pullover' | 'Cable Knit' | 'Kids Winterwear' | 'Zip Sweater';
+  [key: string]: any; // Allows extensible attributes without breaking code
 }
 
 export interface MillPartner {

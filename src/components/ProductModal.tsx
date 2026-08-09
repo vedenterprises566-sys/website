@@ -75,6 +75,39 @@ export const ProductModal: React.FC<ProductModalProps> = ({
             {/* Content Body */}
             <div className="p-6 overflow-y-auto space-y-6 text-slate-800 dark:text-slate-200">
               
+              {/* Spreadsheet Google Drive Resource Quick Links */}
+              {(product.shadeUrl || product.pictureUrl) && (
+                <div className="bg-slate-100 dark:bg-slate-800/80 p-3.5 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-2">
+                  <span className="text-[0.625rem] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 block">
+                    Spreadsheet Verified Media & Drive Links
+                  </span>
+                  <div className="flex flex-wrap items-center gap-2">
+                    {product.shadeUrl && (
+                      <a
+                        href={product.shadeUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs px-3.5 py-2 rounded-xl transition-all shadow-xs flex items-center gap-1.5"
+                      >
+                        <Palette className="w-4 h-4" />
+                        <span>🎨 Open Shade Card (Google Drive)</span>
+                      </a>
+                    )}
+                    {product.pictureUrl && (
+                      <a
+                        href={product.pictureUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-3.5 py-2 rounded-xl transition-all shadow-xs flex items-center gap-1.5"
+                      >
+                        <FileText className="w-4 h-4" />
+                        <span>📷 Open Product Photo (Google Drive)</span>
+                      </a>
+                    )}
+                  </div>
+                </div>
+              )}
+
               {/* Dedicated Shade Card & PDF Library Quick Action Bar */}
               {onOpenShadesModal && product.category !== 'garments' && (
                 <div className="bg-gradient-to-r from-amber-500/15 via-red-500/10 to-amber-500/15 p-3.5 rounded-2xl border border-amber-500/30 flex items-center justify-between gap-3">

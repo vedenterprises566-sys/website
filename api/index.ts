@@ -2,6 +2,23 @@ import express from 'express';
 import { GoogleGenAI } from '@google/genai';
 
 const app = express();
+
+// CORS Headers Middleware
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
+  );
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
+  }
+  next();
+});
+
 app.use(express.json());
 
 // Initialize Gemini AI Client
@@ -17,8 +34,19 @@ const getAi = () => {
   });
 };
 
+const SYSTEM_INSTRUCTION = `
+You are the AI Assistant for "Ved Enterprises", a premier wholesale yarn & textile supplier located in Ludhiana, Punjab, India.
+Contact details:
+- Managing Directors: Moni Maurya (+91 7986716117) & Sandeep Maurya (+91 8556949433)
+- Address: # 66/2, Near Shingar Cinema, Dharampura, Ludhiana-141008
+- Products: Fancy Yarns, China Yarns, Cotton Yarns, Acrylic Yarns, Polyester Yarns, Feather/Chenille Yarns, Spun Yarns, Sweater Garments.
+- Services: All-India yarn dispatch, Hank & Shade Card sample delivery, competitive B2B wholesale rates.
+
+Always be polite, professional, and provide clear information about yarn counts, deniers, sweater knitting specs, and inquiry submission.
+`.trim();
+
 // API Route: Health Check
-app.get('/api/health', (req, res) => {
+app.get(['/api/health', '/health', '/api'], (req, res) => {
   res.json({
     status: 'ok',
     company: 'Ved Enterprises - Ludhiana',
@@ -27,7 +55,7 @@ app.get('/api/health', (req, res) => {
 });
 
 // API Route: Submit Inquiry
-app.post('/api/inquiry', async (req, res) => {
+app.post(['/api/inquiry', '/inquiry'], async (req, res) => {
   try {
     const inquiryData = req.body;
     const referenceId = 'VED-' + Math.floor(100000 + Math.random() * 900000);
@@ -94,7 +122,7 @@ Managing Directors: Moni Maurya (+91 7986716117) | Sandeep Maurya (+91 855694943
 });
 
 // API Route: AI Assistant Endpoint
-app.post('/api/chat', async (req, res) => {
+app.post(['/api/chat', '/chat'], async (req, res) => {
   try {
     const { message, history } = req.body;
     if (!message || typeof message !== 'string') {
@@ -107,20 +135,40 @@ app.post('/api/chat', async (req, res) => {
       history.forEach((h: any) => {
         contents.push({
           role: h.role === 'user' ? 'user' : 'model',
-          parts: [{ text: h.content }],
+          parts: [{ text: h.content || h.text || '' }],
         });
       });
     }
     contents.push({ role: 'user', parts: [{ text: message }] });
 
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
-      contents,
-    });
+    let rawReplyText = '';
+    try {
+      const response = await ai.models.generateContent({
+        model: 'gemini-2.5-flash',
+        contents,
+        config: {
+          systemInstruction: SYSTEM_INSTRUCTION,
+        },
+      });
+      rawReplyText = response.text || '';
+    } catch (e: any) {
+      console.warn('Gemini 2.5 flash attempt error:', e?.message);
+      // Fallback attempt without config if needed
+      const response = await ai.models.generateContent({
+        model: 'gemini-2.5-flash',
+        contents,
+      });
+      rawReplyText = response.text || '';
+    }
 
-    return res.json({ text: response.text });
+    const replyText = (rawReplyText || "Namaste! I am here to assist with Ved Enterprises' wholesale yarn catalog. Call +91 7986716117 for direct mill rates.").replace(/[*#]/g, '');
+
+    return res.json({ text: replyText });
   } catch (err: any) {
-    return res.status(500).json({ error: err.message || 'Error processing AI chat' });
+    return res.status(500).json({
+      error: 'Unable to connect to AI Assistant. Call +91 7986716117 for direct assistance.',
+      details: err.message,
+    });
   }
 });
 

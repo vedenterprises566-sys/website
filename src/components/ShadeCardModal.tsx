@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, FileText, Upload, Download, Eye, Trash2, CheckCircle2, Sparkles, Image, Palette, Phone, AlertCircle } from 'lucide-react';
 import { Product } from '../types';
+import { useProducts } from '../hooks/useProducts';
 
 interface UploadedShadeFile {
   id: string;
@@ -17,7 +18,7 @@ interface UploadedShadeFile {
 
 interface ShadeCardModalProps {
   product: Product | null;
-  productsCatalog: Product[];
+  productsCatalog?: Product[];
   isOpen: boolean;
   onClose: () => void;
   onSelectProduct?: (prod: Product) => void;
@@ -25,11 +26,13 @@ interface ShadeCardModalProps {
 
 export const ShadeCardModal: React.FC<ShadeCardModalProps> = ({
   product,
-  productsCatalog,
+  productsCatalog: productsCatalogProp,
   isOpen,
   onClose,
   onSelectProduct,
 }) => {
+  const { products: hookProducts } = useProducts();
+  const productsCatalog = productsCatalogProp || hookProducts;
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(product);
   const [uploadedFiles, setUploadedFiles] = useState<UploadedShadeFile[]>([]);
   const [activeTab, setActiveTab] = useState<'view' | 'upload'>('view');
