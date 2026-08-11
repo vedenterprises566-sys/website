@@ -15,6 +15,7 @@ import { Product, InquiryItem, YarnCategory } from './types';
 // Page Imports from src/pages
 import { Home } from './pages/Home';
 import { CatalogPage } from './pages/CatalogPage';
+import { ProductDetailPage } from './pages/ProductDetailPage';
 import { GarmentsPage } from './pages/GarmentsPage';
 import { InquiryPage } from './pages/InquiryPage';
 
@@ -142,7 +143,7 @@ export default function App() {
   // Derive current page name from URL pathname
   const getCurrentPageFromPath = (path: string): 'home' | 'catalog' | 'basket' | 'garments' => {
     const cleanPath = path.toLowerCase().replace(/\/$/, '');
-    if (cleanPath === '/catalog') return 'catalog';
+    if (cleanPath.startsWith('/catalog')) return 'catalog';
     if (cleanPath === '/garments') return 'garments';
     if (cleanPath === '/inquiry' || cleanPath === '/basket') return 'basket';
     return 'home';
@@ -281,6 +282,7 @@ export default function App() {
                     />
                   }
                 />
+                {/* Main Catalog & Hierarchical Category Routes */}
                 <Route
                   path="/catalog"
                   element={
@@ -289,6 +291,176 @@ export default function App() {
                       onSearchChange={setSearchQuery}
                       selectedCategory={selectedCategory}
                       onCategoryChange={handleCategoryChange}
+                      onAddToBasket={handleAddToBasket}
+                      onOpenAiForProduct={handleOpenAiForProduct}
+                      onOpenShadesModal={handleOpenShadesModal}
+                      inquiryItemIds={basket.map((b) => b.product.id)}
+                      onGoToBasket={() => handleNavigate('inquiry')}
+                    />
+                  }
+                />
+                <Route
+                  path="/catalog/yarns"
+                  element={
+                    <CatalogPage
+                      searchQuery={searchQuery}
+                      onSearchChange={setSearchQuery}
+                      selectedCategory={selectedCategory}
+                      onCategoryChange={handleCategoryChange}
+                      onAddToBasket={handleAddToBasket}
+                      onOpenAiForProduct={handleOpenAiForProduct}
+                      onOpenShadesModal={handleOpenShadesModal}
+                      inquiryItemIds={basket.map((b) => b.product.id)}
+                      onGoToBasket={() => handleNavigate('inquiry')}
+                    />
+                  }
+                />
+                <Route
+                  path="/catalog/yarns/fancy-yarns"
+                  element={
+                    <CatalogPage
+                      searchQuery={searchQuery}
+                      onSearchChange={setSearchQuery}
+                      selectedCategory={selectedCategory}
+                      onCategoryChange={handleCategoryChange}
+                      onAddToBasket={handleAddToBasket}
+                      onOpenAiForProduct={handleOpenAiForProduct}
+                      onOpenShadesModal={handleOpenShadesModal}
+                      inquiryItemIds={basket.map((b) => b.product.id)}
+                      onGoToBasket={() => handleNavigate('inquiry')}
+                    />
+                  }
+                />
+                <Route
+                  path="/catalog/yarns/china-yarns"
+                  element={
+                    <CatalogPage
+                      searchQuery={searchQuery}
+                      onSearchChange={setSearchQuery}
+                      selectedCategory={selectedCategory}
+                      onCategoryChange={handleCategoryChange}
+                      onAddToBasket={handleAddToBasket}
+                      onOpenAiForProduct={handleOpenAiForProduct}
+                      onOpenShadesModal={handleOpenShadesModal}
+                      inquiryItemIds={basket.map((b) => b.product.id)}
+                      onGoToBasket={() => handleNavigate('inquiry')}
+                    />
+                  }
+                />
+                <Route
+                  path="/catalog/yarns/acrylic-blends"
+                  element={
+                    <CatalogPage
+                      searchQuery={searchQuery}
+                      onSearchChange={setSearchQuery}
+                      selectedCategory={selectedCategory}
+                      onCategoryChange={handleCategoryChange}
+                      onAddToBasket={handleAddToBasket}
+                      onOpenAiForProduct={handleOpenAiForProduct}
+                      onOpenShadesModal={handleOpenShadesModal}
+                      inquiryItemIds={basket.map((b) => b.product.id)}
+                      onGoToBasket={() => handleNavigate('inquiry')}
+                    />
+                  }
+                />
+                <Route
+                  path="/catalog/garments"
+                  element={
+                    <CatalogPage
+                      searchQuery={searchQuery}
+                      onSearchChange={setSearchQuery}
+                      selectedCategory={selectedCategory}
+                      onCategoryChange={handleCategoryChange}
+                      onAddToBasket={handleAddToBasket}
+                      onOpenAiForProduct={handleOpenAiForProduct}
+                      onOpenShadesModal={handleOpenShadesModal}
+                      inquiryItemIds={basket.map((b) => b.product.id)}
+                      onGoToBasket={() => handleNavigate('inquiry')}
+                    />
+                  }
+                />
+                <Route
+                  path="/catalog/garments/sweaters"
+                  element={
+                    <CatalogPage
+                      searchQuery={searchQuery}
+                      onSearchChange={setSearchQuery}
+                      selectedCategory={selectedCategory}
+                      onCategoryChange={handleCategoryChange}
+                      onAddToBasket={handleAddToBasket}
+                      onOpenAiForProduct={handleOpenAiForProduct}
+                      onOpenShadesModal={handleOpenShadesModal}
+                      inquiryItemIds={basket.map((b) => b.product.id)}
+                      onGoToBasket={() => handleNavigate('inquiry')}
+                    />
+                  }
+                />
+
+                {/* Hierarchical & Scalable Product Detail Routes */}
+                <Route
+                  path="/catalog/yarns/fancy-yarns/:slug"
+                  element={
+                    <ProductDetailPage
+                      onAddToBasket={handleAddToBasket}
+                      onOpenAiForProduct={handleOpenAiForProduct}
+                      onOpenShadesModal={handleOpenShadesModal}
+                      inquiryItemIds={basket.map((b) => b.product.id)}
+                      onGoToBasket={() => handleNavigate('inquiry')}
+                    />
+                  }
+                />
+                <Route
+                  path="/catalog/yarns/china-yarns/:slug"
+                  element={
+                    <ProductDetailPage
+                      onAddToBasket={handleAddToBasket}
+                      onOpenAiForProduct={handleOpenAiForProduct}
+                      onOpenShadesModal={handleOpenShadesModal}
+                      inquiryItemIds={basket.map((b) => b.product.id)}
+                      onGoToBasket={() => handleNavigate('inquiry')}
+                    />
+                  }
+                />
+                <Route
+                  path="/catalog/yarns/acrylic-blends/:slug"
+                  element={
+                    <ProductDetailPage
+                      onAddToBasket={handleAddToBasket}
+                      onOpenAiForProduct={handleOpenAiForProduct}
+                      onOpenShadesModal={handleOpenShadesModal}
+                      inquiryItemIds={basket.map((b) => b.product.id)}
+                      onGoToBasket={() => handleNavigate('inquiry')}
+                    />
+                  }
+                />
+                <Route
+                  path="/catalog/garments/sweaters/:slug"
+                  element={
+                    <ProductDetailPage
+                      onAddToBasket={handleAddToBasket}
+                      onOpenAiForProduct={handleOpenAiForProduct}
+                      onOpenShadesModal={handleOpenShadesModal}
+                      inquiryItemIds={basket.map((b) => b.product.id)}
+                      onGoToBasket={() => handleNavigate('inquiry')}
+                    />
+                  }
+                />
+                <Route
+                  path="/catalog/:section/:subcategory/:slug"
+                  element={
+                    <ProductDetailPage
+                      onAddToBasket={handleAddToBasket}
+                      onOpenAiForProduct={handleOpenAiForProduct}
+                      onOpenShadesModal={handleOpenShadesModal}
+                      inquiryItemIds={basket.map((b) => b.product.id)}
+                      onGoToBasket={() => handleNavigate('inquiry')}
+                    />
+                  }
+                />
+                <Route
+                  path="/catalog/:slug"
+                  element={
+                    <ProductDetailPage
                       onAddToBasket={handleAddToBasket}
                       onOpenAiForProduct={handleOpenAiForProduct}
                       onOpenShadesModal={handleOpenShadesModal}

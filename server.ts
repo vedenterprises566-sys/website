@@ -43,6 +43,30 @@ async function startServer() {
     });
   });
 
+  // Serve sitemap.xml
+  app.get('/sitemap.xml', (req, res) => {
+    const sitemapPath = path.join(process.cwd(), 'public', 'sitemap.xml');
+    const distSitemapPath = path.join(process.cwd(), 'dist', 'sitemap.xml');
+    const target = fs.existsSync(distSitemapPath) ? distSitemapPath : sitemapPath;
+    if (fs.existsSync(target)) {
+      res.header('Content-Type', 'application/xml');
+      return res.sendFile(target);
+    }
+    return res.status(404).send('Sitemap not found');
+  });
+
+  // Serve robots.txt
+  app.get('/robots.txt', (req, res) => {
+    const robotsPath = path.join(process.cwd(), 'public', 'robots.txt');
+    const distRobotsPath = path.join(process.cwd(), 'dist', 'robots.txt');
+    const target = fs.existsSync(distRobotsPath) ? distRobotsPath : robotsPath;
+    if (fs.existsSync(target)) {
+      res.header('Content-Type', 'text/plain');
+      return res.sendFile(target);
+    }
+    return res.status(404).send('Robots.txt not found');
+  });
+
   // API Route: Submit Inquiry
   app.post('/api/inquiry', async (req, res) => {
     try {

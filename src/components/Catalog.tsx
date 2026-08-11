@@ -1,11 +1,13 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Search, Filter, Sparkles, Check, Plus, Eye, PackageCheck, Layers, Tag, ArrowRight, Palette, FileText, Package, RefreshCw, AlertTriangle, Image as ImageIcon, MessageSquare, ExternalLink } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Search, Filter, Sparkles, Check, Plus, Eye, PackageCheck, Layers, Tag, ArrowRight, Palette, FileText, Package, RefreshCw, AlertTriangle, Image as ImageIcon, MessageSquare, ExternalLink, Shirt, Clock } from 'lucide-react';
 import { Product, YarnCategory } from '../types';
 import { useProducts } from '../hooks/useProducts';
 import { ProductModal } from './ProductModal';
 import { MediaPreviewModal, getGoogleDriveThumbnail } from './MediaPreviewModal';
 import { HangingYarnThreads } from './HangingYarnThreads';
+import { getProductSlug, getProductHierarchicalPath } from '../utils/productUtils';
 
 interface CatalogProps {
   searchQuery: string;
@@ -34,6 +36,7 @@ export const Catalog: React.FC<CatalogProps> = ({
   productsProp,
   loadingProp,
 }) => {
+  const navigate = useNavigate();
   const { products: hookProducts, loading: hookLoading, error, refreshProducts } = useProducts();
   const products = productsProp || hookProducts;
   const isLoading = loadingProp !== undefined ? loadingProp : hookLoading;
@@ -64,11 +67,22 @@ export const Catalog: React.FC<CatalogProps> = ({
     return Array.from(set).slice(0, 10);
   }, [products]);
 
+  // Main top-level section: Yarns vs Garments
+  const mainSection = selectedCategory === 'garments' ? 'garments' : 'yarns';
+
   // Filter products
   const filteredProducts = useMemo(() => {
     return products.filter((p) => {
-      // Category filter
-      if (selectedCategory !== 'all' && p.category !== selectedCategory) {
+      // Top-level section filtering
+      if (mainSection === 'yarns' && p.category === 'garments') {
+        return false;
+      }
+      if (mainSection === 'garments' && p.category !== 'garments') {
+        return false;
+      }
+
+      // Sub-category filter
+      if (selectedCategory !== 'all' && selectedCategory !== 'garments' && p.category !== selectedCategory) {
         return false;
       }
 
@@ -91,7 +105,7 @@ export const Catalog: React.FC<CatalogProps> = ({
 
       return true;
     });
-  }, [products, selectedCategory, selectedTag, searchQuery]);
+  }, [products, mainSection, selectedCategory, selectedTag, searchQuery]);
 
   return (
     <section id="catalog-section" className="py-8 sm:py-12 bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 m-2.5 sm:m-6 md:m-[2.5rem] rounded-2xl sm:rounded-3xl shadow-sm min-h-screen relative overflow-hidden">
@@ -110,10 +124,10 @@ export const Catalog: React.FC<CatalogProps> = ({
               </span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white font-serif tracking-tight">
-              Yarn & Textile Catalog
+              Yarn & Garment Catalog
             </h2>
             <p className="text-slate-600 dark:text-slate-400 text-xs sm:text-sm mt-1">
-              Direct supply of Fancy Yarns, China Imported Yarns, Acrylic Blends, Fabrics, and Finished Sweater Garments.
+              Explore wholesale Yarns (Fancy Yarns & China Yarns) and Finished Garments (Sweaters).
             </p>
           </div>
 
@@ -124,35 +138,95 @@ export const Catalog: React.FC<CatalogProps> = ({
           >
             <span className="text-slate-500">Showing:</span>
             <span className="text-slate-900 dark:text-white font-black text-sm">{filteredProducts.length}</span>
-            <span className="text-slate-500">Qualities</span>
+            <span className="text-slate-500">Products</span>
           </motion.div>
         </div>
 
-        {/* Category Tabs */}
-        <div className="flex overflow-x-auto gap-2 border-b border-slate-200 dark:border-slate-800 pb-3 scrollbar-none -mx-4 px-4 sm:mx-0 sm:px-0">
-          {[
-            { id: 'all', label: 'ALL PRODUCTS (25+)' },
-            { id: 'garments', label: '👕 GARMENTS (COMING SOON)' },
-            { id: 'fancy', label: 'FANCY YARNS' },
-            { id: 'china', label: 'CHINA YARNS' },
-            { id: 'acrylic-blends', label: 'ACRYLIC BLENDS' },
-            { id: 'fabrics', label: 'FABRICS & TEXTILES' },
-          ].map((tab) => (
-            <motion.button
-              key={tab.id}
-              whileHover={{ scale: 1.04 }}
-              whileTap={{ scale: 0.96 }}
-              onClick={() => onCategoryChange(tab.id as any)}
-              id={`cat-tab-${tab.id}`}
-              className={`px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider whitespace-nowrap transition-all ${
-                selectedCategory === tab.id
-                  ? 'bg-slate-900 text-white dark:bg-red-600 shadow-xs'
-                  : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800'
-              }`}
-            >
-              {tab.label}
-            </motion.button>
-          ))}
+        {/* Level 1: Main Section Selector Switcher (YARNS vs GARMENTS) */}
+        <div className="bg-slate-200/80 dark:bg-slate-800/80 p-1.5 rounded-2xl border border-slate-300 dark:border-slate-700 max-w-xl mx-auto grid grid-cols-2 gap-2 shadow-inner">
+          <motion.button
+            whileHover={{ scale: 1.01 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => {
+              onCategoryChange('all');
+              navigate('/catalog/yarns');
+            }}
+            id="section-tab-yarns"
+            className={`py-3 px-4 rounded-xl text-xs sm:text-sm font-extrabold uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer ${
+              mainSection === 'yarns'
+                ? 'bg-slate-900 text-white dark:bg-red-600 shadow-md'
+                : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700/60'
+            }`}
+          >
+            <Layers className="w-4 h-4 text-red-500 dark:text-amber-300" />
+            <span>1. YARNS SECTION</span>
+          </motion.button>
+
+          <motion.button
+            whileHover={{ scale: 1.01 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => {
+              onCategoryChange('garments');
+              navigate('/catalog/garments');
+            }}
+            id="section-tab-garments"
+            className={`py-3 px-4 rounded-xl text-xs sm:text-sm font-extrabold uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer ${
+              mainSection === 'garments'
+                ? 'bg-slate-900 text-white dark:bg-red-600 shadow-md'
+                : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700/60'
+            }`}
+          >
+            <Shirt className="w-4 h-4 text-amber-500 dark:text-amber-300" />
+            <span>2. GARMENTS SECTION</span>
+          </motion.button>
+        </div>
+
+        {/* Level 2: Sub-Category Filter Bar */}
+        <div className="flex overflow-x-auto gap-2 border-b border-slate-200 dark:border-slate-800 pb-3 scrollbar-none justify-center -mx-4 px-4 sm:mx-0 sm:px-0">
+          {mainSection === 'yarns' ? (
+            [
+              { id: 'all', label: 'ALL YARNS', route: '/catalog/yarns' },
+              { id: 'fancy', label: 'FANCY YARNS', route: '/catalog/yarns/fancy-yarns' },
+              { id: 'china', label: 'CHINA YARNS', route: '/catalog/yarns/china-yarns' },
+              { id: 'acrylic-blends', label: 'ACRYLIC & BLENDS', route: '/catalog/yarns/acrylic-blends' },
+            ].map((tab) => (
+              <motion.button
+                key={tab.id}
+                whileHover={{ scale: 1.04 }}
+                whileTap={{ scale: 0.96 }}
+                onClick={() => {
+                  onCategoryChange(tab.id as any);
+                  navigate(tab.route);
+                }}
+                id={`cat-tab-${tab.id}`}
+                className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider whitespace-nowrap transition-all ${
+                  selectedCategory === tab.id
+                    ? 'bg-red-600 text-white shadow-xs'
+                    : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800'
+                }`}
+              >
+                {tab.label}
+              </motion.button>
+            ))
+          ) : (
+            [
+              { id: 'garments', label: 'SWEATERS (FINISHED SWEATERS)', route: '/catalog/garments/sweaters' },
+            ].map((tab) => (
+              <motion.button
+                key={tab.id}
+                whileHover={{ scale: 1.04 }}
+                whileTap={{ scale: 0.96 }}
+                onClick={() => {
+                  onCategoryChange(tab.id as any);
+                  navigate(tab.route);
+                }}
+                id={`cat-tab-${tab.id}`}
+                className={`px-5 py-2 rounded-xl text-xs font-black uppercase tracking-wider whitespace-nowrap transition-all bg-red-600 text-white shadow-xs`}
+              >
+                {tab.label}
+              </motion.button>
+            ))
+          )}
         </div>
 
         {/* Tag Filters & Search Bar */}
@@ -227,6 +301,65 @@ export const Catalog: React.FC<CatalogProps> = ({
               <RefreshCw className="w-3.5 h-3.5" /> Try Reloading Catalog
             </button>
           </div>
+        ) : mainSection === 'garments' ? (
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-white dark:bg-slate-900 rounded-3xl p-8 sm:p-12 border border-slate-200 dark:border-slate-800 shadow-xl space-y-6 text-center max-w-3xl mx-auto my-4 relative overflow-hidden"
+          >
+            <div className="inline-flex items-center gap-2 bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest shadow-xs">
+              <Clock className="w-4 h-4 text-amber-500 animate-pulse" />
+              <span>Finished Sweater Collection • Coming Soon</span>
+            </div>
+
+            <div className="space-y-3">
+              <h3 className="text-2xl sm:text-4xl font-extrabold font-serif text-slate-900 dark:text-white tracking-tight">
+                Garment & Sweater Collection <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 via-amber-500 to-red-700">
+                  Coming Soon
+                </span>
+              </h3>
+              <p className="text-slate-600 dark:text-slate-300 text-xs sm:text-sm max-w-xl mx-auto leading-relaxed">
+                We are currently preparing our exclusive wholesale showcase of finished sweaters, cardigans, turtlenecks, and knitted winterwear—crafted from Ved Enterprises' premium imported mill yarns (Vislon, Wooly, Chenille & Daffodil).
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-left pt-2">
+              <div className="bg-slate-50 dark:bg-slate-800/60 p-4 rounded-2xl border border-slate-200 dark:border-slate-700/60 space-y-1.5">
+                <div className="w-8 h-8 bg-red-100 dark:bg-red-950/80 text-red-600 dark:text-red-400 rounded-xl flex items-center justify-center font-bold text-xs">
+                  🧥
+                </div>
+                <h4 className="text-xs font-bold text-slate-900 dark:text-white uppercase">Men & Ladies Sweaters</h4>
+                <p className="text-[0.6875rem] text-slate-500 dark:text-slate-400 leading-relaxed">Pullovers, cardigans, cable knits, and turtlenecks in 3GG to 14GG flat knits.</p>
+              </div>
+              <div className="bg-slate-50 dark:bg-slate-800/60 p-4 rounded-2xl border border-slate-200 dark:border-slate-700/60 space-y-1.5">
+                <div className="w-8 h-8 bg-amber-100 dark:bg-amber-950/80 text-amber-600 dark:text-amber-400 rounded-xl flex items-center justify-center font-bold text-xs">
+                  ✨
+                </div>
+                <h4 className="text-xs font-bold text-slate-900 dark:text-white uppercase">Ved Quality Yarns</h4>
+                <p className="text-[0.6875rem] text-slate-500 dark:text-slate-400 leading-relaxed">Knitted directly using our imported Vislon, Wooly, Chenille, and Daffodil yarns.</p>
+              </div>
+              <div className="bg-slate-50 dark:bg-slate-800/60 p-4 rounded-2xl border border-slate-200 dark:border-slate-700/60 space-y-1.5">
+                <div className="w-8 h-8 bg-emerald-100 dark:bg-emerald-950/80 text-emerald-600 dark:text-emerald-400 rounded-xl flex items-center justify-center font-bold text-xs">
+                  🚛
+                </div>
+                <h4 className="text-xs font-bold text-slate-900 dark:text-white uppercase">Ludhiana Dispatch</h4>
+                <p className="text-[0.6875rem] text-slate-500 dark:text-slate-400 leading-relaxed">Direct bulk lot supply from Ludhiana knitwear manufacturing hubs across India.</p>
+              </div>
+            </div>
+
+            <div className="pt-4 border-t border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-center gap-3">
+              <a
+                href="https://wa.me/917986716117?text=Hello%20Ved%20Enterprises,%20I%20have%20an%20inquiry%20regarding%20finished%20sweaters%20and%20knitted%20garments."
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-3 rounded-2xl text-xs shadow-md transition-all inline-flex items-center gap-2"
+              >
+                <MessageSquare className="w-4 h-4" />
+                <span>Direct WhatsApp Sweater Inquiry (+91 7986716117)</span>
+              </a>
+            </div>
+          </motion.div>
         ) : filteredProducts.length === 0 ? (
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
@@ -277,15 +410,15 @@ export const Catalog: React.FC<CatalogProps> = ({
                     whileHover={{ y: -4, transition: { duration: 0.2 } }}
                     className="group bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800/80 shadow-xs hover:shadow-xl transition-all flex flex-col justify-between overflow-hidden"
                   >
-                    {/* Clean Image Container */}
-                    <div
-                      className="relative h-44 w-full bg-slate-100 dark:bg-slate-800/60 overflow-hidden cursor-pointer group/img"
-                      onClick={() => setSelectedProduct(product)}
+                    {/* Clean Image Container with Crawlable Link */}
+                    <Link
+                      to={getProductHierarchicalPath(product)}
+                      className="relative h-44 w-full bg-slate-100 dark:bg-slate-800/60 overflow-hidden cursor-pointer group/img block"
                     >
                       {resolvedPhoto ? (
                         <img
                           src={resolvedPhoto}
-                          alt={product.name}
+                          alt={`${product.name} - ${product.countOrDenier} supplied by VED Enterprises`}
                           loading="lazy"
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                           referrerPolicy="no-referrer"
@@ -312,6 +445,7 @@ export const Catalog: React.FC<CatalogProps> = ({
                       {shadeTargetUrl ? (
                         <button
                           onClick={(e) => {
+                            e.preventDefault();
                             e.stopPropagation();
                             setPreviewMedia({
                               isOpen: true,
@@ -321,25 +455,25 @@ export const Catalog: React.FC<CatalogProps> = ({
                               productName: product.name,
                             });
                           }}
-                          className="absolute top-3 right-3 bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-[0.625rem] uppercase tracking-wider px-2.5 py-1 rounded-full shadow-xs flex items-center gap-1 transition-transform active:scale-95"
+                          className="absolute top-3 right-3 bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-[0.625rem] uppercase tracking-wider px-2.5 py-1 rounded-full shadow-xs flex items-center gap-1 transition-transform active:scale-95 z-10"
                           title="Click to view Shade Card"
                         >
                           🎨 Shade Card
                         </button>
                       ) : null}
-                    </div>
+                    </Link>
 
                     {/* Card Content Body */}
                     <div className="p-5 flex-1 flex flex-col justify-between space-y-3">
                       <div>
                         {/* Title & Origin */}
                         <div className="flex items-baseline justify-between gap-2">
-                          <h3
-                            onClick={() => setSelectedProduct(product)}
+                          <Link
+                            to={getProductHierarchicalPath(product)}
                             className="text-base font-bold text-slate-900 dark:text-white font-serif group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors cursor-pointer line-clamp-1"
                           >
                             {product.name}
-                          </h3>
+                          </Link>
                         </div>
 
                         {/* Count / Denier Pill */}
@@ -355,17 +489,15 @@ export const Catalog: React.FC<CatalogProps> = ({
 
                       {/* Streamlined Minimalist Footer */}
                       <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center gap-2">
-                        {/* Secondary Button: Details */}
-                        <motion.button
-                          whileHover={{ scale: 1.02 }}
-                          whileTap={{ scale: 0.96 }}
-                          onClick={() => setSelectedProduct(product)}
+                        {/* Secondary Button: Details (Navigates to product detail URL) */}
+                        <Link
+                          to={`/catalog/${getProductSlug(product)}`}
                           className="flex-1 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-900 dark:text-white font-bold text-xs py-2 rounded-xl transition-colors flex items-center justify-center gap-1.5 shadow-2xs"
                           id={`view-specs-${product.id}`}
                         >
                           <Eye className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
                           <span>Details</span>
-                        </motion.button>
+                        </Link>
 
                         {/* Quick WhatsApp Chat Icon Button */}
                         <motion.a

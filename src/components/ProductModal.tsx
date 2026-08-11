@@ -1,7 +1,8 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, CheckCircle, Package, Send, Sparkles, MapPin, Phone, Palette, FileText, Upload } from 'lucide-react';
+import { X, CheckCircle, Package, Send, Sparkles, MapPin, Phone, Palette, FileText } from 'lucide-react';
 import { Product } from '../types';
+import { getGoogleDriveThumbnail } from './MediaPreviewModal';
 
 interface ProductModalProps {
   product: Product | null;
@@ -24,6 +25,11 @@ export const ProductModal: React.FC<ProductModalProps> = ({
   const [added, setAdded] = React.useState<boolean>(false);
 
   if (!product) return null;
+
+  const rawShadeModal = product.shadeUrl || product.shadeCardUrl || product.shadePdfUrl || '';
+  const resolvedShadeModal = rawShadeModal
+    ? (getGoogleDriveThumbnail(rawShadeModal) || (rawShadeModal.startsWith('http') ? rawShadeModal : ''))
+    : '';
 
   const handleAdd = (e: React.MouseEvent) => {
     onAddToBasket(product, qty, e);
@@ -164,14 +170,14 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                 )}
 
                 {/* Full Shade Card Image (if provided) */}
-                {product.category !== 'garments' && product.shadeCardUrl && (
+                {product.category !== 'garments' && resolvedShadeModal && (
                   <div className="space-y-1.5">
                     <span className="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 block">
                       Yarn Shade Card & Color Palette
                     </span>
-                    <div className="relative h-48 w-full rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-800">
+                    <div className="relative h-48 sm:h-56 w-full rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-800">
                       <img
-                        src={product.shadeCardUrl}
+                        src={resolvedShadeModal}
                         alt={`${product.name} Shade Card`}
                         className="w-full h-full object-contain bg-slate-950/20"
                         referrerPolicy="no-referrer"

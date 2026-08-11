@@ -58,19 +58,19 @@ export const Hero: React.FC<HeroProps> = ({
 
               {/* Main Headline */}
               <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold font-serif text-slate-900 dark:text-white tracking-tight leading-[1.1]">
-                Leading Wholesale Supplier of <br />
+                Bulk Yarn Supplier & <br />
                 <span className="text-slate-900 dark:text-red-600 font-extrabold italic">
-                  Cotton & Fancy Yarns
+                  Yarn Trader in India
                 </span>
               </h1>
               <p className="text-slate-700 dark:text-slate-300 font-semibold text-xs sm:text-sm tracking-wide uppercase">
-                Stockist & Trader of Premium Mill Yarns for All India Textile Industry
+                VED Enterprises — B2B Wholesale Trading & Nationwide Supply from Ludhiana, Punjab
               </p>
             </div>
 
             {/* Description */}
             <p className="text-slate-600 dark:text-slate-400 text-xs sm:text-base max-w-2xl font-normal leading-relaxed">
-              Wholesale stockist & supplier of yarns from India's leading spinning mills. Bulk supply of <b>Vislon, Lurex, Wooly, Chenille, Eyelash Hair Yarns, Stretch, and Blended Yarns</b> directly to garment manufacturers and weavers nationwide.
+              VED Enterprises is a premier <b>yarn trader and bulk yarn supplier serving textile businesses and garment manufacturers across India</b>. We supply Fancy Yarns, China Imported Yarns, Cotton Yarns, Acrylic Blends, and Fabrics with fast dispatch to Ludhiana, Surat, Tirupur, Ahmedabad, Kolkata, and nationwide hubs.
             </p>
 
             {/* Search Input Bar */}

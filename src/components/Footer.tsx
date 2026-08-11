@@ -51,8 +51,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onSelectCategory }) 
                 { label: 'Fancy Yarns (Lurex, Space, Stretch)', cat: 'fancy' },
                 { label: 'China Yarns (Vislon, Wooly, Hair)', cat: 'china' },
                 { label: 'Chenille & Suede Yarns', cat: 'china' },
-                { label: 'Acrylic & Blended Yarns', cat: 'acrylic-blends' },
-                { label: 'Fabrics & Textile Rolls', cat: 'fabrics' },
+                { label: 'Finished Sweaters (Garments)', cat: 'garments' },
               ].map((item, idx) => (
                 <li key={idx}>
                   <button

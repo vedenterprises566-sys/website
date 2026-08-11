@@ -4,6 +4,9 @@ import { ArrowRight, Layers } from 'lucide-react';
 import { Hero } from '../components/Hero';
 import { MillPartners } from '../components/MillPartners';
 import { VisitingCard } from '../components/VisitingCard';
+import { FAQSection } from '../components/FAQSection';
+import { SEOHead } from '../components/SEOHead';
+import { generateOrganizationSchema } from '../utils/seoUtils';
 import { YarnCategory } from '../types';
 
 interface HomeProps {
@@ -38,6 +41,8 @@ export const Home: React.FC<HomeProps> = ({
     }
   }, [scrollSection]);
 
+  const orgSchema = generateOrganizationSchema();
+
   return (
     <motion.div
       key="home"
@@ -46,6 +51,13 @@ export const Home: React.FC<HomeProps> = ({
       exit={{ opacity: 0, y: -12 }}
       transition={{ duration: 0.35, ease: 'easeOut' }}
     >
+      <SEOHead
+        title="Yarn Trader & Bulk Yarn Supplier in India | VED Enterprises"
+        description="VED Enterprises is a B2B yarn trader and bulk yarn supplier serving customers across India. Wholesale Cotton Yarns, Fancy Yarns, and China Yarns from Ludhiana."
+        canonicalUrl="https://www.ved.enterprises/"
+        jsonLd={orgSchema}
+      />
+
       {/* Hero Section */}
       <Hero
         searchQuery={searchQuery}
@@ -67,7 +79,7 @@ export const Home: React.FC<HomeProps> = ({
               Fancy & China Yarn Catalog Page
             </h2>
             <p className="text-slate-200 text-xs sm:text-sm font-normal leading-relaxed">
-              Browse 100+ yarn varieties including Vislon, Lurex, Wooly, Chenille, Eyelash Hair Yarns, Stretch & Lycra Blends directly supplied to Ludhiana & All India garment manufacturers.
+              Explore yarn products supplied by VED Enterprises. We are a B2B yarn trader and bulk yarn supplier serving textile businesses and buyers across India.
             </p>
           </div>
           <button
@@ -82,6 +94,9 @@ export const Home: React.FC<HomeProps> = ({
 
       {/* Mill Partners Section */}
       <MillPartners onSelectPartnerYarns={onSelectPartnerYarns} />
+
+      {/* FAQ Section with FAQPage Schema */}
+      <FAQSection />
 
       {/* Digital Visiting Card Section */}
       <VisitingCard />
