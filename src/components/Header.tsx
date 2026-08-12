@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Phone, MapPin, Sparkles, ShoppingBag, Truck, MessageCircle, Menu, X, Layers, Building2, FileText, CreditCard, ChevronRight, Shirt } from 'lucide-react';
+import { Phone, MapPin, Sparkles, ShoppingBag, Truck, MessageCircle, Menu, X, Layers, Building2, FileText, CreditCard, ChevronRight, Shirt, Sun, Moon } from 'lucide-react';
 import { LogoGraphic } from './LogoGraphic';
 import { HangingYarnThreads } from './HangingYarnThreads';
 
@@ -26,6 +26,37 @@ export const Header: React.FC<HeaderProps> = ({
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = React.useRef<HTMLDivElement>(null);
   const menuButtonRef = React.useRef<HTMLButtonElement>(null);
+
+  const [isDark, setIsDark] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      return document.documentElement.classList.contains('dark');
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    const handleSystemChange = (e: MediaQueryListEvent) => {
+      if (!localStorage.getItem('theme')) {
+        setIsDark(e.matches);
+      }
+    };
+    const media = window.matchMedia('(prefers-color-scheme: dark)');
+    media.addEventListener('change', handleSystemChange);
+    return () => media.removeEventListener('change', handleSystemChange);
+  }, []);
+
+  const toggleTheme = () => {
+    const nextDark = !isDark;
+    setIsDark(nextDark);
+    localStorage.setItem('theme', nextDark ? 'dark' : 'light');
+    if (nextDark) {
+      document.documentElement.classList.add('dark');
+      document.documentElement.style.colorScheme = 'dark';
+    } else {
+      document.documentElement.classList.remove('dark');
+      document.documentElement.style.colorScheme = 'light';
+    }
+  };
 
   const toggleMenu = (open?: boolean) => {
     const nextState = open !== undefined ? open : !isMenuOpen;
@@ -210,6 +241,21 @@ export const Header: React.FC<HeaderProps> = ({
               <MessageCircle className="w-3.5 h-3.5" />
               <span>WhatsApp</span>
             </a>
+
+            {/* Theme Toggle Button (Syncs with Browser & System Theme) */}
+            <button
+              onClick={toggleTheme}
+              id="theme-toggle-header-button"
+              aria-label={isDark ? 'Switch to Light Theme' : 'Switch to Dark Theme'}
+              title={isDark ? 'Switch to Light Theme' : 'Switch to Dark Theme'}
+              className="inline-flex items-center justify-center p-2 sm:p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-amber-300 transition-colors border border-slate-200 dark:border-slate-700 shadow-xs cursor-pointer"
+            >
+              {isDark ? (
+                <Sun className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400" />
+              ) : (
+                <Moon className="w-4 h-4 sm:w-5 sm:h-5 text-slate-700" />
+              )}
+            </button>
 
             {/* Three Lines Menu Button (Top Right) */}
             <button

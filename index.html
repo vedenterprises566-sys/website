@@ -4,6 +4,29 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
+    <!-- Browser & System Color Theme Preference Auto-Sync -->
+    <script>
+      (function() {
+        function updateTheme() {
+          var savedTheme = localStorage.getItem('theme');
+          var isSystemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          if (savedTheme === 'dark' || (!savedTheme && isSystemDark)) {
+            document.documentElement.classList.add('dark');
+            document.documentElement.style.colorScheme = 'dark';
+          } else {
+            document.documentElement.classList.remove('dark');
+            document.documentElement.style.colorScheme = 'light';
+          }
+        }
+        updateTheme();
+        try {
+          window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function() {
+            if (!localStorage.getItem('theme')) updateTheme();
+          });
+        } catch (e) {}
+      })();
+    </script>
+    
     <!-- Primary Title & Description -->
     <title>Ved Enterprises | Premium Yarn & Textile Directory (Ludhiana)</title>
     <meta name="description" content="Ved Enterprises - Premier Yarn Trading & Distribution firm in Ludhiana, Punjab. Supplying Fancy Yarns, China Yarns, Acrylic, Wooly, Lurex, and Sweater Garments nationwide across India." />
