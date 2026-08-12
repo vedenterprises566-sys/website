@@ -17,21 +17,21 @@ export const LogoGraphic: React.FC<LogoGraphicProps> = ({
   const sizeClasses = {
     sm: 'w-11 h-11 sm:w-12 sm:h-12',
     md: 'w-16 h-16',
-    lg: 'w-28 h-28 sm:w-32 sm:h-32',
+    lg: 'w-24 h-24 sm:w-28 sm:h-28',
     xl: 'w-36 h-36 sm:w-40 sm:h-40',
   }[size];
 
   const logoSrc = customLogoUrl || vedLogoImg;
 
   return (
-    <div className={`inline-flex items-center gap-3 ${className}`}>
-      {/* Primary Logo Image Frame with Zoom & Fit */}
-      <div className={`relative flex-shrink-0 bg-white border border-amber-500/30 dark:border-amber-500/40 rounded-2xl overflow-hidden shadow-sm flex items-center justify-center ${sizeClasses}`}>
+    <div className="inline-flex items-center gap-3 shrink-0">
+      {/* Single Clean Logo Frame without outer double card */}
+      <div className={`relative flex-shrink-0 bg-white rounded-2xl overflow-hidden shadow-md border border-amber-500/30 flex items-center justify-center ${sizeClasses} ${className}`}>
         {logoSrc ? (
           <img
             src={logoSrc}
             alt="Ved Enterprises Logo"
-            className="w-full h-full object-cover scale-[1.38] rounded-xl transition-transform duration-300 transform-gpu"
+            className="w-full h-full object-cover scale-[1.38] transition-transform duration-300 transform-gpu"
             referrerPolicy="no-referrer"
             onError={(e) => {
               // Fallback to SVG if image fails to load
@@ -79,5 +79,3 @@ export const LogoGraphic: React.FC<LogoGraphicProps> = ({
     </div>
   );
 };
-
-

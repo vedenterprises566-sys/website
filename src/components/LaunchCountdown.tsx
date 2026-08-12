@@ -94,7 +94,7 @@ export const LaunchCountdown: React.FC<LaunchCountdownProps> = ({ onPreviewLaunc
           transition={{ duration: 0.6 }}
           className="flex flex-col items-center gap-4"
         >
-          <LogoGraphic className="w-16 h-16 shadow-2xl rounded-2xl border border-white/10" />
+          <LogoGraphic size="md" showText={false} />
           <div>
             <h1 className="font-serif text-2xl sm:text-4xl font-bold tracking-widest uppercase text-white">
               VED ENTERPRISES
