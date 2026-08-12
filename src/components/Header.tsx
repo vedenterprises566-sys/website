@@ -398,7 +398,17 @@ export const Header: React.FC<HeaderProps> = ({
 
                   <div className="mt-3 pt-2.5 border-t border-slate-200/60 dark:border-slate-700/60 flex items-center justify-between text-[0.625rem] text-slate-500 dark:text-slate-400">
                     <span>Digital Architecture</span>
-                    <span className="font-semibold text-slate-700 dark:text-slate-300">Crafted by <strong className="text-amber-500 font-bold">Untressed</strong></span>
+                    <span className="font-semibold text-slate-700 dark:text-slate-300">
+                      Crafted by{' '}
+                      <a
+                        href="https://untressed.com"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-amber-500 font-bold hover:underline"
+                      >
+                        Untressed
+                      </a>
+                    </span>
                   </div>
                 </div>
               </motion.div>
