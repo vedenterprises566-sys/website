@@ -162,18 +162,16 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onSelectCategory }) 
           <div className="flex flex-wrap items-center justify-center sm:justify-end gap-2 text-xs">
             <span className="text-slate-500">Ludhiana Textile Directory</span>
             <span className="text-slate-700 hidden xs:inline">•</span>
-            <span className="inline-flex items-center gap-1.5 bg-slate-900 text-slate-300 px-3.5 py-1.5 rounded-full border border-slate-800/90 shadow-xs font-medium">
+            <a
+              href="https://untressed.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 text-slate-400 hover:text-white transition-colors group font-medium"
+            >
               <span>Crafted by</span>
-              <a
-                href="https://untressed.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-0.5 text-amber-400 hover:text-amber-300 font-bold tracking-wide transition-colors group hover:underline"
-              >
-                <span>Untressed</span>
-                <ArrowUpRight className="w-3 h-3 text-amber-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-              </a>
-            </span>
+              <span className="text-amber-400 font-bold tracking-wide group-hover:underline">Untressed</span>
+              <ArrowUpRight className="w-3 h-3 text-amber-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+            </a>
           </div>
         </div>
 
