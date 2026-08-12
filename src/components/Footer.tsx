@@ -9,7 +9,7 @@ interface FooterProps {
 
 export const Footer: React.FC<FooterProps> = ({ onNavigate, onSelectCategory }) => {
   return (
-    <footer className="bg-slate-950 text-slate-300 pt-16 pb-28 sm:pb-16 border-t border-slate-800 relative overflow-hidden">
+    <footer className="bg-slate-950 text-slate-300 pt-16 pb-36 sm:pb-20 md:pb-12 border-t border-slate-800 relative overflow-hidden">
       {/* Subtle top ambient glow */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-px bg-gradient-to-r from-transparent via-red-600/40 to-transparent pointer-events-none" />
 
