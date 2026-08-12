@@ -1,351 +1,229 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { Phone, MapPin, Copy, Check, Share2, Download, Building2, Award, Sparkles, Navigation, QrCode } from 'lucide-react';
+import React from 'react';
+import { motion } from 'motion/react';
+import { Phone, MapPin, Mail, Globe, MessageCircle, Building2, Users, Truck } from 'lucide-react';
 import { LogoGraphic } from './LogoGraphic';
-import { HangingYarnThreads } from './HangingYarnThreads';
 
 export const VisitingCard: React.FC = () => {
-  const [copied, setCopied] = useState(false);
-  const [cardSide, setCardSide] = useState<'front' | 'back'>('front');
-
-  // Copy card info to clipboard
-  const handleCopyCardInfo = () => {
-    const cardText = `
-VED ENTERPRISES
-Wholesale Stockist & Supplier of Yarns
-Deals In: Acrylic, Cotton, Polyester & Blended Yarns, Vislon, Lurex, Wooly, Chenille, Zari/Jari & Fabrics.
-Address: # 66/2, Near Shingar Cinema, Dharampura, Ludhiana - 141008 (Punjab, India)
-Managing Directors:
-- Moni Maurya (Mob: +91 7986716117)
-- Sandeep Maurya (Mob: +91 8556949433)
-Office Helpline: 62803-70497, 80545-86030
-Email: vedenterprises566@gmail.com
-Website: https://www.ved.enterprises
-    `.trim();
-
-    navigator.clipboard.writeText(cardText);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2500);
-  };
-
-  // Download official .vcf vCard file to phone contacts
-  const handleDownloadVCard = () => {
-    const vCardData = `BEGIN:VCARD
-VERSION:3.0
-FN:Ved Enterprises
-ORG:Ved Enterprises (Wholesale Yarn Stockist)
-TITLE:Managing Directors: Moni Maurya & Sandeep Maurya
-TEL;TYPE=WORK,CELL:+917986716117
-TEL;TYPE=WORK,CELL:+918556949433
-TEL;TYPE=OFFICE:+916280370497
-TEL;TYPE=OFFICE:+918054586030
-EMAIL:vedenterprises566@gmail.com
-URL:https://www.ved.enterprises
-ADR;TYPE=WORK:;;# 66/2, Near Shingar Cinema, Dharampura;Ludhiana;Punjab;141008;India
-NOTE:Deals in Acrylic, Cotton, Polyester, Vislon, Wooly, Chenille, Zari & Fabrics.
-END:VCARD`;
-
-    const blob = new Blob([vCardData], { type: 'text/vcard;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', 'Ved_Enterprises_Contact.vcf');
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
   return (
-    <section id="card-section" className="py-12 sm:py-16 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 m-2.5 sm:m-6 md:m-[2.5rem] rounded-3xl shadow-sm relative overflow-hidden">
-      {/* Decorative Hanging Yarn Threads */}
-      <HangingYarnThreads variant="banner" className="top-0 opacity-60" />
+    <section id="card-section" className="py-16 sm:py-20 bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900 relative overflow-hidden">
+      {/* Subtle background pattern */}
+      <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.04] pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)', backgroundSize: '32px 32px' }} />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10 relative z-10">
-        
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 relative z-10">
+
         {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.4 }}
-          className="text-center max-w-2xl mx-auto space-y-2"
-        >
-          <div className="inline-flex items-center gap-2 bg-red-100 dark:bg-red-950/60 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-900/50 px-3.5 py-1 rounded-full text-xs font-black uppercase tracking-wider shadow-2xs">
-            <Award className="w-3.5 h-3.5 text-red-600 dark:text-red-400" />
-            <span>Corporate Trade Credential</span>
-          </div>
-          <h2 className="text-2xl sm:text-4xl font-bold text-slate-900 dark:text-white font-serif tracking-tight">
-            Digital Business Card
-          </h2>
-          <p className="text-slate-600 dark:text-slate-400 text-xs sm:text-sm max-w-md mx-auto">
-            Official company credential, direct executive phone contacts, and Ludhiana head office location map.
-          </p>
-
-          {/* Flip Front / Back Toggle Buttons */}
-          <div className="pt-2 flex items-center justify-center gap-2">
-            <button
-              onClick={() => setCardSide('front')}
-              className={`px-4 py-1.5 rounded-xl text-xs font-bold transition-all ${
-                cardSide === 'front'
-                  ? 'bg-slate-900 text-white dark:bg-red-600 shadow-sm'
-                  : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800 hover:bg-slate-100'
-              }`}
-            >
-              💳 Card Front (Executive)
-            </button>
-            <button
-              onClick={() => setCardSide('back')}
-              className={`px-4 py-1.5 rounded-xl text-xs font-bold transition-all ${
-                cardSide === 'back'
-                  ? 'bg-slate-900 text-white dark:bg-red-600 shadow-sm'
-                  : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800 hover:bg-slate-100'
-              }`}
-            >
-              📍 Card Back (Office & Maps)
-            </button>
-          </div>
-        </motion.div>
-
-        {/* 3D LUXURY EXECUTIVE DIGITAL VISITING CARD */}
-        <div className="max-w-xl mx-auto perspective-1000">
-          <AnimatePresence mode="wait">
-            {cardSide === 'front' ? (
-              /* FRONT OF VISITING CARD */
-              <motion.div
-                key="card-front"
-                initial={{ rotateY: 90, opacity: 0 }}
-                animate={{ rotateY: 0, opacity: 1 }}
-                exit={{ rotateY: -90, opacity: 0 }}
-                transition={{ duration: 0.45, ease: 'easeOut' }}
-                className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-red-950 text-white rounded-3xl p-6 sm:p-8 border-2 border-amber-400/60 shadow-2xl space-y-6 group"
-              >
-                {/* Metallic Sheen Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-amber-400/5 to-white/10 pointer-events-none group-hover:opacity-80 transition-opacity" />
-                
-                {/* Gold Foil Accent Line Top */}
-                <div className="h-1.5 w-full bg-gradient-to-r from-amber-300 via-amber-400 to-amber-600 rounded-full shadow-sm" />
-
-                {/* Top Header Row: Emblem & Brand Title */}
-                <div className="flex items-center justify-between gap-4 pb-4 border-b border-white/10 relative z-10">
-                  <div className="flex items-center gap-3.5">
-                    <div className="p-2 bg-amber-400/10 border border-amber-400/30 rounded-2xl backdrop-blur-md shadow-md shrink-0">
-                      <LogoGraphic size="md" showText={false} />
-                    </div>
-                    <div>
-                      <h3 className="text-xl sm:text-3xl font-black font-serif tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-amber-200 to-amber-400 drop-shadow-sm">
-                        VED ENTERPRISES
-                      </h3>
-                      <p className="text-[0.625rem] sm:text-xs font-bold text-red-400 tracking-widest uppercase">
-                        Wholesale Stockist & Supplier of Yarns
-                      </p>
-                    </div>
-                  </div>
-
-                  <span className="hidden xs:inline-block bg-amber-400/20 text-amber-300 text-[0.625rem] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-md border border-amber-400/30 shrink-0">
-                    Ludhiana Hub
-                  </span>
-                </div>
-
-                {/* Specialization Pills */}
-                <div className="space-y-2 relative z-10">
-                  <span className="text-[0.625rem] font-bold text-slate-400 uppercase tracking-widest block">
-                    Product Specializations:
-                  </span>
-                  <div className="flex flex-wrap gap-1.5 text-[0.6875rem] font-semibold text-slate-200">
-                    <span className="bg-white/10 px-2.5 py-1 rounded-lg border border-white/15">Acrylic & Cotton Yarns</span>
-                    <span className="bg-white/10 px-2.5 py-1 rounded-lg border border-white/15">Polyester Blends</span>
-                    <span className="bg-white/10 px-2.5 py-1 rounded-lg border border-white/15">Vislon & Wooly Yarns</span>
-                    <span className="bg-white/10 px-2.5 py-1 rounded-lg border border-white/15">Chenille & Eyelash Fur</span>
-                    <span className="bg-white/10 px-2.5 py-1 rounded-lg border border-white/15">Jari / Zari & Fabrics</span>
-                  </div>
-                </div>
-
-                {/* Managing Directors Grid */}
-                <div className="space-y-2.5 pt-2 border-t border-white/10 relative z-10">
-                  <span className="text-[0.625rem] font-bold text-amber-400 uppercase tracking-widest block">
-                    Managing Directors:
-                  </span>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div className="bg-white/5 hover:bg-white/10 p-3 rounded-2xl border border-white/10 transition-all flex items-center justify-between">
-                      <div>
-                        <p className="text-white font-black text-xs sm:text-sm font-serif">Moni Maurya</p>
-                        <p className="text-amber-300 text-xs font-bold mt-0.5">Mob: 7986716117</p>
-                      </div>
-                      <a
-                        href="tel:7986716117"
-                        className="bg-amber-400 hover:bg-amber-300 text-slate-950 p-2 rounded-xl text-xs font-black transition-colors shrink-0 shadow-xs"
-                        title="Call Moni Maurya"
-                      >
-                        <Phone className="w-3.5 h-3.5" />
-                      </a>
-                    </div>
-
-                    <div className="bg-white/5 hover:bg-white/10 p-3 rounded-2xl border border-white/10 transition-all flex items-center justify-between">
-                      <div>
-                        <p className="text-white font-black text-xs sm:text-sm font-serif">Sandeep Maurya</p>
-                        <p className="text-amber-300 text-xs font-bold mt-0.5">Mob: 8556949433</p>
-                      </div>
-                      <a
-                        href="tel:8556949433"
-                        className="bg-amber-400 hover:bg-amber-300 text-slate-950 p-2 rounded-xl text-xs font-black transition-colors shrink-0 shadow-xs"
-                        title="Call Sandeep Maurya"
-                      >
-                        <Phone className="w-3.5 h-3.5" />
-                      </a>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Bottom Address Summary Bar */}
-                <div className="pt-2 text-center text-[0.6875rem] text-slate-300 font-medium flex items-center justify-center gap-1.5 relative z-10 border-t border-white/10">
-                  <MapPin className="w-3.5 h-3.5 text-red-400 shrink-0" />
-                  <span># 66/2, Near Shingar Cinema, Dharampura, Ludhiana-141008</span>
-                </div>
-              </motion.div>
-            ) : (
-              /* BACK OF VISITING CARD */
-              <motion.div
-                key="card-back"
-                initial={{ rotateY: -90, opacity: 0 }}
-                animate={{ rotateY: 0, opacity: 1 }}
-                exit={{ rotateY: 90, opacity: 0 }}
-                transition={{ duration: 0.45, ease: 'easeOut' }}
-                className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 text-white rounded-3xl p-6 sm:p-8 border-2 border-red-500/60 shadow-2xl space-y-6"
-              >
-                {/* Header */}
-                <div className="flex items-center justify-between pb-4 border-b border-white/10">
-                  <div>
-                    <h3 className="text-lg font-bold text-white font-serif">Head Office & Operations</h3>
-                    <p className="text-xs text-red-400 font-semibold">Ludhiana Textile District • Punjab</p>
-                  </div>
-                  <Building2 className="w-6 h-6 text-amber-400" />
-                </div>
-
-                {/* Helpline Numbers */}
-                <div className="space-y-2">
-                  <span className="text-[0.625rem] font-bold text-slate-400 uppercase tracking-widest block">
-                    Office Landline & Support Lines:
-                  </span>
-                  <div className="grid grid-cols-2 gap-2 text-xs font-bold">
-                    <a
-                      href="tel:6280370497"
-                      className="bg-white/5 hover:bg-white/10 p-2.5 rounded-xl border border-white/10 flex items-center justify-between text-slate-200 transition-colors"
-                    >
-                      <span>62803-70497</span>
-                      <Phone className="w-3.5 h-3.5 text-amber-400" />
-                    </a>
-                    <a
-                      href="tel:8054586030"
-                      className="bg-white/5 hover:bg-white/10 p-2.5 rounded-xl border border-white/10 flex items-center justify-between text-slate-200 transition-colors"
-                    >
-                      <span>80545-86030</span>
-                      <Phone className="w-3.5 h-3.5 text-amber-400" />
-                    </a>
-                  </div>
-                </div>
-
-                {/* Full Registered Address */}
-                <div className="bg-white/5 p-4 rounded-2xl border border-white/10 space-y-1.5 text-xs">
-                  <div className="flex items-center gap-2 text-amber-300 font-bold">
-                    <MapPin className="w-4 h-4 text-red-400 shrink-0" />
-                    <span>Registered Business Address</span>
-                  </div>
-                  <p className="text-slate-300 text-xs leading-relaxed pl-6">
-                    # 66/2, Near Shingar Cinema, Dharampura, Ludhiana - 141008, Punjab, India
-                  </p>
-                </div>
-
-                {/* Corporate Email & Web */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-                  <div className="bg-white/5 p-2.5 rounded-xl border border-white/10 truncate">
-                    <span className="text-slate-400 text-[0.625rem] block font-semibold">EMAIL</span>
-                    <span className="text-white font-bold text-xs truncate">vedenterprises566@gmail.com</span>
-                  </div>
-                  <div className="bg-white/5 p-2.5 rounded-xl border border-white/10 truncate">
-                    <span className="text-slate-400 text-[0.625rem] block font-semibold">OFFICIAL DOMAIN</span>
-                    <span className="text-amber-300 font-bold text-xs truncate">www.ved.enterprises</span>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-
-        {/* UTILITY ACTIONS ROW */}
-        <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
-          {/* Download vCard Contact */}
-          <motion.button
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
-            onClick={handleDownloadVCard}
-            className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-bold px-5 py-3 rounded-2xl text-xs sm:text-sm shadow-md transition-all cursor-pointer"
-          >
-            <Download className="w-4 h-4 text-slate-950" />
-            <span>📥 Save Contact to Phone (.vcf)</span>
-          </motion.button>
-
-          {/* Copy Full Card Text */}
-          <motion.button
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
-            onClick={handleCopyCardInfo}
-            className="inline-flex items-center gap-2 bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 text-white font-bold px-5 py-3 rounded-2xl text-xs sm:text-sm shadow-md transition-all cursor-pointer border border-slate-800"
-          >
-            {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4 text-amber-400" />}
-            <span>{copied ? 'Card Info Copied!' : 'Copy Card Text'}</span>
-          </motion.button>
-
-          {/* WhatsApp Direct Link */}
-          <motion.a
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
-            href="https://wa.me/917986716117?text=Hello%20Ved%20Enterprises,%20I%20have%20an%20inquiry%20regarding%20yarns%20and%20fabrics."
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-3 rounded-2xl text-xs sm:text-sm shadow-md transition-all cursor-pointer"
-          >
-            <Share2 className="w-4 h-4" />
-            <span>WhatsApp Moni Maurya</span>
-          </motion.a>
-        </div>
-
-        {/* HEAD OFFICE GOOGLE MAPS LOCATION SECTION */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          className="max-w-3xl mx-auto pt-4"
+          transition={{ duration: 0.5 }}
+          className="text-center max-w-2xl mx-auto space-y-3"
         >
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl overflow-hidden shadow-sm">
+          <div className="inline-flex items-center gap-2 bg-slate-900 dark:bg-white/10 text-white dark:text-slate-200 px-4 py-1.5 rounded-full text-[0.6875rem] font-bold uppercase tracking-widest">
+            <Building2 className="w-3.5 h-3.5" />
+            <span>Contact & Business Identity</span>
+          </div>
+          <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white font-serif tracking-tight">
+            Get In Touch
+          </h2>
+          <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed max-w-lg mx-auto">
+            Connect with our managing directors for wholesale yarn inquiries, pricing, and bulk orders across India.
+          </p>
+        </motion.div>
+
+        {/* Main Card — Dark Executive Style */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="max-w-2xl mx-auto"
+        >
+          <div className="bg-slate-900 dark:bg-slate-800/80 rounded-3xl overflow-hidden shadow-2xl shadow-slate-900/30 dark:shadow-black/40 border border-slate-800 dark:border-slate-700/60">
+
+            {/* Card Header — Brand Identity */}
+            <div className="relative px-6 sm:px-8 pt-8 pb-6 border-b border-slate-800 dark:border-slate-700/60">
+              {/* Decorative accent line */}
+              <div className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-amber-500/50 to-transparent" />
+
+              <div className="flex items-center gap-5">
+                <div className="bg-white/10 p-3 rounded-2xl border border-white/10 backdrop-blur-sm shrink-0">
+                  <LogoGraphic size="lg" showText={false} />
+                </div>
+                <div className="min-w-0">
+                  <h3 className="text-2xl sm:text-3xl font-black font-serif text-white tracking-tight leading-none">
+                    Ved <span className="text-amber-400">Enterprises</span>
+                  </h3>
+                  <p className="text-slate-400 text-xs sm:text-sm font-semibold mt-1 tracking-wide">
+                    Wholesale Yarn Stockist & Trader
+                  </p>
+                  <div className="flex items-center gap-3 mt-2">
+                    <span className="inline-flex items-center gap-1 text-[0.625rem] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-md border border-emerald-500/20">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                      Active
+                    </span>
+                    <span className="text-[0.625rem] text-slate-500 font-medium">Ludhiana, Punjab — India</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Deals In Strip */}
+            <div className="px-6 sm:px-8 py-3.5 bg-slate-800/50 dark:bg-slate-700/30 border-b border-slate-800 dark:border-slate-700/60">
+              <p className="text-[0.6875rem] sm:text-xs text-slate-300 font-medium leading-relaxed text-center">
+                <span className="text-amber-400 font-bold">Deals In:</span> All Types of Acrylic, Cotton, Polyester & Blended Yarns • Jari / Zari • Fabrics & Imported Yarns
+              </p>
+            </div>
+
+            {/* Managing Directors */}
+            <div className="px-6 sm:px-8 py-6 space-y-4">
+              <div className="flex items-center gap-2 mb-1">
+                <Users className="w-4 h-4 text-amber-400" />
+                <span className="text-[0.6875rem] font-bold uppercase tracking-widest text-slate-400">Managing Directors</span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {/* Director 1 */}
+                <div className="bg-slate-800/80 dark:bg-slate-700/50 rounded-2xl p-4 border border-slate-700/60 hover:border-amber-500/30 transition-colors group">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center text-white font-black text-sm shadow-lg shadow-amber-500/20">
+                      MM
+                    </div>
+                    <div>
+                      <p className="text-white font-bold text-sm">Moni Maurya</p>
+                      <p className="text-slate-400 text-[0.6875rem] font-medium">Managing Director</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <a
+                      href="tel:7986716117"
+                      className="flex-1 inline-flex items-center justify-center gap-1.5 bg-slate-700/80 hover:bg-amber-500 text-slate-300 hover:text-white font-bold py-2 rounded-xl text-xs transition-all border border-slate-600/50 hover:border-amber-500"
+                    >
+                      <Phone className="w-3.5 h-3.5" />
+                      <span>79867-16117</span>
+                    </a>
+                    <a
+                      href="https://wa.me/917986716117?text=Hello%20Ved%20Enterprises,%20I%20have%20an%20inquiry%20regarding%20yarns."
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center gap-1 bg-emerald-600/20 hover:bg-emerald-600 text-emerald-400 hover:text-white font-bold py-2 px-3 rounded-xl text-xs transition-all border border-emerald-600/30 hover:border-emerald-600"
+                    >
+                      <MessageCircle className="w-3.5 h-3.5" />
+                    </a>
+                  </div>
+                </div>
+
+                {/* Director 2 */}
+                <div className="bg-slate-800/80 dark:bg-slate-700/50 rounded-2xl p-4 border border-slate-700/60 hover:border-amber-500/30 transition-colors group">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-slate-500 to-slate-600 flex items-center justify-center text-white font-black text-sm shadow-lg shadow-slate-500/20">
+                      SM
+                    </div>
+                    <div>
+                      <p className="text-white font-bold text-sm">Sandeep Maurya</p>
+                      <p className="text-slate-400 text-[0.6875rem] font-medium">Managing Director</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <a
+                      href="tel:8556949433"
+                      className="flex-1 inline-flex items-center justify-center gap-1.5 bg-slate-700/80 hover:bg-amber-500 text-slate-300 hover:text-white font-bold py-2 rounded-xl text-xs transition-all border border-slate-600/50 hover:border-amber-500"
+                    >
+                      <Phone className="w-3.5 h-3.5" />
+                      <span>85569-49433</span>
+                    </a>
+                    <a
+                      href="https://wa.me/918556949433?text=Hello%20Ved%20Enterprises,%20I%20have%20an%20inquiry%20regarding%20yarns."
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center gap-1 bg-emerald-600/20 hover:bg-emerald-600 text-emerald-400 hover:text-white font-bold py-2 px-3 rounded-xl text-xs transition-all border border-emerald-600/30 hover:border-emerald-600"
+                    >
+                      <MessageCircle className="w-3.5 h-3.5" />
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Office Contact Numbers */}
+            <div className="px-6 sm:px-8 py-4 border-t border-slate-800 dark:border-slate-700/60 bg-slate-800/30">
+              <div className="flex items-center gap-2 mb-3">
+                <Phone className="w-3.5 h-3.5 text-slate-400" />
+                <span className="text-[0.6875rem] font-bold uppercase tracking-widest text-slate-500">Office Lines</span>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <a href="tel:6280370497" className="inline-flex items-center justify-center gap-1.5 bg-slate-800/60 hover:bg-slate-700 text-slate-300 hover:text-white font-semibold py-2.5 rounded-xl text-xs transition-all border border-slate-700/50">
+                  <Phone className="w-3 h-3 text-slate-400" />
+                  <span>62803-70497</span>
+                </a>
+                <a href="tel:8054586030" className="inline-flex items-center justify-center gap-1.5 bg-slate-800/60 hover:bg-slate-700 text-slate-300 hover:text-white font-semibold py-2.5 rounded-xl text-xs transition-all border border-slate-700/50">
+                  <Phone className="w-3 h-3 text-slate-400" />
+                  <span>80545-86030</span>
+                </a>
+              </div>
+            </div>
+
+            {/* Address & Info Footer */}
+            <div className="px-6 sm:px-8 py-4 border-t border-slate-800 dark:border-slate-700/60 space-y-2.5">
+              <div className="flex items-start gap-2.5 text-sm">
+                <MapPin className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                <p className="text-slate-300 text-xs sm:text-sm font-medium leading-relaxed">
+                  # 66/2, Near Shingar Cinema, Dharampura, Ludhiana — 141008 (Punjab, India)
+                </p>
+              </div>
+              <div className="flex items-center gap-2.5">
+                <Mail className="w-4 h-4 text-amber-400 shrink-0" />
+                <a href="mailto:vedenterprises566@gmail.com" className="text-slate-300 hover:text-amber-400 text-xs sm:text-sm font-medium transition-colors">
+                  vedenterprises566@gmail.com
+                </a>
+              </div>
+              <div className="flex items-center gap-2.5">
+                <Globe className="w-4 h-4 text-amber-400 shrink-0" />
+                <a href="https://www.ved.enterprises" target="_blank" rel="noopener noreferrer" className="text-slate-300 hover:text-amber-400 text-xs sm:text-sm font-medium transition-colors">
+                  www.ved.enterprises
+                </a>
+              </div>
+              <div className="flex items-center gap-2.5">
+                <Truck className="w-4 h-4 text-amber-400 shrink-0" />
+                <p className="text-slate-400 text-xs font-medium">All India Direct Dispatch & Supply</p>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Google Maps Embed */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.15 }}
+          className="max-w-2xl mx-auto"
+        >
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm">
             {/* Map Header */}
-            <div className="flex items-center justify-between p-4 sm:p-5 border-b border-slate-200 dark:border-slate-800">
+            <div className="flex items-center justify-between px-5 py-3 border-b border-slate-200 dark:border-slate-800">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-red-600 text-white flex items-center justify-center font-bold shadow-md shrink-0">
-                  <MapPin className="w-5 h-5" />
+                <div className="w-9 h-9 rounded-xl bg-slate-900 dark:bg-amber-500/20 flex items-center justify-center">
+                  <MapPin className="w-4 h-4 text-white dark:text-amber-400" />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-slate-900 dark:text-white font-serif">
-                    Head Office & Warehouse Location
-                  </h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
-                    # 66/2, Near Shingar Cinema, Dharampura, Ludhiana - 141008
-                  </p>
+                  <h3 className="text-sm font-bold text-slate-900 dark:text-white">Head Office Location</h3>
+                  <p className="text-[0.6875rem] text-slate-500 dark:text-slate-400 font-medium">Dharampura, Ludhiana — 141008, Punjab</p>
                 </div>
               </div>
               <a
                 href="https://maps.app.goo.gl/LKhc1zcfMGWREFB4A"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hidden sm:inline-flex items-center gap-1.5 bg-red-600 hover:bg-red-700 text-white font-bold px-4 py-2 rounded-xl text-xs transition-all shadow-xs"
+                className="inline-flex items-center gap-1.5 bg-slate-900 dark:bg-amber-500/20 hover:bg-slate-800 dark:hover:bg-amber-500/30 text-white dark:text-amber-400 font-bold px-3.5 py-2 rounded-xl text-[0.6875rem] transition-all shadow-xs"
               >
-                <Navigation className="w-3.5 h-3.5" />
-                <span>Get Directions</span>
+                <MapPin className="w-3 h-3" />
+                <span>Directions</span>
               </a>
             </div>
 
-            {/* Google Maps Embed */}
-            <div className="w-full aspect-[16/9] sm:aspect-[21/9]">
+            {/* Map Embed */}
+            <div className="w-full aspect-[16/9] sm:aspect-[2/1]">
               <iframe
                 title="Ved Enterprises Head Office — Ludhiana"
                 src="https://maps.google.com/maps?q=30.9138165,75.871582&t=&z=17&ie=UTF8&iwloc=&output=embed"
@@ -357,18 +235,17 @@ END:VCARD`;
             </div>
 
             {/* Map Footer */}
-            <div className="p-4 bg-slate-50 dark:bg-slate-800/60 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
-              <p className="text-xs text-slate-600 dark:text-slate-400 font-medium">
-                📍 Dharampura, Ludhiana — Open Mon to Sat (9:00 AM to 8:00 PM IST)
+            <div className="px-5 py-2.5 bg-slate-50 dark:bg-slate-800/60 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
+              <p className="text-[0.6875rem] text-slate-500 dark:text-slate-400 font-medium">
+                # 66/2, Near Shingar Cinema, Dharampura, Ludhiana
               </p>
               <a
                 href="https://maps.app.goo.gl/LKhc1zcfMGWREFB4A"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-xs text-red-600 dark:text-red-400 font-bold hover:underline inline-flex items-center gap-1"
+                className="text-[0.6875rem] text-slate-900 dark:text-amber-400 font-bold hover:underline"
               >
-                <span>Open in Google Maps</span>
-                <span>→</span>
+                Open in Maps →
               </a>
             </div>
           </div>
