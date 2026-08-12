@@ -47,7 +47,7 @@ export const VisitingCard: React.FC = () => {
               <div className="absolute top-0 left-4 right-4 sm:left-6 sm:right-6 h-px bg-gradient-to-r from-transparent via-amber-500/50 to-transparent" />
 
               <div className="flex items-center gap-3 sm:gap-5">
-                <div className="bg-white/10 p-2 sm:p-3 rounded-xl sm:rounded-2xl border border-white/10 backdrop-blur-sm shrink-0">
+                <div className="shrink-0">
                   <div className="sm:hidden">
                     <LogoGraphic size="sm" showText={false} />
                   </div>
