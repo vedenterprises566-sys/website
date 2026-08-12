@@ -132,10 +132,17 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onSelectCategory }) 
           </div>
         </div>
 
-        {/* Copyright */}
-        <div className="pt-6 border-t border-slate-900 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+        {/* Copyright & Developer Credit */}
+        <div className="pt-6 border-t border-slate-900 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
           <p>© {new Date().getFullYear()} Ved Enterprises. All rights reserved.</p>
-          <p>Ludhiana Yarn Trading • Fancy, China & Blended Yarns</p>
+          <div className="flex items-center gap-2 text-xs">
+            <span className="text-slate-500">Ludhiana Yarn Trading</span>
+            <span className="text-slate-700">•</span>
+            <span className="inline-flex items-center gap-1.5 bg-slate-900/90 text-slate-300 px-3 py-1 rounded-full border border-slate-800 font-medium">
+              <span>Crafted by</span>
+              <span className="text-amber-400 font-bold tracking-wide">Untressed</span>
+            </span>
+          </div>
         </div>
 
       </div>

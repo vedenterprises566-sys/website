@@ -395,6 +395,11 @@ export const Header: React.FC<HeaderProps> = ({
                       <span>Call Now</span>
                     </a>
                   </div>
+
+                  <div className="mt-3 pt-2.5 border-t border-slate-200/60 dark:border-slate-700/60 flex items-center justify-between text-[0.625rem] text-slate-500 dark:text-slate-400">
+                    <span>Digital Architecture</span>
+                    <span className="font-semibold text-slate-700 dark:text-slate-300">Crafted by <strong className="text-amber-500 font-bold">Untressed</strong></span>
+                  </div>
                 </div>
               </motion.div>
             </>
