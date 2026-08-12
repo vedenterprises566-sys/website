@@ -7,5 +7,4 @@ Allow: /catalog/yarns/*
 Allow: /catalog/garments/
 Allow: /catalog/garments/*
 
-# Sitemap Location
 Sitemap: https://www.ved.enterprises/sitemap.xml

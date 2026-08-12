@@ -29,7 +29,7 @@ export const FAQ_DATA = [
 
 export const FAQSection: React.FC = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
-  const faqSchema = generateFAQSchema(FAQ_DATA);
+  const faqSchema = generateFAQSchema();
 
   const toggleFAQ = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
