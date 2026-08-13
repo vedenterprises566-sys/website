@@ -11,7 +11,7 @@ export const FAQ_DATA = [
   },
   {
     question: 'What types of yarn does VED Enterprises supply?',
-    answer: 'We supply a wide range of yarns including Fancy Yarns (MX Lurex, Space Dyed, Slub Yarns, Gold/Silver Zari), China & Imported Yarns (2/48 Vislon, 2/18 Wooly, Chenille, Nylon Eyelash Hair, Suede Yarns, Ring Spun Yarns), Acrylic Cotton Blends, and Woven/Knitted Fabrics.',
+    answer: 'We supply a wide range of yarns including All Types of Acrylic Cotton, Polyester & their Blended Yarns, All Types of Jari / Zari etc',
   },
   {
     question: 'Does VED Enterprises supply yarn in bulk?',

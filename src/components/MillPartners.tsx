@@ -21,13 +21,13 @@ export const MillPartners: React.FC<MillPartnersProps> = () => {
           className="text-center max-w-3xl mx-auto space-y-3"
         >
           <div className="inline-flex items-center gap-2 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 text-xs font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-full">
-            <Factory className="w-3.5 h-3.5 text-red-600" /> Premier Spinning Mill Yarns
+            <Factory className="w-3.5 h-3.5 text-red-600" /> Premier Spinning Mill of Yarns
           </div>
           <h2 className="text-2xl sm:text-4xl font-bold text-slate-900 dark:text-white font-serif tracking-tight">
             Leading Spinning Mills Sourced
           </h2>
           <p className="text-slate-600 dark:text-slate-300 text-xs sm:text-sm leading-relaxed max-w-2xl mx-auto">
-            Ved Enterprises stocks and supplies premium yarns from India’s leading textile mills, bringing competitive wholesale rates, guaranteed lot consistency, and rapid dispatch across India.
+            Ved Enterprises brings you premium quality yarns sourced directly from India's top Spinning mills. Get the best wholesale rates, consistent quality in every lot, and fast delivery across India.
           </p>
         </motion.div>
 

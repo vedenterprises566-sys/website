@@ -43,9 +43,9 @@ export const Hero: React.FC<HeroProps> = ({
               className="inline-flex flex-wrap items-center gap-1.5 sm:gap-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-full px-3 sm:px-4 py-1 text-[0.6875rem] text-slate-700 dark:text-slate-300 font-semibold shadow-xs"
             >
               <span className="w-2 h-2 rounded-full bg-red-600 animate-pulse shrink-0" />
-              <span className="uppercase tracking-wider font-bold text-[0.625rem] sm:text-[0.6875rem] text-slate-800 dark:text-slate-200">Wholesale Yarn & Fabric Trader</span>
+              <span className="uppercase tracking-wider font-bold text-[0.625rem] sm:text-[0.6875rem] text-slate-800 dark:text-slate-200">Wholesale Yarn, Winter Garment & Unstitched Fabrics Retailers</span>
               <span className="text-slate-300 dark:text-slate-700 hidden sm:inline">|</span>
-              <span className="text-slate-600 dark:text-slate-400 hidden sm:inline">Ludhiana, Punjab</span>
+              <span className="text-slate-600 dark:text-slate-400 hidden sm:inline">Ludhiana, Punjab, India</span>
             </motion.div>
 
             {/* Main Title with Clean Accent */}
@@ -53,14 +53,14 @@ export const Hero: React.FC<HeroProps> = ({
               {/* Sub-headline badge */}
               <div className="inline-flex items-center gap-2 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-200 px-3 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider border border-slate-200 dark:border-slate-700 shadow-2xs">
                 <span className="w-2 h-2 rounded-full bg-slate-900 dark:bg-red-500 animate-pulse"></span>
-                <span>Established Wholesale Yarn Stockist</span>
+                <span>Retailer of Knitting & Weaving Yarns</span>
               </div>
 
               {/* Main Headline */}
               <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold font-serif text-slate-900 dark:text-white tracking-tight leading-[1.1]">
-                Bulk Yarn Supplier & <br />
+                Retailer of Knitting & Weaving Yarns <br />
                 <span className="text-slate-900 dark:text-red-600 font-extrabold italic">
-                  Yarn Trader in India
+                  Across India
                 </span>
               </h1>
               <p className="text-slate-700 dark:text-slate-300 font-semibold text-xs sm:text-sm tracking-wide uppercase">

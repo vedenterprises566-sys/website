@@ -12,7 +12,7 @@ export const PARTNER_MILLS: MillPartner[] = [
   },
   {
     id: 'mill-2',
-    name: 'Garg Acrylic Limited / Vikasdeep Mills',
+    name: 'Garg Acrylic Limited',
     shortName: 'Vikasdeep & Garg Acrylics',
     specialty: '100% Acrylic Spun & Daffodil Yarns',
     location: 'Ludhiana, Punjab',
