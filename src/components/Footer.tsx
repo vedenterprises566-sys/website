@@ -33,7 +33,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onSelectCategory }) 
             </div>
 
             <p className="text-xs text-slate-400 leading-relaxed max-w-sm">
-              Established national yarn trading house based in Ludhiana, Punjab. Supplying premium Fancy Yarns, China Imported Yarns, 100% Acrylic, Wooly, Chenille, Lurex, and Fabrics to garment manufacturers nationwide.
+              Established national yarn trading house based in Ludhiana, Punjab. Supplying premium Fancy Yarns, China Imported Yarns, Acrylic, Wool, Polyster, MX Lurex, Jari/Zari and Fabrics to Garments retailers nationwide.
             </p>
 
             <div className="bg-slate-900/90 p-4 rounded-2xl border border-slate-800/80 text-xs space-y-1.5 shadow-sm">
