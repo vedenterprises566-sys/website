@@ -11,7 +11,7 @@ export const FAQ_DATA = [
   },
   {
     question: 'What types of yarn does VED Enterprises supply?',
-    answer: 'We supply a wide range of yarns including All Types of Acrylic Cotton, Polyester & their Blended Yarns, All Types of Jari / Zari etc',
+    answer: 'We supply premium Fancy Yarns, Imported Yarns, Acrylic, Wool, Nylon, Polyester, MX Lurex, Embroidery Threads & Jari/Zari, also dealing in Fabrics and Winter Garments.',
   },
   {
     question: 'Does VED Enterprises supply yarn in bulk?',
