@@ -43,6 +43,17 @@ export default function App() {
     setIsShadeModalOpen(true);
   };
 
+  // Scroll to top on route change (except for home page specific section targets)
+  useEffect(() => {
+    if (
+      location.pathname !== '/mills' &&
+      location.pathname !== '/card' &&
+      location.pathname !== '/faq'
+    ) {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    }
+  }, [location.pathname]);
+
   // Animation & Toast states
   const [flyingItems, setFlyingItems] = useState<FlyingItem[]>([]);
   const [activeToast, setActiveToast] = useState<{

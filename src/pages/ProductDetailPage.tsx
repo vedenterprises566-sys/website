@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { ArrowLeft, CheckCircle, Package, MessageSquare, Phone, Sparkles, MapPin, Layers, Eye, Plus, ShieldCheck, Tag, Palette, AlertTriangle, ExternalLink, FileText } from 'lucide-react';
@@ -28,6 +28,11 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const { products, loading, error } = useProducts();
+
+  // Scroll to top when viewing a new product or clicking related products
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+  }, [slug]);
 
   // Local state for modals when viewing on product detail page directly
   const [isShadeModalOpen, setIsShadeModalOpen] = useState<boolean>(false);
@@ -529,6 +534,9 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                   <Link
                     key={rel.id}
                     to={`/catalog/${relSlug}`}
+                    onClick={() => {
+                      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+                    }}
                     className="group bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs hover:shadow-md transition-all flex flex-col justify-between"
                   >
                     <div>
