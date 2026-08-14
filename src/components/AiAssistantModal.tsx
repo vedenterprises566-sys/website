@@ -82,12 +82,21 @@ export const AiAssistantModal: React.FC<AiAssistantModalProps> = ({
 
       const data = await res.json();
       const rawText = data.text || 'Thank you for your question. You can also call Moni Maurya (MD) directly at +91 7986716117 for immediate wholesale rates.';
-      const cleanText = rawText.replace(/[*#]/g, '');
+      
+      // Clean and format text cleanly
+      let formattedText = rawText
+        .replace(/^###\s*(.*)$/gm, '$1:')
+        .replace(/^##\s*(.*)$/gm, '$1:')
+        .replace(/^#\s*(.*)$/gm, '$1:')
+        .replace(/\*\*(.*?)\*\*/g, '$1')
+        .replace(/\*(.*?)\*/g, '$1')
+        .replace(/^\s*[\*\-]\s+/gm, '• ')
+        .trim();
 
       const botMsg: ChatMessage = {
         id: 'bot-' + Date.now(),
         sender: 'assistant',
-        text: cleanText,
+        text: formattedText,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       };
 
@@ -185,7 +194,7 @@ export const AiAssistantModal: React.FC<AiAssistantModalProps> = ({
                     : 'bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-800 rounded-tl-none'
                 }`}
               >
-                {msg.sender === 'assistant' ? msg.text.replace(/[*#]/g, '') : msg.text}
+                {msg.text}
                 <span
                   className={`block text-[0.625rem] mt-1.5 text-right font-normal opacity-70 ${
                     msg.sender === 'user' ? 'text-red-100' : 'text-slate-400'

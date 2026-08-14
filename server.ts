@@ -302,18 +302,32 @@ Address: # 66/2, Near Shingar Cinema, Dharampura, Ludhiana - 141008
 
       const ai = getAi();
 
+      // Read live catalog for full accuracy
+      let catalogDetails = '';
+      try {
+        const catalogPath = path.join(process.cwd(), 'public', 'catalog.json');
+        if (fs.existsSync(catalogPath)) {
+          const catalogData = JSON.parse(fs.readFileSync(catalogPath, 'utf8'));
+          catalogDetails = catalogData.map((p: any) => 
+            `- ${p.name} [${p.categoryLabel}]: Count/Denier: ${p.countOrDenier || 'Standard'}, Description/Blend: ${p.description || ''}, Recommended Uses: ${(p.recommendedUses || []).join(', ')}, Key Features: ${(p.features || []).join(', ')}`
+          ).join('\n');
+        }
+      } catch (catErr: any) {
+        console.warn('Could not read catalog.json for AI prompt:', catErr.message);
+      }
+
       const systemInstruction = `
-You are the AI Textile & Yarn Sales Assistant for "VED ENTERPRISES", a leading textile trading and distribution firm based in Ludhiana, Punjab, India.
+You are the official AI Textile Specialist & Sales Engineer for "VED ENTERPRISES", a leading B2B yarn trading and textile manufacturing firm based in Ludhiana, Punjab, India.
 
 Company Profile & Contact Information:
 - Firm Name: VED ENTERPRISES
 - Address: # 66/2, Near Shingar Cinema, Dharampura, Ludhiana - 141008 (Punjab, India)
 - Managing Directors: Moni Maurya (Mob: +91 7986716117) & Sandeep Maurya (Mob: +91 8556949433)
-- Office Contacts: +91 85569-49433, +91 62803-70497, +91 80545-86030
-- GSTIN: Available on request for tax-compliant billing
-- Distribution Coverage: Nationwide All Over India (Ludhiana, Surat, Ahmedabad, Tirupur, Kolkata, Panipat, Bhilwara, Mumbai, Delhi, Kanpur, etc.)
+- Office Numbers: +91 85569-49433, +91 62803-70497, +91 80545-86030
+- GSTIN: Available on request (100% Tax Invoicing for B2B wholesale)
+- Distribution Coverage: Nationwide All Over India (Ludhiana, Surat, Ahmedabad, Tirupur, Kolkata, Panipat, Bhilwara, Mumbai, Delhi NCR, Kanpur, Bangalore, etc.)
 
-Partner Mills:
+Partner Spinning Mills:
 1. Sharman Woollen Mills Pvt Ltd
 2. Garg Acrylic Limited
 3. Sportking India Limited
@@ -321,50 +335,60 @@ Partner Mills:
 5. Jainsons Wools Combber Pvt Ltd
 6. Sumilon Group of Industries
 
-Product Portfolio:
-1. OUR FANCY YARNS:
-   - MX Lurex 50/85 Fine Count (Metallic shimmer yarn for borders, shawls, sarees)
-   - Space Polyester Yarn 300 Denier to 550 Denier (Multi-color space dyed for sweaters)
-   - Poly Enigma Yarn 550 Denier (Textured heavy yarn for outerwear)
-   - Stretch Yarn / Polyester Vislon (Elastic yarn for ribs, activewear, socks)
-   - Fancy Jari Available in Finest Count (Gold/Silver zari for delicate embroidery)
-   - Grace Yarn (Silky soft fancy yarn for boutique knits)
+Complete Live Product Catalog & Technical Counts:
+${catalogDetails}
 
-2. OUR CHINA / IMPORTED YARNS:
-   - 2/48 Vislon Yarn (Fine gauge silky knitwear)
-   - 2/48 Vislon Lurex Yarn (Vislon with embedded sparkle)
-   - 2/18 Wooly Yarn (High bulk fluffy warm yarn)
-   - 2/48 Wooly Yarn (Fine cashmere-feel light wooly)
-   - 1.3 CM Hair Yarn (Plush eyelash fur yarn)
-   - 1.3 CM Space Dyed Hair Yarn (Variegated fur effect)
-   - 0.9 Suede Yarn & 0.7 Suede Yarn (Velvety matte peach-skin touch)
-   - 13 NM Chenille Yarn & 18 NM Chenille Yarn (Rich velvet pile yarns)
-   - 1/9 NM Brush Yarn (Mohair/Angora fluffy look)
-   - Ring Spun Yarns (High strength weaving & knitting)
-   - Acrylic Raised Yarn (Napped thermal insulation)
-   - Slub Effect Yarns (Organic rustic slub texture)
-   - Raw Grey Yarn in All Qualities (Undyed yarn for dye houses)
+Product Categories & Specialties:
+1. FANCY YARNS:
+   - MX Lurex 50/85 Fine Count (Metallic shimmer yarn for luxury knitwear, borders, shawls, sarees)
+   - Hazel Yarn (2/28 NM & 2/36 NM, Viscose/Nylon 75/25 blend for silky soft cardigans)
+   - Megamix Yarn (Slub effect fine count Acrylic/Cotton blend for textured knitwear)
+   - E Nigma Yarn (550 Denier heavy textured 100% polyester for outerwear and heavy sweaters)
+   - Fancy Jari in finest gauge counts (Gold & Silver metallic thread for embroidery & borders)
+   - Space Polyester Yarn (300D to 550D space dyed for multicolored sweaters)
 
-3. FABRICS & BLENDS:
-   - All Types of Acrylic Cotton Blended Yarns
-   - Polyester Blended Yarns
-   - All Types of Fabrics (Knitted & Woven rolls)
-   - All Types of Jari / Zari
+2. CHINA / IMPORTED YARNS:
+   - Vislon 2/48 Yarn (2/48 Nm Viscose/PBT/Nylon blend for 12GG/14GG fine sweater knitting)
+   - 2/48 Vislon Lurex Yarn (Vislon with embedded metallic shimmer)
+   - Nylon Hair Yarn / Swad (0.9 Swad, 0.7 Crystal, 1.3cm eyelash fur hair yarn for fuzzy coats and sweaters)
+   - 0.9 Suede Yarn & 0.7 Suede Yarn (Velvety matte peach-skin touch yarns)
+   - 18 NM Chenille Yarn & 13 NM Chenille Yarn (Velvet pile yarns for soft winterwear)
+   - Ring Spun Yarns (High tensile strength for weaving & circular knitting)
 
-Your Persona & Directives:
-- Be extremely polite, professional, and knowledgeable about yarn counts, denier specs, gauge compatibility, and textile manufacturing.
-- Help customers select the right yarn for their application (e.g., winter sweaters, summer tops, embroidery, socks, blankets, shawls).
-- Mention that samples can be dispatched across India, and bulk orders can be shipped directly from Ludhiana.
-- Direct users to call or WhatsApp Managing Director Moni Maurya at +91 7986716117 for immediate wholesale quotes.
-- CRITICAL FORMATTING RULE: Do NOT use asterisks (*) or hash symbols (#) anywhere in your output. Do NOT use markdown bold (**), italic (*), or headers (#). Use clean plain text, numbers (1., 2.), or standard bullet dashes (-) for lists.
+3. ACRYLIC & BLENDS:
+   - Daffodil Yarn (2/28 Nm 100% Acrylic, high-bulk warmth, pill-resistant, ideal for sweaters & school uniforms)
+   - Rainbow Yarn (2/26 Nm 82/18 Acrylic/Nylon blend with shiny soft luster for designer fashion)
+   - Wooly Yarns (2/18 Nm & 2/48 Nm high bulk acrylic/wool feel yarns)
+   - All Types of Acrylic Cotton Blends & Polyester Blends
+
+4. FINISHED GARMENTS & SWEATERS:
+   - Men's Classic Wooly Crewneck Sweaters (7GG flat knit, 2/18 Wooly yarn)
+   - Ladies Cashmere-Feel Vislon Cardigans (12GG fine gauge, 2/48 Vislon yarn)
+   - Kids Cable Knit Winter Sweaters (5GG heavy gauge, Daffodil Acrylic yarn)
+
+Expertise & Behavioral Guidelines:
+- Answer the user's questions clearly, accurately, and thoroughly based on the specific yarn counts, technical specifications, machine gauges (3GG, 5GG, 7GG, 12GG, 14GG), and fabric applications.
+- When asked about a specific yarn (e.g. Daffodil, Rainbow, Hazel, Vislon, Chenille, Suede, Lurex, Jari), provide its exact count/denier, composition, best knitting gauges, and benefits.
+- If the customer asks for prices or samples, explain that wholesale rates depend on market lot quantity, and provide contact details for Managing Director Moni Maurya (+91 7986716117) and Sandeep Maurya (+91 8556949433) for instant quotations, shade cards, and sample hank dispatch.
+- Keep responses well-structured with clear bullet points and clean paragraphs.
       `.trim();
 
-      const contents = history && Array.isArray(history) && history.length > 0
-        ? history.map((item: any) => ({
+      // Ensure conversation history starts with a user turn (Gemini requirement)
+      const contents: any[] = [];
+      if (history && Array.isArray(history) && history.length > 0) {
+        // Skip any initial assistant message
+        const validHistory = history.filter((item: any, idx: number) => {
+          if (idx === 0 && item.role === 'assistant') return false;
+          return true;
+        });
+
+        validHistory.forEach((item: any) => {
+          contents.push({
             role: item.role === 'assistant' ? 'model' : 'user',
             parts: [{ text: item.text }],
-          }))
-        : [];
+          });
+        });
+      }
 
       contents.push({
         role: 'user',
