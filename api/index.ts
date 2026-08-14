@@ -142,23 +142,24 @@ app.post(['/api/chat', '/chat'], async (req, res) => {
     contents.push({ role: 'user', parts: [{ text: message }] });
 
     let rawReplyText = '';
-    try {
-      const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
-        contents,
-        config: {
-          systemInstruction: SYSTEM_INSTRUCTION,
-        },
-      });
-      rawReplyText = response.text || '';
-    } catch (e: any) {
-      console.warn('Gemini 2.5 flash attempt error:', e?.message);
-      // Fallback attempt without config if needed
-      const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
-        contents,
-      });
-      rawReplyText = response.text || '';
+    const candidateModels = ['gemini-3.5-flash', 'gemini-3.1-flash-lite', 'gemini-flash-latest'];
+
+    for (const model of candidateModels) {
+      try {
+        const response = await ai.models.generateContent({
+          model,
+          contents,
+          config: {
+            systemInstruction: SYSTEM_INSTRUCTION,
+          },
+        });
+        if (response && response.text) {
+          rawReplyText = response.text;
+          break;
+        }
+      } catch (e: any) {
+        console.warn(`[GEMINI MODEL RETRY] ${model} attempt error:`, e?.message);
+      }
     }
 
     const replyText = (rawReplyText || "Namaste! I am here to assist with Ved Enterprises' wholesale yarn catalog. Call +91 7986716117 for direct mill rates.").replace(/[*#]/g, '');

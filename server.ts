@@ -371,17 +371,36 @@ Your Persona & Directives:
         parts: [{ text: message }],
       });
 
-      const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
-        contents,
-        config: {
-          systemInstruction,
-          temperature: 0.7,
-        },
-      });
+      const candidateModels = ['gemini-3.5-flash', 'gemini-3.1-flash-lite', 'gemini-flash-latest'];
+      let rawReplyText = '';
+      let lastError: any = null;
 
-      const rawReplyText = response.text || "I'm here to assist you with Ved Enterprises' yarn catalog! Feel free to ask about our Fancy Yarns, China Yarns, or Mill Partners.";
-      const replyText = rawReplyText.replace(/[*#]/g, '');
+      for (const model of candidateModels) {
+        try {
+          const response = await ai.models.generateContent({
+            model,
+            contents,
+            config: {
+              systemInstruction,
+              temperature: 0.7,
+            },
+          });
+          if (response && response.text) {
+            rawReplyText = response.text;
+            break;
+          }
+        } catch (mErr: any) {
+          console.warn(`[GEMINI MODEL RETRY] ${model} failed:`, mErr.message);
+          lastError = mErr;
+        }
+      }
+
+      if (!rawReplyText && lastError) {
+        throw lastError;
+      }
+
+      const finalReplyText = rawReplyText || "Namaste! I'm here to assist you with Ved Enterprises' yarn catalog! Feel free to ask about our Fancy Yarns, China Yarns, or Mill Partners.";
+      const replyText = finalReplyText.replace(/[*#]/g, '');
 
       return res.json({ text: replyText });
     } catch (err: any) {
