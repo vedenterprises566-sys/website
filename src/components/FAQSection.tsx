@@ -36,7 +36,7 @@ export const FAQSection: React.FC = () => {
   };
 
   return (
-    <section className="py-12 sm:py-16 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800">
+    <section id="faq-section" className="py-12 sm:py-16 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800">
       <SEOHead jsonLd={faqSchema} />
       <div className="max-w-4xl mx-auto px-4 sm:px-6">
         

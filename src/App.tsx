@@ -164,6 +164,8 @@ export default function App() {
       targetPath = '/card';
     } else if (sectionId === 'mills') {
       targetPath = '/mills';
+    } else if (sectionId === 'faq') {
+      targetPath = '/faq';
     } else if (sectionId === 'hero' || sectionId === 'home') {
       targetPath = '/';
     }
@@ -227,7 +229,7 @@ export default function App() {
           />
 
           {/* Main Content Area with Smooth Page Transitions & React Router */}
-          <main className={`pb-20 md:pb-0 transition-all duration-300 ${isHeaderMenuOpen ? 'filter blur-md pointer-events-none select-none opacity-80' : ''}`}>
+          <main className={`pb-16 md:pb-0 transition-all duration-300 ${isHeaderMenuOpen ? 'filter blur-md pointer-events-none select-none opacity-80' : ''}`}>
             <AnimatePresence mode="wait">
               <Routes location={location}>
                 <Route
@@ -279,6 +281,23 @@ export default function App() {
                       onSelectCategory={(cat) => handleCategoryChange(cat as any)}
                       onSelectPartnerYarns={handleSelectPartnerYarns}
                       scrollSection="card"
+                    />
+                  }
+                />
+                <Route
+                  path="/faq"
+                  element={
+                    <Home
+                      searchQuery={searchQuery}
+                      onSearchChange={setSearchQuery}
+                      onExploreCatalog={() => handleNavigate('catalog')}
+                      onOpenAi={() => {
+                        setAiTopic('');
+                        setIsAiOpen(true);
+                      }}
+                      onSelectCategory={(cat) => handleCategoryChange(cat as any)}
+                      onSelectPartnerYarns={handleSelectPartnerYarns}
+                      scrollSection="faq"
                     />
                   }
                 />
