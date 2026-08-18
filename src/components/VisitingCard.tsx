@@ -217,7 +217,7 @@ export const VisitingCard: React.FC = () => {
                 </div>
               </div>
               <a
-                href="https://maps.app.goo.gl/LKhc1zcfMGWREFB4A"
+                href="https://maps.app.goo.gl/QHHmjVPipA1LVwP48"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1 sm:gap-1.5 bg-slate-900 dark:bg-amber-500/20 hover:bg-slate-800 dark:hover:bg-amber-500/30 text-white dark:text-amber-400 font-bold px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-lg sm:rounded-xl text-[0.625rem] sm:text-[0.6875rem] transition-all shadow-xs shrink-0"
@@ -231,7 +231,7 @@ export const VisitingCard: React.FC = () => {
             <div className="w-full aspect-[4/3] sm:aspect-[2/1]">
               <iframe
                 title="Ved Enterprises Head Office — Ludhiana"
-                src="https://maps.google.com/maps?q=30.9138165,75.871582&t=&z=17&ie=UTF8&iwloc=&output=embed"
+                src="https://maps.google.com/maps?q=30.9138122,75.8714897&t=&z=17&ie=UTF8&iwloc=&output=embed"
                 className="w-full h-full border-0"
                 allowFullScreen
                 loading="lazy"
@@ -245,7 +245,7 @@ export const VisitingCard: React.FC = () => {
                 Near Shingar Cinema, Dharampura, Ludhiana
               </p>
               <a
-                href="https://maps.app.goo.gl/LKhc1zcfMGWREFB4A"
+                href="https://maps.app.goo.gl/QHHmjVPipA1LVwP48"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-[0.625rem] sm:text-[0.6875rem] text-slate-900 dark:text-amber-400 font-bold hover:underline whitespace-nowrap shrink-0"
