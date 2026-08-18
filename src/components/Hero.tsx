@@ -40,12 +40,16 @@ export const Hero: React.FC<HeroProps> = ({
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1, duration: 0.4 }}
-              className="inline-flex flex-wrap items-center gap-1.5 sm:gap-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-full px-3 sm:px-4 py-1 text-[0.6875rem] text-slate-700 dark:text-slate-300 font-semibold shadow-xs"
+              className="inline-flex items-start sm:items-center gap-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl sm:rounded-full px-3 sm:px-4 py-1.5 sm:py-1 text-slate-700 dark:text-slate-300 font-semibold shadow-xs max-w-full"
             >
-              <span className="w-2 h-2 rounded-full bg-red-600 animate-pulse shrink-0" />
-              <span className="uppercase tracking-wider font-bold text-[0.625rem] sm:text-[0.6875rem] text-slate-800 dark:text-slate-200">Wholesale Yarn, Winter Garment & Unstitched Fabrics Retailers</span>
+              <span className="w-2 h-2 rounded-full bg-red-600 animate-pulse shrink-0 mt-1 sm:mt-0" />
+              <span className="uppercase tracking-wider font-bold text-[0.625rem] sm:text-[0.6875rem] text-slate-800 dark:text-slate-200 leading-normal">
+                Wholesale Yarn, Winter Garment & Unstitched Fabrics Retailers
+              </span>
               <span className="text-slate-300 dark:text-slate-700 hidden sm:inline">|</span>
-              <span className="text-slate-600 dark:text-slate-400 hidden sm:inline">Ludhiana, Punjab, India</span>
+              <span className="text-slate-600 dark:text-slate-400 text-[0.6875rem] hidden sm:inline whitespace-nowrap">
+                Ludhiana, Punjab, India
+              </span>
             </motion.div>
 
             {/* Main Title with Clean Accent */}
