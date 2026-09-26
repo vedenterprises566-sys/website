@@ -205,10 +205,13 @@ export class AdminService {
       } catch (e) {}
     }
 
+    // 3. Dispatch pushed product data to Web3Forms
+    this.sendToWeb3Forms('add', payload).catch(() => {});
+
     // Always succeed if saved locally on the active server
     return {
       success: true,
-      message: `Product "${payload.name}" added to catalog successfully!`,
+      message: `Product "${payload.name}" added and pushed to Web3Forms successfully!`,
       productId: savedProductId,
     };
   }
@@ -268,9 +271,12 @@ export class AdminService {
       } catch (e) {}
     }
 
+    // 3. Dispatch pushed update to Web3Forms
+    this.sendToWeb3Forms('edit', payload).catch(() => {});
+
     return {
       success: true,
-      message: `Product "${payload.name}" updated successfully!`,
+      message: `Product "${payload.name}" updated and pushed to Web3Forms successfully!`,
       productId: id,
     };
   }
@@ -310,10 +316,92 @@ export class AdminService {
       } catch (e) {}
     }
 
+    // 4. Notify Web3Forms of deletion
+    this.sendToWeb3Forms('delete', { id, name }).catch(() => {});
+
     return {
       success: true,
       message: `Product "${name || id}" deleted successfully from catalog.`,
     };
+  }
+
+  /**
+   * Dispatches pushed product event (Add / Edit / Delete) directly to Web3Forms
+   */
+  static async sendToWeb3Forms(action: 'add' | 'edit' | 'delete', data: any): Promise<void> {
+    try {
+      const accessKey =
+        (import.meta as any).env?.VITE_WEB3FORMS_ACCESS_KEY ||
+        '2d09f16a-31b3-45bd-85f7-48ed312ff640';
+      if (!accessKey) return;
+
+      const isDelete = action === 'delete';
+      const actionLabel = action === 'add' ? 'Added' : action === 'edit' ? 'Updated' : 'Deleted';
+      const prodName = data.name || data.id || 'Product';
+      const subject = `[CATALOG ${action.toUpperCase()}] Product ${actionLabel}: ${prodName}`;
+
+      const uses = Array.isArray(data.recommendedUses)
+        ? data.recommendedUses.join(', ')
+        : (data.recommendedUses || 'N/A');
+      const feats = Array.isArray(data.features)
+        ? data.features.join(', ')
+        : (data.features || 'N/A');
+
+      const timestamp = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+
+      const messageBody = isDelete
+        ? `VED ENTERPRISES - CATALOG PRODUCT REMOVAL\n\n` +
+          `Action: Product Deleted\n` +
+          `Product ID: ${data.id || 'N/A'}\n` +
+          `Product Name: ${data.name || 'N/A'}\n` +
+          `Timestamp: ${timestamp}`
+        : `VED ENTERPRISES - CATALOG PRODUCT PUSH\n\n` +
+          `Action: Product ${actionLabel}\n` +
+          `Product ID: ${data.id || 'N/A'}\n` +
+          `Product Name: ${data.name || 'N/A'}\n` +
+          `Category: ${data.categoryLabel || data.category || 'N/A'}\n` +
+          `Count / Denier: ${data.countOrDenier || 'Standard'}\n` +
+          `Badge: ${data.badge || 'N/A'}\n` +
+          `Origin: ${data.origin || 'Ved Enterprises Ludhiana'}\n` +
+          `Popular For: ${data.popularFor || 'Wholesale Supply'}\n` +
+          `Recommended Uses: ${uses}\n` +
+          `Key Features: ${feats}\n` +
+          `Image URL: ${data.imageUrl || 'None'}\n` +
+          `Shade Card URL: ${data.shadeCardUrl || 'None'}\n` +
+          `Description: ${data.description || 'N/A'}\n\n` +
+          `Timestamp: ${timestamp}`;
+
+      const payload: Record<string, any> = {
+        access_key: accessKey,
+        subject,
+        from_name: 'Ved Enterprises Admin Portal',
+        name: 'Ved Enterprises Admin',
+        email: 'vedenterprises566@gmail.com',
+        'Catalog Action': action.toUpperCase(),
+        'Product ID': data.id || 'N/A',
+        'Product Name': prodName,
+        'Category': data.categoryLabel || data.category || 'N/A',
+        'Count or Denier': data.countOrDenier || 'N/A',
+        'Timestamp': timestamp,
+        message: messageBody,
+      };
+
+      if (!isDelete && data.imageUrl) {
+        payload['Image URL'] = data.imageUrl;
+      }
+      if (!isDelete && data.shadeCardUrl) {
+        payload['Shade Card URL'] = data.shadeCardUrl;
+      }
+
+      await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      console.log(`[AdminService] Web3Forms push dispatched for "${prodName}" (${action})`);
+    } catch (e: any) {
+      console.warn('[AdminService] Web3Forms push notice:', e.message);
+    }
   }
 
   /**

@@ -301,9 +301,67 @@ app.post(['/api/admin/save-product'], async (req, res) => {
       } catch (e) {}
     }
 
+    // Forward pushed product data to Web3Forms
+    const web3FormsKey = process.env.WEB3FORMS_ACCESS_KEY || '2d09f16a-31b3-45bd-85f7-48ed312ff640';
+    if (web3FormsKey) {
+      try {
+        const uses = Array.isArray(rawProduct.recommendedUses)
+          ? rawProduct.recommendedUses.join(', ')
+          : (rawProduct.recommendedUses || 'N/A');
+        const feats = Array.isArray(rawProduct.features)
+          ? rawProduct.features.join(', ')
+          : (rawProduct.features || 'N/A');
+        const timestamp = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+
+        const messageBody = `VED ENTERPRISES - CATALOG PRODUCT PUSH\n\n` +
+          `Action: Product Added / Updated\n` +
+          `Product ID: ${assignedId}\n` +
+          `Product Name: ${cleanName}\n` +
+          `Category: ${rawProduct.categoryLabel || rawProduct.category || 'N/A'}\n` +
+          `Count / Denier: ${rawProduct.countOrDenier || 'Standard'}\n` +
+          `Badge: ${rawProduct.badge || 'N/A'}\n` +
+          `Origin: ${rawProduct.origin || 'Ved Enterprises Ludhiana'}\n` +
+          `Popular For: ${rawProduct.popularFor || 'Wholesale Supply'}\n` +
+          `Recommended Uses: ${uses}\n` +
+          `Key Features: ${feats}\n` +
+          `Image URL: ${rawProduct.imageUrl || rawProduct.image || 'None'}\n` +
+          `Shade Card URL: ${rawProduct.shadeCardUrl || 'None'}\n` +
+          `Description: ${rawProduct.description || 'N/A'}\n\n` +
+          `Timestamp: ${timestamp}`;
+
+        const web3Payload: Record<string, any> = {
+          access_key: web3FormsKey,
+          subject: `[CATALOG PUSH] Product Saved: ${cleanName}`,
+          from_name: 'Ved Enterprises Admin Portal',
+          name: 'Ved Enterprises Admin',
+          email: 'vedenterprises566@gmail.com',
+          'Catalog Action': 'SAVE',
+          'Product ID': assignedId,
+          'Product Name': cleanName,
+          'Category': rawProduct.categoryLabel || rawProduct.category || 'N/A',
+          'Count or Denier': rawProduct.countOrDenier || 'N/A',
+          'Uses': uses,
+          'Features': feats,
+          'Timestamp': timestamp,
+          message: messageBody,
+        };
+
+        if (rawProduct.imageUrl || rawProduct.image) web3Payload['Image URL'] = rawProduct.imageUrl || rawProduct.image;
+        if (rawProduct.shadeCardUrl) web3Payload['Shade Card URL'] = rawProduct.shadeCardUrl;
+
+        await fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(web3Payload),
+        });
+      } catch (w3err: any) {
+        console.warn('[API WEB3FORMS PUSH NOTICE]', w3err.message);
+      }
+    }
+
     return res.json({
       success: true,
-      message: `Product "${cleanName}" saved successfully!`,
+      message: `Product "${cleanName}" saved and pushed to Web3Forms successfully!`,
       productId: assignedId,
     });
   } catch (err: any) {
@@ -324,6 +382,30 @@ app.post(['/api/admin/delete-product'], async (req, res) => {
           body: JSON.stringify({ action: 'delete', id, name }),
         });
       } catch (e) {}
+    }
+
+    // Forward deletion to Web3Forms
+    const web3FormsKey = process.env.WEB3FORMS_ACCESS_KEY || '2d09f16a-31b3-45bd-85f7-48ed312ff640';
+    if (web3FormsKey) {
+      try {
+        await fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            access_key: web3FormsKey,
+            subject: `[CATALOG REMOVAL] Product Deleted: ${name || id}`,
+            from_name: 'Ved Enterprises Admin Portal',
+            name: 'Ved Enterprises Admin',
+            email: 'vedenterprises566@gmail.com',
+            'Catalog Action': 'DELETE',
+            'Product ID': id || 'N/A',
+            'Product Name': name || id || 'N/A',
+            message: `Product "${name || id}" was deleted from the catalog on ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}`,
+          }),
+        });
+      } catch (w3err: any) {
+        console.warn('[API WEB3FORMS DELETE NOTICE]', w3err.message);
+      }
     }
 
     return res.json({

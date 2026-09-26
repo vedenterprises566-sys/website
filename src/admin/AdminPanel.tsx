@@ -353,7 +353,7 @@ export const AdminPanel: React.FC = () => {
 
     if (res.success) {
       if (editingProduct) {
-        showToast(`✅ "${formData.name}" updated successfully!`);
+        showToast(`✅ "${formData.name}" updated & pushed to Web3Forms!`);
         setProducts((prev) =>
           prev.map((p) =>
             p.id === editingProduct.id
@@ -365,7 +365,7 @@ export const AdminPanel: React.FC = () => {
           )
         );
       } else {
-        showToast(`✅ "${formData.name}" added to sheet! Website rebuild triggered.`);
+        showToast(`✅ "${formData.name}" added & pushed to Web3Forms!`);
         const optimisticProduct: Product = {
           id: res.productId || `prod-${Date.now()}`,
           ...(newProductPayload as any),

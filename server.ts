@@ -390,6 +390,28 @@ Address: # 66/2, Near Shingar Cinema, Dharampura, Ludhiana - 141008
         }).catch((err: any) => console.warn('[APPS SCRIPT DELETE NOTICE]', err.message));
       }
 
+      // Forward deletion to Web3Forms
+      const web3FormsKey = process.env.WEB3FORMS_ACCESS_KEY || '2d09f16a-31b3-45bd-85f7-48ed312ff640';
+      if (web3FormsKey) {
+        fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            access_key: web3FormsKey,
+            subject: `[CATALOG REMOVAL] Product Deleted: ${name || id}`,
+            from_name: 'Ved Enterprises Admin Portal',
+            name: 'Ved Enterprises Admin',
+            email: 'vedenterprises566@gmail.com',
+            'Catalog Action': 'DELETE',
+            'Product ID': id || 'N/A',
+            'Product Name': name || id || 'N/A',
+            message: `Product "${name || id}" was deleted from the catalog on ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}`,
+          }),
+        }).then(r => r.json()).then(w3res => {
+          console.log(`[WEB3FORMS DELETE] Dispatched deletion notice for "${name || id}"`);
+        }).catch((w3err) => console.warn('[WEB3FORMS DELETE NOTICE]', w3err.message));
+      }
+
       return res.json({
         success: true,
         deleted: true,
@@ -477,9 +499,63 @@ Address: # 66/2, Near Shingar Cinema, Dharampura, Ludhiana - 141008
         }).catch((err: any) => console.warn('[APPS SCRIPT FORWARD NOTICE]', err.message));
       }
 
+      // Forward pushed product data to Web3Forms
+      const web3FormsKey = process.env.WEB3FORMS_ACCESS_KEY || '2d09f16a-31b3-45bd-85f7-48ed312ff640';
+      if (web3FormsKey) {
+        const isUpdate = existingIdx >= 0;
+        const actionLabel = isUpdate ? 'Updated' : 'Added';
+        const uses = Array.isArray(product.recommendedUses) ? product.recommendedUses.join(', ') : (product.recommendedUses || 'N/A');
+        const feats = Array.isArray(product.features) ? product.features.join(', ') : (product.features || 'N/A');
+        const timestamp = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+
+        const messageBody = `VED ENTERPRISES - CATALOG PRODUCT PUSH\n\n` +
+          `Action: Product ${actionLabel}\n` +
+          `Product ID: ${product.id}\n` +
+          `Product Name: ${product.name}\n` +
+          `Category: ${product.categoryLabel} (${product.category})\n` +
+          `Count / Denier: ${product.countOrDenier}\n` +
+          `Badge: ${product.badge || 'N/A'}\n` +
+          `Origin: ${product.origin || 'Ved Enterprises Ludhiana'}\n` +
+          `Popular For: ${product.popularFor || 'Wholesale Supply'}\n` +
+          `Recommended Uses: ${uses}\n` +
+          `Key Features: ${feats}\n` +
+          `Image URL: ${product.imageUrl || 'None'}\n` +
+          `Shade Card URL: ${product.shadeCardUrl || 'None'}\n` +
+          `Description: ${product.description || 'N/A'}\n\n` +
+          `Timestamp: ${timestamp}`;
+
+        const web3Payload: Record<string, any> = {
+          access_key: web3FormsKey,
+          subject: `[CATALOG ${isUpdate ? 'UPDATE' : 'ADD'}] Product ${actionLabel}: ${product.name}`,
+          from_name: 'Ved Enterprises Admin Portal',
+          name: 'Ved Enterprises Admin',
+          email: 'vedenterprises566@gmail.com',
+          'Catalog Action': isUpdate ? 'UPDATE' : 'ADD',
+          'Product ID': product.id,
+          'Product Name': product.name,
+          'Category': product.categoryLabel,
+          'Count or Denier': product.countOrDenier,
+          'Uses': uses,
+          'Features': feats,
+          'Timestamp': timestamp,
+          message: messageBody,
+        };
+
+        if (product.imageUrl) web3Payload['Image URL'] = product.imageUrl;
+        if (product.shadeCardUrl) web3Payload['Shade Card URL'] = product.shadeCardUrl;
+
+        fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(web3Payload),
+        }).then(r => r.json()).then(w3res => {
+          console.log(`[WEB3FORMS PUSH SUCCESS] Product "${product.name}" pushed to Web3Forms`);
+        }).catch((w3err) => console.warn('[WEB3FORMS PUSH NOTICE]', w3err.message));
+      }
+
       return res.json({
         success: true,
-        message: `Product "${product.name}" saved to catalog.json successfully!`,
+        message: `Product "${product.name}" saved to catalog.json and pushed to Web3Forms successfully!`,
         productId: product.id,
         product,
       });
