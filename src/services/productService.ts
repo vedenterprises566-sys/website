@@ -227,9 +227,20 @@ export class ProductService {
     // 2. Load disk/static catalog.json as primary baseline
     let baseProducts: Product[] = [];
     try {
-      const response = await fetch(`/catalog.json?v=${now}`, {
-        headers: { 'Accept': 'application/json', 'Cache-Control': 'no-cache' },
-      });
+      // Try /api/admin/catalog first (served fresh from disk by Express, bypasses Vite static cache)
+      // Fall back to /catalog.json with cache-busting
+      let response: Response | null = null;
+      try {
+        response = await fetch('/api/admin/catalog', {
+          headers: { 'Accept': 'application/json', 'Cache-Control': 'no-cache' },
+        });
+        if (!response.ok) response = null;
+      } catch (_) {}
+      if (!response) {
+        response = await fetch(`/catalog.json?v=${now}`, {
+          headers: { 'Accept': 'application/json', 'Cache-Control': 'no-cache' },
+        });
+      }
       if (response.ok) {
         const rawData = await response.json();
         if (Array.isArray(rawData) && rawData.length > 0) {

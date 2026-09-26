@@ -570,6 +570,46 @@ Address: # 66/2, Near Shingar Cinema, Dharampura, Ludhiana - 141008
     res.json(getDeletedKeys());
   });
 
+  // Serve catalog.json directly from disk with no-cache headers (bypasses Vite static cache)
+  app.get('/catalog.json', (req, res) => {
+    const catalogPath = path.join(process.cwd(), 'public', 'catalog.json');
+    try {
+      if (!fs.existsSync(catalogPath)) {
+        return res.status(404).json([]);
+      }
+      const raw = fs.readFileSync(catalogPath, 'utf8');
+      const catalog = JSON.parse(raw);
+      res.setHeader('Content-Type', 'application/json');
+      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
+      return res.json(catalog);
+    } catch (e: any) {
+      console.error('[CATALOG SERVE ERROR]', e.message);
+      return res.status(500).json([]);
+    }
+  });
+
+  // API alias for catalog.json - always fresh from disk (preferred by productService)
+  app.get('/api/admin/catalog', (req, res) => {
+    const catalogPath = path.join(process.cwd(), 'public', 'catalog.json');
+    try {
+      if (!fs.existsSync(catalogPath)) {
+        return res.status(200).json([]);
+      }
+      const raw = fs.readFileSync(catalogPath, 'utf8');
+      const catalog = JSON.parse(raw);
+      res.setHeader('Content-Type', 'application/json');
+      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
+      return res.json(catalog);
+    } catch (e: any) {
+      console.error('[CATALOG API SERVE ERROR]', e.message);
+      return res.status(200).json([]);
+    }
+  });
+
   // API Route: AI Assistant Endpoint
   app.post('/api/chat', async (req, res) => {
     try {

@@ -136,13 +136,40 @@ export const AdminPanel: React.FC = () => {
     setIsLoading(true);
     try {
       const { products: fetchedProducts, source } = await AdminService.getProducts();
-      setProducts(fetchedProducts);
+
+      // Always directly merge localStorage custom products to guarantee they persist on refresh
+      const customProducts = AdminService.getCustomProducts();
+      const deletedKeys = AdminService.getDeletedKeys();
+
+      let merged = [...fetchedProducts];
+
+      if (customProducts.length > 0) {
+        customProducts.forEach((customP) => {
+          // Skip if product is marked as deleted
+          const cId = String(customP.id || '').toLowerCase().trim();
+          const cName = String(customP.name || '').toLowerCase().trim();
+          if (deletedKeys.has(cId) || deletedKeys.has(cName)) return;
+
+          const existingIdx = merged.findIndex((p) => {
+            const pId = String(p.id || '').toLowerCase().trim();
+            const pName = String(p.name || '').toLowerCase().trim();
+            return (cId && pId === cId) || (cName && pName === cName);
+          });
+          if (existingIdx >= 0) {
+            merged[existingIdx] = { ...merged[existingIdx], ...customP };
+          } else {
+            merged.unshift(customP);
+          }
+        });
+      }
+
+      setProducts(merged);
       setDataSource(source);
       if (source === 'app-script') {
         setConnectionStatus({
           tested: true,
           success: true,
-          message: `Connected: Loaded ${fetchedProducts.length} live products from Google Sheets catalog.`,
+          message: `Connected: Loaded ${merged.length} live products from Google Sheets catalog.`,
         });
       }
     } catch (err: any) {
