@@ -55,8 +55,8 @@ export const AdminPanel: React.FC = () => {
   const [selectedCategoryTab, setSelectedCategoryTab] = useState<YarnCategory | 'all'>('all');
   const [dataSource, setDataSource] = useState<'app-script' | 'catalog'>('catalog');
 
-  // Apps Script configuration state
-  const [scriptUrl, setScriptUrl] = useState<string>('');
+  // Apps Script configuration state (preconfigured by default)
+  const [scriptUrl, setScriptUrl] = useState<string>(() => AdminService.getScriptUrl());
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
   const [newPasswordInput, setNewPasswordInput] = useState<string>('');
   const [passwordChangeSuccess, setPasswordChangeSuccess] = useState<string>('');

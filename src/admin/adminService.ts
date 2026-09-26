@@ -3,6 +3,9 @@ import { ProductService } from '../services/productService';
 
 const SCRIPT_URL_STORAGE_KEY = 'ved_apps_script_url';
 
+export const DEFAULT_APPS_SCRIPT_URL =
+  'https://script.google.com/macros/s/AKfycbzoPJrjjrEUjaIu2QAy-AAtk8eZyyojVh_aF_NviDFU5LuDieRUXfepJhmGs66H2uZnxA/exec';
+
 export interface AdminApiResponse {
   success: boolean;
   message: string;
@@ -13,11 +16,15 @@ export interface AdminApiResponse {
 
 export class AdminService {
   /**
-   * Retrieves the configured Google Apps Script Web App URL from localStorage
+   * Retrieves the configured Google Apps Script Web App URL from localStorage, env, or default
    */
   static getScriptUrl(): string {
-    if (typeof window === 'undefined') return '';
-    return localStorage.getItem(SCRIPT_URL_STORAGE_KEY) || (import.meta as any).env?.VITE_APPS_SCRIPT_URL || '';
+    if (typeof window === 'undefined') return DEFAULT_APPS_SCRIPT_URL;
+    const stored = localStorage.getItem(SCRIPT_URL_STORAGE_KEY);
+    if (stored && stored.trim()) return stored.trim();
+    const envUrl = (import.meta as any).env?.VITE_APPS_SCRIPT_URL;
+    if (envUrl && envUrl.trim()) return envUrl.trim();
+    return DEFAULT_APPS_SCRIPT_URL;
   }
 
   /**
@@ -25,7 +32,7 @@ export class AdminService {
    */
   static setScriptUrl(url: string): void {
     if (typeof window === 'undefined') return;
-    localStorage.setItem(SCRIPT_URL_STORAGE_KEY, url.trim());
+    localStorage.setItem(SCRIPT_URL_STORAGE_KEY, (url || DEFAULT_APPS_SCRIPT_URL).trim());
   }
 
   /**
@@ -40,7 +47,7 @@ export class AdminService {
    * Tests connection to the Google Apps Script Web App URL
    */
   static async testConnection(urlOverride?: string): Promise<{ success: boolean; message: string; count?: number }> {
-    const url = (urlOverride || this.getScriptUrl()).trim();
+    const url = (urlOverride || this.getScriptUrl() || DEFAULT_APPS_SCRIPT_URL).trim();
     if (!url) {
       return { success: false, message: 'Apps Script Web App URL is not configured yet.' };
     }
