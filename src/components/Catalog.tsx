@@ -301,65 +301,6 @@ export const Catalog: React.FC<CatalogProps> = ({
               <RefreshCw className="w-3.5 h-3.5" /> Try Reloading Catalog
             </button>
           </div>
-        ) : mainSection === 'garments' ? (
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-white dark:bg-slate-900 rounded-3xl p-8 sm:p-12 border border-slate-200 dark:border-slate-800 shadow-xl space-y-6 text-center max-w-3xl mx-auto my-4 relative overflow-hidden"
-          >
-            <div className="inline-flex items-center gap-2 bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest shadow-xs">
-              <Clock className="w-4 h-4 text-amber-500 animate-pulse" />
-              <span>Finished Winter Wear Collection • Coming Soon</span>
-            </div>
-
-            <div className="space-y-3">
-              <h3 className="text-2xl sm:text-4xl font-extrabold font-serif text-slate-900 dark:text-white tracking-tight">
-                Garment & Winter Wear Collection <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 via-amber-500 to-red-700">
-                  Coming Soon
-                </span>
-              </h3>
-              <p className="text-slate-600 dark:text-slate-300 text-xs sm:text-sm max-w-xl mx-auto leading-relaxed">
-                We are currently preparing our exclusive wholesale showcase of finished winter wear, cardigans, turtlenecks, and knitted pullovers—crafted from Ved Enterprises' premium imported mill yarns (Vislon, Wooly, Chenille & Daffodil).
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-left pt-2">
-              <div className="bg-slate-50 dark:bg-slate-800/60 p-4 rounded-2xl border border-slate-200 dark:border-slate-700/60 space-y-1.5">
-                <div className="w-8 h-8 bg-red-100 dark:bg-red-950/80 text-red-600 dark:text-red-400 rounded-xl flex items-center justify-center font-bold text-xs">
-                  🧥
-                </div>
-                <h4 className="text-xs font-bold text-slate-900 dark:text-white uppercase">Men & Ladies Winter Wear</h4>
-                <p className="text-[0.6875rem] text-slate-500 dark:text-slate-400 leading-relaxed">Pullovers, cardigans, cable knits, and turtlenecks in 3GG to 14GG flat knits.</p>
-              </div>
-              <div className="bg-slate-50 dark:bg-slate-800/60 p-4 rounded-2xl border border-slate-200 dark:border-slate-700/60 space-y-1.5">
-                <div className="w-8 h-8 bg-amber-100 dark:bg-amber-950/80 text-amber-600 dark:text-amber-400 rounded-xl flex items-center justify-center font-bold text-xs">
-                  ✨
-                </div>
-                <h4 className="text-xs font-bold text-slate-900 dark:text-white uppercase">Ved Quality Yarns</h4>
-                <p className="text-[0.6875rem] text-slate-500 dark:text-slate-400 leading-relaxed">Knitted directly using our imported Vislon, Wooly, Chenille, and Daffodil yarns.</p>
-              </div>
-              <div className="bg-slate-50 dark:bg-slate-800/60 p-4 rounded-2xl border border-slate-200 dark:border-slate-700/60 space-y-1.5">
-                <div className="w-8 h-8 bg-emerald-100 dark:bg-emerald-950/80 text-emerald-600 dark:text-emerald-400 rounded-xl flex items-center justify-center font-bold text-xs">
-                  🚛
-                </div>
-                <h4 className="text-xs font-bold text-slate-900 dark:text-white uppercase">Ludhiana Dispatch</h4>
-                <p className="text-[0.6875rem] text-slate-500 dark:text-slate-400 leading-relaxed">Direct bulk lot supply from Ludhiana knitwear manufacturing hubs across India.</p>
-              </div>
-            </div>
-
-            <div className="pt-4 border-t border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-center gap-3">
-              <a
-                href="https://wa.me/917986716117?text=Hello%20Ved%20Enterprises,%20I%20have%20an%20inquiry%20regarding%20finished%20winter%20wear%20and%20knitted%20garments."
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-3 rounded-2xl text-xs shadow-md transition-all inline-flex items-center gap-2"
-              >
-                <MessageSquare className="w-4 h-4" />
-                <span>Direct WhatsApp Winter Wear Inquiry (+91 7986716117)</span>
-              </a>
-            </div>
-          </motion.div>
         ) : filteredProducts.length === 0 ? (
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
@@ -367,7 +308,7 @@ export const Catalog: React.FC<CatalogProps> = ({
             className="text-center py-16 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-8"
           >
             <p className="text-slate-500 dark:text-slate-400 text-base font-medium">
-              No yarns matched your filter criteria.
+              No products matched your filter criteria.
             </p>
             <motion.button
               whileHover={{ scale: 1.05 }}
@@ -377,17 +318,44 @@ export const Catalog: React.FC<CatalogProps> = ({
                 onCategoryChange('all');
                 setSelectedTag(null);
               }}
-              className="mt-4 bg-red-600 text-white text-xs font-bold px-4 py-2 rounded-xl hover:bg-red-700 transition-colors"
+              className="mt-4 bg-red-600 text-white text-xs font-bold px-4 py-2 rounded-xl hover:bg-red-700 transition-colors cursor-pointer"
             >
               Reset All Filters
             </motion.button>
           </motion.div>
         ) : (
-          <motion.div
-            layout
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-7"
-          >
-            <AnimatePresence mode="popLayout">
+          <div className="space-y-6">
+            {/* Live Winter Wear Showcase Banner if in garments section */}
+            {mainSection === 'garments' && (
+              <div className="bg-gradient-to-r from-red-950 via-slate-900 to-amber-950 rounded-2xl p-5 sm:p-7 text-white border border-red-800/40 shadow-lg flex flex-col md:flex-row items-center justify-between gap-4">
+                <div className="space-y-1.5 text-center md:text-left">
+                  <span className="inline-flex items-center gap-1.5 bg-red-600 text-white px-3 py-0.5 rounded-full text-[0.625rem] font-black uppercase tracking-wider">
+                    <Shirt className="w-3 h-3 text-amber-300" /> Live Wholesale Collection
+                  </span>
+                  <h3 className="text-xl sm:text-2xl font-black font-serif tracking-tight">
+                    Finished Winter Wear & Knitwear Showcase
+                  </h3>
+                  <p className="text-xs text-slate-300 max-w-2xl leading-relaxed">
+                    Bulk wholesale supply of Men's Crewnecks, Ladies Cardigans, Turtlenecks, Cable Knits & Accessories manufactured directly from Ved imported mill yarns (Vislon, Wooly & Daffodil) in Ludhiana.
+                  </p>
+                </div>
+                <a
+                  href="https://wa.me/917986716117?text=Hello%20Ved%20Enterprises,%20I%20have%20an%20inquiry%20regarding%20bulk%20finished%20winter%20wear%20orders."
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="shrink-0 bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-3 rounded-xl text-xs shadow-md transition-all inline-flex items-center gap-2 cursor-pointer"
+                >
+                  <MessageSquare className="w-4 h-4" />
+                  <span>WhatsApp Garment Desk</span>
+                </a>
+              </div>
+            )}
+
+            <motion.div
+              layout
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-7"
+            >
+              <AnimatePresence mode="popLayout">
               {filteredProducts.map((product, idx) => {
                 const isInBasket = inquiryItemIds.includes(product.id);
                 const resolvedPhoto = product.pictureUrl
@@ -545,7 +513,8 @@ export const Catalog: React.FC<CatalogProps> = ({
               })}
             </AnimatePresence>
           </motion.div>
-        )}
+        </div>
+      )}
 
       </div>
 

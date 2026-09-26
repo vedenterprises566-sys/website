@@ -77,25 +77,43 @@ export function parseLiveGoogleSheetProducts(csvText: string): Product[] {
 
     if (!rawName || rawName.toLowerCase().includes('connection test') || rawName.toLowerCase().includes('woolly')) return;
 
+    const lowerDesc = (rawName + ' ' + description).toLowerCase();
+    const isGarment =
+      lowerDesc.includes('garment') ||
+      lowerDesc.includes('sweater') ||
+      lowerDesc.includes('cardigan') ||
+      lowerDesc.includes('winter wear') ||
+      lowerDesc.includes('winterwear') ||
+      lowerDesc.includes('pullover') ||
+      lowerDesc.includes('muffler') ||
+      lowerDesc.includes('vest') ||
+      lowerDesc.includes('knitwear') ||
+      lowerDesc.includes('coat');
+
     let cleanName = rawName.replace(/_\d{8}_\d{6}$/g, '').trim();
-    if (!cleanName.toLowerCase().includes('yarn')) {
+    if (!isGarment && !cleanName.toLowerCase().includes('yarn')) {
       cleanName += ' Yarn';
     }
 
-    let countOrDenier = 'Standard Count';
-    const countMatch = description.match(/(\d+\/\d+\s*NM|\d+\s*NM|\d+\s*Denier|\d+%\s*Acrylic|\d+\s*CM)/i);
+    let countOrDenier = isGarment ? 'Standard Size' : 'Standard Count';
+    const countMatch = description.match(/(\d+\/\d+\s*NM|\d+\s*NM|\d+\s*Denier|\d+%\s*Acrylic|\d+\s*CM|\d+GG)/i);
     if (countMatch) {
       countOrDenier = countMatch[0];
     } else if (cleanName.includes('2_18') || cleanName.includes('2_48')) {
       countOrDenier = '2/18 & 2/48 Fine';
     }
 
-    const lowerDesc = (cleanName + ' ' + description).toLowerCase();
     let category: YarnCategory = 'fancy';
-    if (lowerDesc.includes('china') || lowerDesc.includes('vislon') || lowerDesc.includes('woolly') || lowerDesc.includes('suede') || lowerDesc.includes('chenille') || lowerDesc.includes('nylon hair')) {
+    let categoryLabel = 'Fancy Yarn';
+    if (isGarment) {
+      category = 'garments';
+      categoryLabel = 'Winter Wear';
+    } else if (lowerDesc.includes('china') || lowerDesc.includes('vislon') || lowerDesc.includes('woolly') || lowerDesc.includes('suede') || lowerDesc.includes('chenille') || lowerDesc.includes('nylon hair')) {
       category = 'china';
+      categoryLabel = 'China / Imported Yarn';
     } else if (lowerDesc.includes('acrylic') || lowerDesc.includes('daffodil') || lowerDesc.includes('rainbow')) {
       category = 'acrylic-blends';
+      categoryLabel = 'Acrylic & Blends';
     }
 
     let localAssetPath = '';
@@ -113,9 +131,9 @@ export function parseLiveGoogleSheetProducts(csvText: string): Product[] {
       id: `live-sheet-${idx + 1}-${cleanName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
       name: cleanName,
       category,
-      categoryLabel: category === 'china' ? 'China / Imported Yarn' : category === 'acrylic-blends' ? 'Acrylic & Blends' : 'Fancy Yarn',
+      categoryLabel,
       countOrDenier,
-      description: description || 'High quality wholesale yarn from Ved Enterprises Ludhiana.',
+      description: description || (isGarment ? 'Premium finished winter wear manufactured by Ved Enterprises Ludhiana.' : 'High quality wholesale yarn from Ved Enterprises Ludhiana.'),
       recommendedUses: ['Winter Wear', 'Knitwear', 'Weaving', 'Fashion Garments'],
       features: ['Live Sheet Auto-Sync', 'Direct Mill Wholesale', 'Vibrant Dyes'],
       sampleAvailable: true,

@@ -559,6 +559,9 @@ export default function App() {
                         setAiTopic('Garments & Winter Wear Manufacturing Inquiry');
                         setIsAiOpen(true);
                       }}
+                      onAddToBasket={handleAddToBasket}
+                      inquiryItemIds={basket.map((b) => b.product.id)}
+                      onGoToBasket={() => handleNavigate('inquiry')}
                     />
                   }
                 />
