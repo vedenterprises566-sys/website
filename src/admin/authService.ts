@@ -9,8 +9,6 @@ const VALID_USERNAMES = [
   'admin',
   'admin@ved.enterprises',
   'vedenterprises566@gmail.com',
-  'moni',
-  'sandeep',
 ];
 
 export interface AuthSession {
@@ -104,23 +102,19 @@ export class AuthService {
     }
 
     const isUserValid =
-      VALID_USERNAMES.includes(cleanUser) ||
-      cleanUser.includes('admin') ||
-      cleanUser === 'ved';
+      cleanUser === 'admin' ||
+      cleanUser === 'admin@ved.enterprises' ||
+      cleanUser === 'vedenterprises566@gmail.com';
 
     const currentPass = this.getActivePassword();
 
-    // Accept active password or emergency master key
-    const isPassValid =
-      cleanPass === currentPass ||
-      cleanPass === DEFAULT_PASSWORD ||
-      cleanPass === 'ved123' ||
-      cleanPass === 'vedadmin2026';
+    // Check against active password
+    const isPassValid = cleanPass === currentPass;
 
     if (!isUserValid || !isPassValid) {
       return {
         success: false,
-        message: 'Invalid username or password. Please verify your credentials.',
+        message: 'Invalid username or password. Access denied.',
       };
     }
 

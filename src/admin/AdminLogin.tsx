@@ -9,8 +9,6 @@ import {
   ShieldCheck,
   ArrowLeft,
   AlertCircle,
-  KeyRound,
-  CheckCircle2,
 } from 'lucide-react';
 import { AuthService } from './authService';
 import { getMainWebsiteUrl } from './adminUtils';
@@ -20,7 +18,7 @@ interface AdminLoginProps {
 }
 
 export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess }) => {
-  const [username, setUsername] = useState<string>('admin');
+  const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [rememberMe, setRememberMe] = useState<boolean>(true);
@@ -45,12 +43,6 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess }) => {
         setTimeout(() => setShake(false), 600);
       }
     }, 400);
-  };
-
-  const handleFillDemo = () => {
-    setUsername('admin');
-    setPassword('admin@ved2026');
-    setErrorMsg('');
   };
 
   return (
@@ -110,7 +102,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess }) => {
           )}
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} autoComplete="off" className="space-y-4">
             {/* Username / Email */}
             <div>
               <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
@@ -122,9 +114,13 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess }) => {
                   type="text"
                   required
                   autoFocus
+                  autoComplete="off"
+                  autoCorrect="off"
+                  autoCapitalize="none"
+                  spellCheck={false}
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  placeholder="admin or admin@ved.enterprises"
+                  placeholder="Enter administrator username"
                   className="w-full pl-10 pr-4 py-2.5 bg-slate-50 hover:bg-slate-100/70 focus:bg-white border border-slate-200 rounded-xl text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all placeholder:text-slate-400"
                 />
               </div>
@@ -142,6 +138,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess }) => {
                 <input
                   type={showPassword ? 'text' : 'password'}
                   required
+                  autoComplete="new-password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter admin password"
@@ -193,27 +190,10 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess }) => {
             </motion.button>
           </form>
 
-          {/* Quick Demo Credentials Pill */}
-          <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-3.5 text-xs space-y-2">
-            <div className="flex items-center justify-between">
-              <span className="font-bold text-slate-700 flex items-center gap-1.5">
-                <KeyRound className="w-3.5 h-3.5 text-amber-600" />
-                Default Access Credentials
-              </span>
-              <button
-                type="button"
-                onClick={handleFillDemo}
-                className="text-[0.6875rem] font-bold text-red-600 hover:text-red-700 hover:underline cursor-pointer"
-              >
-                Auto-fill
-              </button>
-            </div>
-            <div className="font-mono text-[0.6875rem] text-slate-500 space-y-0.5 bg-white p-2 rounded-lg border border-slate-200/60">
-              <div>Username: <strong className="text-slate-800">admin</strong></div>
-              <div>Password: <strong className="text-slate-800">admin@ved2026</strong></div>
-            </div>
-            <p className="text-[0.625rem] text-slate-400">
-              * Password can be customized inside the Admin Settings at any time.
+          {/* Discreet Security Notice */}
+          <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-3 text-center">
+            <p className="text-[0.6875rem] text-slate-500 font-medium">
+              Restricted portal. Authorized Ved Enterprises administrators only.
             </p>
           </div>
         </motion.div>
