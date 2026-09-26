@@ -7,7 +7,7 @@ const CACHE_DURATION_MS = 60 * 1000; // 1 minute in-memory cache
 
 const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/13dYmzJoPkpLGCDt7gZ7znKJARPSknghUzcEmG2PKtFM/export?format=csv';
 
-function getDeletedKeysFromStorage(): Set<string> {
+export function getDeletedKeysFromStorage(): Set<string> {
   const set = new Set<string>();
   try {
     if (typeof window !== 'undefined' && window.localStorage) {
@@ -24,6 +24,19 @@ function getDeletedKeysFromStorage(): Set<string> {
     }
   } catch (e) {}
   return set;
+}
+
+export function getCustomProductsFromStorage(): Product[] {
+  try {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const stored = localStorage.getItem('ved_custom_products');
+      if (stored) {
+        const list = JSON.parse(stored);
+        if (Array.isArray(list)) return list;
+      }
+    }
+  } catch (e) {}
+  return [];
 }
 
 function isProductDeleted(p: { id?: string; name?: string }, deletedKeys: Set<string>): boolean {
@@ -175,11 +188,21 @@ export function parseLiveGoogleSheetProducts(csvText: string): Product[] {
 
 export class ProductService {
   /**
+   * Invalidates in-memory catalog cache
+   */
+  static clearCache(): void {
+    cachedCatalog = null;
+    lastFetchTime = 0;
+  }
+
+  /**
    * Loads product catalog from live Google Sheet CSV or static catalog with fallback
    */
   static async getCatalog(forceRefresh = false): Promise<Product[]> {
     const now = Date.now();
-    if (!forceRefresh && cachedCatalog && now - lastFetchTime < CACHE_DURATION_MS) {
+    if (forceRefresh) {
+      this.clearCache();
+    } else if (cachedCatalog && now - lastFetchTime < CACHE_DURATION_MS) {
       return cachedCatalog;
     }
 
@@ -271,7 +294,27 @@ export class ProductService {
       console.warn('[ProductService] Live Google Sheet fetch notice:', sheetErr);
     }
 
-    // 4. Filter all products against deletedKeys
+    // 4. Merge persistent custom products from localStorage (persists on live site)
+    const customProducts = getCustomProductsFromStorage();
+    if (customProducts.length > 0) {
+      customProducts.forEach((customP) => {
+        const cleanName = (customP.name || '').toLowerCase().trim();
+        const cleanId = String(customP.id || '').toLowerCase().trim();
+        const existingIdx = baseProducts.findIndex((p) => {
+          const pId = String(p.id || '').toLowerCase().trim();
+          const pName = (p.name || '').toLowerCase().trim();
+          return (cleanId && pId === cleanId) || (cleanName && pName === cleanName);
+        });
+
+        if (existingIdx >= 0) {
+          baseProducts[existingIdx] = { ...baseProducts[existingIdx], ...customP };
+        } else {
+          baseProducts.unshift(customP);
+        }
+      });
+    }
+
+    // 5. Filter all products against deletedKeys
     const filteredProducts = baseProducts.filter((p) => !isProductDeleted(p, deletedKeys));
 
     cachedCatalog = filteredProducts;

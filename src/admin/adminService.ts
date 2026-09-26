@@ -127,6 +127,65 @@ export class AdminService {
   }
 
   /**
+   * Helper to retrieve locally added/custom products from localStorage
+   */
+  static getCustomProducts(): Product[] {
+    try {
+      if (typeof window === 'undefined') return [];
+      const stored = localStorage.getItem('ved_custom_products');
+      if (stored) {
+        const list = JSON.parse(stored);
+        if (Array.isArray(list)) return list;
+      }
+    } catch (e) {}
+    return [];
+  }
+
+  static saveCustomProduct(product: Partial<Product>): void {
+    try {
+      if (typeof window === 'undefined') return;
+      const list = this.getCustomProducts();
+      const targetId = String(product.id || '').toLowerCase().trim();
+      const targetName = String(product.name || '').toLowerCase().trim();
+
+      const filtered = list.filter((p) => {
+        const pId = String(p.id || '').toLowerCase().trim();
+        const pName = String(p.name || '').toLowerCase().trim();
+        const matchId = targetId && (pId === targetId);
+        const matchName = targetName && (pName === targetName);
+        return !matchId && !matchName;
+      });
+
+      filtered.unshift(product as Product);
+      localStorage.setItem('ved_custom_products', JSON.stringify(filtered));
+
+      // Ensure un-deleted
+      if (product.id || product.name) {
+        this.unmarkDeletedKey(product.id || '', product.name);
+      }
+    } catch (e) {}
+  }
+
+  static removeCustomProduct(id: string, name?: string): void {
+    try {
+      if (typeof window === 'undefined') return;
+      const list = this.getCustomProducts();
+      const targetId = String(id || '').toLowerCase().trim();
+      const targetName = String(name || '').toLowerCase().trim();
+
+      const filtered = list.filter((p) => {
+        const pId = String(p.id || '').toLowerCase().trim();
+        const pName = String(p.name || '').toLowerCase().trim();
+        const matchId = targetId && (pId === targetId || pId.includes(targetId) || targetId.includes(pId));
+        const matchName = targetName && (pName === targetName);
+        return !matchId && !matchName;
+      });
+
+      localStorage.setItem('ved_custom_products', JSON.stringify(filtered));
+    } catch (e) {}
+  }
+
+  /**
    * Loads products from the live catalog (merging Google Sheets and local catalog)
    */
   static async getProducts(): Promise<{ products: Product[]; source: 'app-script' | 'catalog' }> {
@@ -171,6 +230,13 @@ export class AdminService {
 
     // Unmark from deleted keys if previously deleted
     if (product.name) this.unmarkDeletedKey(generatedId, product.name);
+
+    // 0. Persist immediately to localStorage (guarantees pushed product is live across reloads on live website!)
+    this.saveCustomProduct(payload as Product);
+    ProductService.clearCache();
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('catalog-updated', { detail: { action: 'add', product: payload } }));
+    }
 
     let savedProductId = generatedId;
     let localSaved = false;
@@ -248,6 +314,13 @@ export class AdminService {
     // Unmark from deleted keys
     if (product.name) this.unmarkDeletedKey(id, product.name);
 
+    // 0. Persist immediately to localStorage
+    this.saveCustomProduct(payload as Product);
+    ProductService.clearCache();
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('catalog-updated', { detail: { action: 'edit', product: payload } }));
+    }
+
     // 1. Save to local public/catalog.json on disk
     try {
       await fetch('/api/admin/save-product', {
@@ -285,8 +358,13 @@ export class AdminService {
    * Deletes a product by ID or Name via local server and Google Apps Script
    */
   static async deleteProduct(id: string, name?: string): Promise<AdminApiResponse> {
-    // 1. Mark as deleted in localStorage immediately (guarantees it never reappears on reload)
+    // 1. Remove from custom products and mark as deleted in localStorage immediately (guarantees it never reappears on reload)
+    this.removeCustomProduct(id, name);
     this.markDeletedKey(id, name);
+    ProductService.clearCache();
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('catalog-updated', { detail: { action: 'delete', id, name } }));
+    }
 
     // 2. Delete directly from local public/catalog.json on disk
     try {

@@ -37,15 +37,19 @@ export function useProducts(): UseProductsResult {
       fetchProducts(true, true);
     }, 30000);
 
-    // Sync when user re-focuses tab
-    const handleFocus = () => {
+    // Sync when user re-focuses tab or catalog updates
+    const handleSync = () => {
       fetchProducts(true, true);
     };
-    window.addEventListener('focus', handleFocus);
+    window.addEventListener('focus', handleSync);
+    window.addEventListener('catalog-updated', handleSync);
+    window.addEventListener('storage', handleSync);
 
     return () => {
       clearInterval(interval);
-      window.removeEventListener('focus', handleFocus);
+      window.removeEventListener('focus', handleSync);
+      window.removeEventListener('catalog-updated', handleSync);
+      window.removeEventListener('storage', handleSync);
     };
   }, [fetchProducts]);
 
