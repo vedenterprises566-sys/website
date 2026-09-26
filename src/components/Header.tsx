@@ -133,7 +133,7 @@ export const Header: React.FC<HeaderProps> = ({
   // Products sub-items for the dropdown
   const productSubLinks = [
     { id: 'catalog', label: 'Yarn Catalog', icon: Layers, desc: 'Browse all cotton, fancy & china yarns' },
-    { id: 'garments', label: 'Sweater Directory', icon: Shirt, desc: 'Finished sweater garments showcase' },
+    { id: 'garments', label: 'Winter Wear Directory', icon: Shirt, desc: 'Finished winter wear garments showcase' },
   ];
 
   // Desktop nav links

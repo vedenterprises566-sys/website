@@ -74,7 +74,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
     if (currentPath === '/catalog/yarns/acrylic-blends') {
       return {
         title: 'Acrylic & Blends Yarn | Yarn Supplier India | VED Enterprises',
-        description: 'Explore 100% Acrylic & Blended Yarns from VED Enterprises Ludhiana including Daffodil, Rainbow, and high-bulk acrylic yarns for sweaters and knitwear.',
+        description: 'Explore 100% Acrylic & Blended Yarns from VED Enterprises Ludhiana including Daffodil, Rainbow, and high-bulk acrylic yarns for winter wear and knitwear.',
         canonicalUrl: 'https://www.ved.enterprises/catalog/yarns/acrylic-blends/',
         breadcrumbs: [
           { name: 'Home', path: '/' },
@@ -102,18 +102,18 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
       };
     }
 
-    if (currentPath === '/catalog/garments/sweaters') {
+    if (currentPath === '/catalog/garments/winter-wear' || currentPath === '/catalog/garments/sweaters') {
       return {
-        title: 'Sweaters | VED Enterprises',
-        description: 'Finished Sweater Garments Collection from VED Enterprises Ludhiana crafted from premium Vislon, Wooly, and Daffodil yarns.',
-        canonicalUrl: 'https://www.ved.enterprises/catalog/garments/sweaters/',
+        title: 'Winter Wear | VED Enterprises',
+        description: 'Finished Winter Wear Collection from VED Enterprises Ludhiana crafted from premium Vislon, Wooly, and Daffodil yarns.',
+        canonicalUrl: 'https://www.ved.enterprises/catalog/garments/winter-wear/',
         breadcrumbs: [
           { name: 'Home', path: '/' },
           { name: 'Catalog', path: '/catalog/' },
           { name: 'Garments', path: '/catalog/garments/' },
-          { name: 'Sweaters', path: '/catalog/garments/sweaters/' },
+          { name: 'Winter Wear', path: '/catalog/garments/winter-wear/' },
         ],
-        h1Title: 'Finished Sweaters Catalog',
+        h1Title: 'Finished Winter Wear Catalog',
         category: 'garments' as const,
       };
     }
@@ -121,7 +121,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
     if (currentPath === '/catalog/garments') {
       return {
         title: 'Garments | VED Enterprises',
-        description: 'Wholesale Finished Garments and Knitted Sweaters directory from VED Enterprises Ludhiana.',
+        description: 'Wholesale Finished Garments and Knitted Winter Wear directory from VED Enterprises Ludhiana.',
         canonicalUrl: 'https://www.ved.enterprises/catalog/garments/',
         breadcrumbs: [
           { name: 'Home', path: '/' },

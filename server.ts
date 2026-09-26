@@ -16,7 +16,8 @@ async function startServer() {
   const app = express();
   const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3001;
 
-  app.use(express.json());
+  app.use(express.json({ limit: '25mb' }));
+  app.use(express.urlencoded({ extended: true, limit: '25mb' }));
 
   // Initialize Gemini AI Client lazily or safely
   const getAi = () => {
@@ -292,6 +293,70 @@ Address: # 66/2, Near Shingar Cinema, Dharampura, Ludhiana - 141008
     }
   });
 
+  // API Route: Delete Product directly from local public/catalog.json
+  app.post('/api/admin/delete-product', async (req, res) => {
+    try {
+      const { id, name } = req.body;
+      const catalogPath = path.join(process.cwd(), 'public', 'catalog.json');
+      let deleted = false;
+      if (fs.existsSync(catalogPath)) {
+        const raw = fs.readFileSync(catalogPath, 'utf8');
+        let catalog = JSON.parse(raw);
+        if (Array.isArray(catalog)) {
+          const initialLength = catalog.length;
+          catalog = catalog.filter((p: any) => {
+            const matchId = id && String(p.id).trim().toLowerCase() === String(id).trim().toLowerCase();
+            const matchName = name && String(p.name).trim().toLowerCase() === String(name).trim().toLowerCase();
+            return !matchId && !matchName;
+          });
+          if (catalog.length < initialLength) {
+            deleted = true;
+          }
+          fs.writeFileSync(catalogPath, JSON.stringify(catalog, null, 2), 'utf8');
+          console.log(`[CATALOG DELETE] Product "${name || id}" removed from public/catalog.json (${initialLength} -> ${catalog.length})`);
+        }
+      }
+      return res.json({ success: true, deleted, message: `Product ${name || id} deleted from catalog.json` });
+    } catch (err: any) {
+      console.error('[CATALOG DELETE ERROR]', err.message);
+      return res.status(500).json({ success: false, error: err.message });
+    }
+  });
+
+  // API Route: Save / Update Product directly in local public/catalog.json
+  app.post('/api/admin/save-product', async (req, res) => {
+    try {
+      const product = req.body;
+      const catalogPath = path.join(process.cwd(), 'public', 'catalog.json');
+      let catalog: any[] = [];
+      if (fs.existsSync(catalogPath)) {
+        const raw = fs.readFileSync(catalogPath, 'utf8');
+        catalog = JSON.parse(raw);
+        if (!Array.isArray(catalog)) catalog = [];
+      }
+
+      const existingIdx = catalog.findIndex((p: any) =>
+        (product.id && String(p.id).trim().toLowerCase() === String(product.id).trim().toLowerCase()) ||
+        (product.originalId && String(p.id).trim().toLowerCase() === String(product.originalId).trim().toLowerCase()) ||
+        (product.name && String(p.name).trim().toLowerCase() === String(product.name).trim().toLowerCase())
+      );
+
+      if (existingIdx >= 0) {
+        catalog[existingIdx] = { ...catalog[existingIdx], ...product };
+        console.log(`[CATALOG UPDATE] Updated "${product.name}" in public/catalog.json`);
+      } else {
+        catalog.push(product);
+        console.log(`[CATALOG ADD] Added "${product.name}" to public/catalog.json`);
+      }
+
+      fs.writeFileSync(catalogPath, JSON.stringify(catalog, null, 2), 'utf8');
+      return res.json({ success: true, message: `Product ${product.name} saved to catalog.json` });
+    } catch (err: any) {
+      console.error('[CATALOG SAVE ERROR]', err.message);
+      return res.status(500).json({ success: false, error: err.message });
+    }
+  });
+
   // API Route: AI Assistant Endpoint
   app.post('/api/chat', async (req, res) => {
     try {
@@ -343,28 +408,28 @@ Product Categories & Specialties:
    - MX Lurex 50/85 Fine Count (Metallic shimmer yarn for luxury knitwear, borders, shawls, sarees)
    - Hazel Yarn (2/28 NM & 2/36 NM, Viscose/Nylon 75/25 blend for silky soft cardigans)
    - Megamix Yarn (Slub effect fine count Acrylic/Cotton blend for textured knitwear)
-   - E Nigma Yarn (550 Denier heavy textured 100% polyester for outerwear and heavy sweaters)
+   - E Nigma Yarn (550 Denier heavy textured 100% polyester for outerwear and heavy winter wear)
    - Fancy Jari in finest gauge counts (Gold & Silver metallic thread for embroidery & borders)
-   - Space Polyester Yarn (300D to 550D space dyed for multicolored sweaters)
+   - Space Polyester Yarn (300D to 550D space dyed for multicolored winter wear)
 
 2. CHINA / IMPORTED YARNS:
-   - Vislon 2/48 Yarn (2/48 Nm Viscose/PBT/Nylon blend for 12GG/14GG fine sweater knitting)
+   - Vislon 2/48 Yarn (2/48 Nm Viscose/PBT/Nylon blend for 12GG/14GG fine winter wear knitting)
    - 2/48 Vislon Lurex Yarn (Vislon with embedded metallic shimmer)
-   - Nylon Hair Yarn / Swad (0.9 Swad, 0.7 Crystal, 1.3cm eyelash fur hair yarn for fuzzy coats and sweaters)
+   - Nylon Hair Yarn / Swad (0.9 Swad, 0.7 Crystal, 1.3cm eyelash fur hair yarn for fuzzy coats and winter wear)
    - 0.9 Suede Yarn & 0.7 Suede Yarn (Velvety matte peach-skin touch yarns)
    - 18 NM Chenille Yarn & 13 NM Chenille Yarn (Velvet pile yarns for soft winterwear)
    - Ring Spun Yarns (High tensile strength for weaving & circular knitting)
 
 3. ACRYLIC & BLENDS:
-   - Daffodil Yarn (2/28 Nm 100% Acrylic, high-bulk warmth, pill-resistant, ideal for sweaters & school uniforms)
+   - Daffodil Yarn (2/28 Nm 100% Acrylic, high-bulk warmth, pill-resistant, ideal for winter wear & school uniforms)
    - Rainbow Yarn (2/26 Nm 82/18 Acrylic/Nylon blend with shiny soft luster for designer fashion)
    - Wooly Yarns (2/18 Nm & 2/48 Nm high bulk acrylic/wool feel yarns)
    - All Types of Acrylic Cotton Blends & Polyester Blends
 
-4. FINISHED GARMENTS & SWEATERS:
-   - Men's Classic Wooly Crewneck Sweaters (7GG flat knit, 2/18 Wooly yarn)
+4. FINISHED GARMENTS (WINTER WEAR):
+   - Men's Classic Wooly Crewneck Winter Wear (7GG flat knit, 2/18 Wooly yarn)
    - Ladies Cashmere-Feel Vislon Cardigans (12GG fine gauge, 2/48 Vislon yarn)
-   - Kids Cable Knit Winter Sweaters (5GG heavy gauge, Daffodil Acrylic yarn)
+   - Kids Cable Knit Winter Wear (5GG heavy gauge, Daffodil Acrylic yarn)
 
 Expertise & Behavioral Guidelines:
 - Answer the user's questions clearly, accurately, and thoroughly based on the specific yarn counts, technical specifications, machine gauges (3GG, 5GG, 7GG, 12GG, 14GG), and fabric applications.

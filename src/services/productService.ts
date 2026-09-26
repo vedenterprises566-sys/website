@@ -7,6 +7,18 @@ const CACHE_DURATION_MS = 60 * 1000; // 1 minute in-memory cache
 
 const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/13dYmzJoPkpLGCDt7gZ7znKJARPSknghUzcEmG2PKtFM/export?format=csv';
 
+function getDeletedKeysFromStorage(): Set<string> {
+  try {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const stored = localStorage.getItem('ved_deleted_product_ids');
+      if (stored) {
+        return new Set(JSON.parse(stored).map((k: string) => String(k).toLowerCase().trim()));
+      }
+    }
+  } catch (e) {}
+  return new Set();
+}
+
 function parseCSV(text: string): string[][] {
   const lines: string[][] = [];
   let row: string[] = [];
@@ -104,11 +116,11 @@ export function parseLiveGoogleSheetProducts(csvText: string): Product[] {
       categoryLabel: category === 'china' ? 'China / Imported Yarn' : category === 'acrylic-blends' ? 'Acrylic & Blends' : 'Fancy Yarn',
       countOrDenier,
       description: description || 'High quality wholesale yarn from Ved Enterprises Ludhiana.',
-      recommendedUses: ['Sweaters', 'Knitwear', 'Weaving', 'Fashion Garments'],
+      recommendedUses: ['Winter Wear', 'Knitwear', 'Weaving', 'Fashion Garments'],
       features: ['Live Sheet Auto-Sync', 'Direct Mill Wholesale', 'Vibrant Dyes'],
       sampleAvailable: true,
       origin: category === 'china' ? 'Direct China Import' : 'Ved Premium Selection',
-      popularFor: 'Wholesale Knitwear & Sweater Production',
+      popularFor: 'Wholesale Knitwear & Winter Wear Production',
       imageUrl: localAssetPath,
       pictureUrl: pictureUrl,
       shadeUrl: shadeUrl,
@@ -170,7 +182,7 @@ export class ProductService {
             categoryLabel: item.categoryLabel || this.getCategoryLabel(item.category),
             countOrDenier: item.countOrDenier || item.count || 'Standard Count',
             description: item.description || 'High quality wholesale yarn from Ved Enterprises Ludhiana.',
-            recommendedUses: Array.isArray(item.recommendedUses) ? item.recommendedUses : ['Knitwear', 'Sweaters'],
+            recommendedUses: Array.isArray(item.recommendedUses) ? item.recommendedUses : ['Knitwear', 'Winter Wear'],
             features: Array.isArray(item.features) ? item.features : ['High Quality', 'Soft Touch'],
             sampleAvailable: item.sampleAvailable !== false,
             origin: item.origin || 'Ved Enterprises Wholesale',
@@ -182,18 +194,31 @@ export class ProductService {
             pictureUrl: item.pictureUrl || item.imageUrl || '',
           }));
 
-          cachedCatalog = normalizedProducts;
+          const deletedKeys = getDeletedKeysFromStorage();
+          const filteredProducts = normalizedProducts.filter(
+            (p) =>
+              !deletedKeys.has(String(p.id).toLowerCase().trim()) &&
+              !deletedKeys.has(String(p.name).toLowerCase().trim())
+          );
+
+          cachedCatalog = filteredProducts;
           lastFetchTime = now;
-          return normalizedProducts;
+          return filteredProducts;
         }
       }
     } catch (err) {
       console.warn('[ProductService] Warning loading /catalog.json, falling back to bundled catalog:', err);
     }
 
-    cachedCatalog = PRODUCTS_CATALOG;
+    const deletedKeys = getDeletedKeysFromStorage();
+    const filteredStatic = PRODUCTS_CATALOG.filter(
+      (p) =>
+        !deletedKeys.has(String(p.id).toLowerCase().trim()) &&
+        !deletedKeys.has(String(p.name).toLowerCase().trim())
+    );
+    cachedCatalog = filteredStatic;
     lastFetchTime = now;
-    return PRODUCTS_CATALOG;
+    return filteredStatic;
   }
 
   /**
@@ -216,7 +241,7 @@ export class ProductService {
       case 'fabrics':
         return 'Fabrics & Textile Rolls';
       case 'garments':
-        return 'Finished Sweaters';
+        return 'Winter Wear';
       case 'fancy':
       default:
         return 'Fancy Yarn';

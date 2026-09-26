@@ -1,6 +1,7 @@
 import React from 'react';
 import { Phone, MapPin, Mail, Truck, Globe, ArrowUpRight, Building2, ShieldCheck } from 'lucide-react';
 import { LogoGraphic } from './LogoGraphic';
+import { getAdminPortalUrl } from '../admin';
 
 interface FooterProps {
   onNavigate: (sectionId: string) => void;
@@ -84,7 +85,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onSelectCategory }) 
                 { label: 'China Yarns (Vislon 2/48, Wooly, Hair)', cat: 'china' },
                 { label: 'Chenille (13 & 18 NM) & Suede (0.9 & 0.7)', cat: 'china' },
                 { label: 'Acrylic Blends (Daffodil, Rainbow, Hazel)', cat: 'acrylic-blends' },
-                { label: 'Knitted Sweaters & Outerwear', cat: 'garments' },
+                { label: 'Knitted Winter Wear & Outerwear', cat: 'garments' },
               ].map((item, idx) => (
                 <li key={idx}>
                   <button
@@ -155,9 +156,16 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onSelectCategory }) 
 
         {/* Copyright & Untressed Developer Credit Line */}
         <div className="pt-6 border-t border-slate-900 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
-          <p className="text-center sm:text-left text-slate-400">
-            © {new Date().getFullYear()} Ved Enterprises. All rights reserved.
-          </p>
+          <div className="flex items-center gap-2 text-center sm:text-left text-slate-400">
+            <span>© {new Date().getFullYear()} Ved Enterprises. All rights reserved.</span>
+            <span className="text-slate-700 hidden sm:inline">•</span>
+            <a
+              href={getAdminPortalUrl()}
+              className="text-slate-500 hover:text-amber-400 transition-colors font-semibold hidden sm:inline"
+            >
+              Admin Portal
+            </a>
+          </div>
 
           <div className="flex flex-wrap items-center justify-center sm:justify-end gap-2 text-xs">
             <span className="text-slate-500">Ludhiana Textile Directory</span>

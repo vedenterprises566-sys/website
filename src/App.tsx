@@ -18,6 +18,7 @@ import { CatalogPage } from './pages/CatalogPage';
 import { ProductDetailPage } from './pages/ProductDetailPage';
 import { GarmentsPage } from './pages/GarmentsPage';
 import { InquiryPage } from './pages/InquiryPage';
+import { AdminPanel, isAdminSubdomain } from './admin';
 
 export default function App() {
   const navigate = useNavigate();
@@ -161,6 +162,22 @@ export default function App() {
   };
 
   const currentPage = getCurrentPageFromPath(location.pathname);
+  const isSubdomain = isAdminSubdomain();
+  const isAdminRoute = isSubdomain || location.pathname.startsWith('/admin');
+
+  // Dynamic document title and noindex meta tag for admin portal
+  useEffect(() => {
+    if (isAdminRoute) {
+      document.title = 'Ved Enterprises | Admin Console';
+      let meta = document.querySelector('meta[name="robots"]');
+      if (!meta) {
+        meta = document.createElement('meta');
+        meta.setAttribute('name', 'robots');
+        document.head.appendChild(meta);
+      }
+      meta.setAttribute('content', 'noindex, nofollow');
+    }
+  }, [isAdminRoute]);
 
   const handleNavigate = (sectionId: string) => {
     let targetPath = '/';
@@ -215,29 +232,31 @@ export default function App() {
           className="min-h-screen bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans antialiased selection:bg-red-500 selection:text-white overflow-x-hidden relative"
         >
           {/* Decorative Yarn & Textile Background Animation */}
-          <YarnBackgroundPattern />
+          {!isAdminRoute && <YarnBackgroundPattern />}
 
           {/* Header Navigation */}
-          <Header
-            basketCount={basket.length}
-            onOpenBasket={() => handleNavigate('inquiry')}
-            onOpenAi={() => {
-              setAiTopic('');
-              setIsAiOpen(true);
-            }}
-            onOpenShadesModal={() => handleOpenShadesModal()}
-            onNavigate={handleNavigate}
-            activeSection={
-              currentPage === 'basket'
-                ? 'inquiry'
-                : currentPage === 'garments'
-                ? 'garments'
-                : currentPage === 'catalog'
-                ? 'catalog'
-                : activeSection
-            }
-            onMenuChange={setIsHeaderMenuOpen}
-          />
+          {!isAdminRoute && (
+            <Header
+              basketCount={basket.length}
+              onOpenBasket={() => handleNavigate('inquiry')}
+              onOpenAi={() => {
+                setAiTopic('');
+                setIsAiOpen(true);
+              }}
+              onOpenShadesModal={() => handleOpenShadesModal()}
+              onNavigate={handleNavigate}
+              activeSection={
+                currentPage === 'basket'
+                  ? 'inquiry'
+                  : currentPage === 'garments'
+                  ? 'garments'
+                  : currentPage === 'catalog'
+                  ? 'catalog'
+                  : activeSection
+              }
+              onMenuChange={setIsHeaderMenuOpen}
+            />
+          )}
 
           {/* Main Content Area with Smooth Page Transitions & React Router */}
           <main className={`pb-16 md:pb-0 transition-all duration-300 ${isHeaderMenuOpen ? 'filter blur-md pointer-events-none select-none opacity-80' : ''}`}>
@@ -410,6 +429,22 @@ export default function App() {
                   }
                 />
                 <Route
+                  path="/catalog/garments/winter-wear"
+                  element={
+                    <CatalogPage
+                      searchQuery={searchQuery}
+                      onSearchChange={setSearchQuery}
+                      selectedCategory={selectedCategory}
+                      onCategoryChange={handleCategoryChange}
+                      onAddToBasket={handleAddToBasket}
+                      onOpenAiForProduct={handleOpenAiForProduct}
+                      onOpenShadesModal={handleOpenShadesModal}
+                      inquiryItemIds={basket.map((b) => b.product.id)}
+                      onGoToBasket={() => handleNavigate('inquiry')}
+                    />
+                  }
+                />
+                <Route
                   path="/catalog/garments/sweaters"
                   element={
                     <CatalogPage
@@ -464,6 +499,18 @@ export default function App() {
                   }
                 />
                 <Route
+                  path="/catalog/garments/winter-wear/:slug"
+                  element={
+                    <ProductDetailPage
+                      onAddToBasket={handleAddToBasket}
+                      onOpenAiForProduct={handleOpenAiForProduct}
+                      onOpenShadesModal={handleOpenShadesModal}
+                      inquiryItemIds={basket.map((b) => b.product.id)}
+                      onGoToBasket={() => handleNavigate('inquiry')}
+                    />
+                  }
+                />
+                <Route
                   path="/catalog/garments/sweaters/:slug"
                   element={
                     <ProductDetailPage
@@ -505,7 +552,7 @@ export default function App() {
                     <GarmentsPage
                       onBackToHome={() => handleNavigate('hero')}
                       onOpenAi={() => {
-                        setAiTopic('Garments & Sweater Manufacturing Inquiry');
+                        setAiTopic('Garments & Winter Wear Manufacturing Inquiry');
                         setIsAiOpen(true);
                       }}
                     />
@@ -527,23 +574,34 @@ export default function App() {
                     />
                   }
                 />
-                <Route path="/basket" element={<Navigate to="/inquiry" replace />} />
-                <Route path="*" element={<Navigate to="/" replace />} />
+                {/* Admin Product Management Routes & Subdomain Handler */}
+                {isSubdomain ? (
+                  <Route path="*" element={<AdminPanel />} />
+                ) : (
+                  <>
+                    <Route path="/admin" element={<AdminPanel />} />
+                    <Route path="/admin/*" element={<AdminPanel />} />
+                    <Route path="/basket" element={<Navigate to="/inquiry" replace />} />
+                    <Route path="*" element={<Navigate to="/" replace />} />
+                  </>
+                )}
               </Routes>
             </AnimatePresence>
           </main>
 
           {/* Mobile Sticky Bottom Navigation Bar */}
-          <MobileBottomNav
-            currentPage={currentPage}
-            activeSection={activeSection}
-            basketCount={basket.length}
-            onNavigate={handleNavigate}
-            onOpenAi={() => {
-              setAiTopic('');
-              setIsAiOpen(true);
-            }}
-          />
+          {!isAdminRoute && (
+            <MobileBottomNav
+              currentPage={currentPage}
+              activeSection={activeSection}
+              basketCount={basket.length}
+              onNavigate={handleNavigate}
+              onOpenAi={() => {
+                setAiTopic('');
+                setIsAiOpen(true);
+              }}
+            />
+          )}
 
           {/* AI Assistant Chat Modal */}
           <AiAssistantModal
@@ -561,25 +619,31 @@ export default function App() {
           />
 
           {/* Flying Item Arc Animation Layer */}
-          <FlyToBasketAnimation
-            flyingItems={flyingItems}
-            onAnimationComplete={handleAnimationComplete}
-          />
+          {!isAdminRoute && (
+            <FlyToBasketAnimation
+              flyingItems={flyingItems}
+              onAnimationComplete={handleAnimationComplete}
+            />
+          )}
 
           {/* Floating Confirmation Toast */}
-          <BasketToast
-            toast={activeToast}
-            onClose={() => setActiveToast(null)}
-            onGoToBasket={() => handleNavigate('inquiry')}
-          />
+          {!isAdminRoute && (
+            <BasketToast
+              toast={activeToast}
+              onClose={() => setActiveToast(null)}
+              onGoToBasket={() => handleNavigate('inquiry')}
+            />
+          )}
 
           {/* Footer */}
-          <div className={`transition-all duration-300 ${isHeaderMenuOpen ? 'filter blur-md pointer-events-none select-none opacity-80' : ''}`}>
-            <Footer
-              onNavigate={handleNavigate}
-              onSelectCategory={(cat) => handleCategoryChange(cat as any)}
-            />
-          </div>
+          {!isAdminRoute && (
+            <div className={`transition-all duration-300 ${isHeaderMenuOpen ? 'filter blur-md pointer-events-none select-none opacity-80' : ''}`}>
+              <Footer
+                onNavigate={handleNavigate}
+                onSelectCategory={(cat) => handleCategoryChange(cat as any)}
+              />
+            </div>
+          )}
         </motion.div>
       )}
     </AnimatePresence>

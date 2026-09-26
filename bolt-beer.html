@@ -1,0 +1,2111 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BOLT™ Craft Beer | Liquid Voltage — Electrify Your Palate</title>
+  <meta name="description" content="Bolt Craft Beer combines centuries of artisanal brewing alchemy with cryogenic dry-hopping and ionized precision. 100,000 Volts of raw craft passion." />
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@600;700;800;900&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              black: '#07090e',
+              dark: '#0b0f19',
+              card: 'rgba(15, 22, 36, 0.65)',
+              border: 'rgba(255, 255, 255, 0.1)',
+              amber: '#f59e0b',
+              gold: '#fbbf24',
+              neon: '#00f0ff',
+              cyan: '#38bdf8',
+              violet: '#818cf8',
+              lime: '#a3e635'
+            }
+          },
+          fontFamily: {
+            headline: ['Syne', 'sans-serif'],
+            display: ['Bebas Neue', 'sans-serif'],
+            body: ['Plus Jakarta Sans', 'sans-serif'],
+            mono: ['Space Mono', 'monospace']
+          },
+          boxShadow: {
+            'glow-cyan': '0 0 35px -5px rgba(0, 240, 255, 0.35)',
+            'glow-amber': '0 0 35px -5px rgba(245, 158, 11, 0.35)',
+            'glow-violet': '0 0 35px -5px rgba(129, 140, 248, 0.35)',
+            'glass': '0 20px 50px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15)'
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- GSAP & ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <!-- Lenis Smooth Scroll -->
+  <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+
+  <style>
+    /* Custom Design Tokens & Effects */
+    :root {
+      --electric-cyan: #00f0ff;
+      --electric-gold: #fbbf24;
+      --electric-amber: #f59e0b;
+      --deep-bg: #07090e;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--deep-bg);
+      color: #e2e8f0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overflow-x: hidden;
+    }
+
+    ::selection {
+      background: rgba(0, 240, 255, 0.3);
+      color: #ffffff;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #07090e;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--electric-cyan);
+    }
+
+    /* Glassmorphism Classes */
+    .glass-panel {
+      background: rgba(13, 19, 32, 0.65);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.12);
+    }
+
+    .glass-card-hover {
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.4s ease;
+    }
+    .glass-card-hover:hover {
+      border-color: rgba(0, 240, 255, 0.4);
+      box-shadow: 0 25px 60px rgba(0, 240, 255, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.25);
+      transform: translateY(-6px);
+    }
+
+    .glass-pill {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    /* Gradient Texts */
+    .text-gradient-cyan {
+      background: linear-gradient(135deg, #ffffff 0%, #a5f3fc 40%, #00f0ff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .text-gradient-amber {
+      background: linear-gradient(135deg, #ffffff 0%, #fde68a 40%, #f59e0b 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .text-gradient-lightning {
+      background: linear-gradient(90deg, #ffffff 0%, #00f0ff 30%, #fbbf24 70%, #ffffff 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shine 4s linear infinite;
+    }
+
+    @keyframes shine {
+      to {
+        background-position: 200% center;
+      }
+    }
+
+    /* Ambient Background Lighting */
+    .electric-grid {
+      background-size: 50px 50px;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+    }
+
+    .lightning-flash {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at 50% 30%, rgba(0, 240, 255, 0.4), transparent 70%);
+      pointer-events: none;
+      opacity: 0;
+      z-index: 90;
+      mix-blend-mode: screen;
+    }
+
+    /* 3D Can Showcase Tilt Container */
+    .can-3d-wrap {
+      perspective: 1200px;
+      transform-style: preserve-3d;
+    }
+
+    .can-3d-card {
+      transition: transform 0.15s ease-out, box-shadow 0.3s ease;
+      transform-style: preserve-3d;
+    }
+
+    /* Range slider styling */
+    input[type=range] {
+      accent-color: #00f0ff;
+    }
+
+    /* Shimmer effect */
+    .shimmer-badge {
+      position: relative;
+      overflow: hidden;
+    }
+    .shimmer-badge::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(60deg, transparent 30%, rgba(255,255,255,0.15) 50%, transparent 70%);
+      transform: rotate(30deg);
+      animation: shimmerSweep 4s infinite;
+    }
+
+    @keyframes shimmerSweep {
+      0% { transform: translateX(-100%) rotate(30deg); }
+      100% { transform: translateX(100%) rotate(30deg); }
+    }
+
+    /* Custom Cursor Aura */
+    #cursor-spark {
+      pointer-events: none;
+      position: fixed;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(0, 240, 255, 0.6);
+      transform: translate(-50%, -50%);
+      transition: width 0.2s, height 0.2s, background-color 0.2s;
+      z-index: 9999;
+      mix-blend-mode: screen;
+    }
+    #cursor-dot {
+      pointer-events: none;
+      position: fixed;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #00f0ff;
+      transform: translate(-50%, -50%);
+      z-index: 10000;
+      box-shadow: 0 0 10px #00f0ff;
+    }
+
+    @media (hover: none) or (pointer: coarse) {
+      #cursor-spark, #cursor-dot {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+
+<body class="relative bg-[#07090e] text-slate-100 antialiased">
+
+  <!-- Interactive Custom Cursor Aura -->
+  <div id="cursor-spark"></div>
+  <div id="cursor-dot"></div>
+
+  <!-- Full-Screen Interactive Canvas (Effervescent Bubbles & Electrical Discharges) -->
+  <canvas id="voltage-canvas" class="fixed inset-0 pointer-events-none z-0"></canvas>
+  
+  <!-- Flash Overlay for Lightning Strikes -->
+  <div id="lightning-flash-fx" class="lightning-flash"></div>
+
+  <!-- ==================== HEADER & GLASS NAVIGATION ==================== -->
+  <header id="main-header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 py-4 px-4 sm:px-8">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      
+      <!-- Logo -->
+      <a href="#hero" class="flex items-center gap-3 group relative cursor-pointer" aria-label="Bolt Beer Home">
+        <div class="relative w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center shadow-glow-cyan group-hover:scale-105 transition-transform">
+          <i data-lucide="zap" class="w-6 h-6 text-black fill-current animate-pulse"></i>
+          <span class="absolute inset-0 rounded-xl bg-cyan-400 opacity-20 blur-sm group-hover:opacity-60 transition-opacity"></span>
+        </div>
+        <div class="flex flex-col">
+          <span class="font-headline font-black text-2xl tracking-tighter text-white uppercase flex items-center gap-1">
+            BOLT<span class="text-cyan-400">⚡</span>
+          </span>
+          <span class="text-[9px] font-mono uppercase tracking-widest text-cyan-300/70 -mt-1">Craft Voltage</span>
+        </div>
+      </a>
+
+      <!-- Desktop Nav Links -->
+      <nav class="hidden md:flex items-center gap-1 glass-pill px-6 py-2 rounded-full shadow-lg" aria-label="Primary Navigation">
+        <a href="#story" class="px-4 py-1.5 text-sm font-medium text-slate-300 hover:text-cyan-400 transition-colors rounded-full hover:bg-white/5">The Voltage</a>
+        <a href="#showcase" class="px-4 py-1.5 text-sm font-medium text-slate-300 hover:text-cyan-400 transition-colors rounded-full hover:bg-white/5">Our Brews</a>
+        <a href="#anatomy" class="px-4 py-1.5 text-sm font-medium text-slate-300 hover:text-cyan-400 transition-colors rounded-full hover:bg-white/5">Anatomy</a>
+        <a href="#process" class="px-4 py-1.5 text-sm font-medium text-slate-300 hover:text-cyan-400 transition-colors rounded-full hover:bg-white/5">The Alchemy</a>
+        <a href="#taste-lab" class="px-4 py-1.5 text-sm font-medium text-slate-300 hover:text-cyan-400 transition-colors rounded-full hover:bg-white/5 flex items-center gap-1">
+          <span>Taste Lab</span>
+          <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping"></span>
+        </a>
+        <a href="#reviews" class="px-4 py-1.5 text-sm font-medium text-slate-300 hover:text-cyan-400 transition-colors rounded-full hover:bg-white/5">Reviews</a>
+      </nav>
+
+      <!-- Right Action Controls -->
+      <div class="flex items-center gap-3">
+        <!-- Synthesized Audio Ambience Toggle -->
+        <button id="sound-toggle" class="glass-pill p-2.5 rounded-full text-slate-300 hover:text-cyan-400 hover:border-cyan-400/40 transition-all cursor-pointer relative" title="Toggle Pub & Voltage Ambience" aria-label="Toggle Sound Ambience">
+          <i data-lucide="volume-x" id="sound-icon" class="w-4 h-4"></i>
+          <span id="sound-wave" class="hidden absolute -top-1 -right-1 w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+        </button>
+
+        <!-- Strike Spark Trigger -->
+        <button id="trigger-strike-btn" class="hidden sm:flex glass-pill px-3 py-2 rounded-full text-xs font-mono text-amber-400 items-center gap-1.5 hover:bg-amber-500/10 hover:border-amber-400/40 transition-all cursor-pointer">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-400"></i>
+          <span>Strike ⚡</span>
+        </button>
+
+        <!-- Open Crate Button -->
+        <button id="open-crate-btn" class="relative glass-panel bg-gradient-to-r from-cyan-500/20 to-blue-600/20 hover:from-cyan-500/40 hover:to-blue-600/40 border border-cyan-400/40 text-cyan-300 px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-2 shadow-glow-cyan transition-all cursor-pointer">
+          <i data-lucide="shopping-bag" class="w-4 h-4 text-cyan-400"></i>
+          <span class="hidden sm:inline">Crate</span>
+          <span id="crate-count-badge" class="bg-cyan-400 text-black text-[11px] font-bold px-1.5 py-0.2 rounded-full">0</span>
+        </button>
+
+        <!-- Mobile Menu Toggle -->
+        <button id="mobile-menu-btn" class="md:hidden glass-pill p-2.5 rounded-xl text-slate-300" aria-label="Open mobile menu">
+          <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Nav Drawer -->
+    <div id="mobile-menu" class="hidden md:hidden max-w-7xl mx-auto mt-3 p-4 glass-panel rounded-2xl flex flex-col gap-3">
+      <a href="#story" class="mobile-nav-link text-slate-200 py-2 border-b border-white/5">The Voltage</a>
+      <a href="#showcase" class="mobile-nav-link text-slate-200 py-2 border-b border-white/5">Our Brews</a>
+      <a href="#anatomy" class="mobile-nav-link text-slate-200 py-2 border-b border-white/5">Can Anatomy</a>
+      <a href="#process" class="mobile-nav-link text-slate-200 py-2 border-b border-white/5">Brewing Process</a>
+      <a href="#taste-lab" class="mobile-nav-link text-slate-200 py-2 border-b border-white/5">Taste Lab Matcher</a>
+      <a href="#reviews" class="mobile-nav-link text-slate-200 py-2">Reviews & Accolades</a>
+    </div>
+  </header>
+
+  <!-- ==================== MAIN CONTENT CONTAINER ==================== -->
+  <main class="relative z-10">
+
+    <!-- ==================== SECTION 1: HERO ==================== -->
+    <section id="hero" class="relative min-h-screen flex items-center justify-center pt-24 pb-16 px-4 sm:px-6 lg:px-8 overflow-hidden electric-grid">
+      <!-- Glow Orbs in Background -->
+      <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] sm:w-[600px] h-[350px] sm:h-[600px] bg-gradient-to-tr from-cyan-600/20 via-amber-500/15 to-transparent rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute bottom-10 left-10 w-72 h-72 bg-blue-600/15 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute top-20 right-10 w-80 h-80 bg-amber-500/15 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        
+        <!-- Left Hero Content -->
+        <div class="lg:col-span-7 flex flex-col items-start z-10">
+          
+          <!-- Pill Tag -->
+          <div class="hero-reveal inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-pill border-cyan-400/30 text-cyan-300 text-xs font-mono tracking-wider uppercase mb-6 shimmer-badge">
+            <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+            <span>Batch 08 // High-Voltage Craft Alchemy</span>
+          </div>
+
+          <!-- Main Hero Headline -->
+          <h1 class="hero-reveal font-headline font-black text-5xl sm:text-7xl xl:text-8xl leading-[0.9] tracking-tight uppercase mb-6 text-white">
+            LIQUID<br />
+            <span class="text-gradient-cyan relative">
+              VOLTAGE.
+              <svg class="absolute -bottom-2 left-0 w-full h-3 text-cyan-400/60" viewBox="0 0 300 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1 9L60 3L120 10L180 2L240 9L299 4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+              </svg>
+            </span><br />
+            <span class="text-slate-400 text-4xl sm:text-6xl font-extrabold">ELECTRIFIED CRAFT.</span>
+          </h1>
+
+          <!-- Tagline Narrative -->
+          <p class="hero-reveal text-base sm:text-xl text-slate-300 max-w-xl mb-8 font-light leading-relaxed">
+            Where ancestral Bavarian craft beer philosophy meets cryogenic dry-hopping. Infused with mineral-charged mountain water and 
+            <span class="text-amber-400 font-semibold">100,000 volts of raw palate intensity</span>.
+          </p>
+
+          <!-- Action Buttons -->
+          <div class="hero-reveal flex flex-wrap items-center gap-4 w-full sm:w-auto">
+            <a href="#showcase" class="group relative px-8 py-4 rounded-full bg-gradient-to-r from-cyan-400 via-cyan-500 to-blue-600 text-black font-headline font-black text-lg tracking-wide uppercase shadow-glow-cyan hover:shadow-cyan-400/60 hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3">
+              <span>Explore The Brews</span>
+              <i data-lucide="arrow-right" class="w-5 h-5 group-hover:translate-x-1.5 transition-transform"></i>
+            </a>
+
+            <a href="#taste-lab" class="px-7 py-4 rounded-full glass-panel hover:border-cyan-400/40 text-slate-200 hover:text-white font-semibold text-base flex items-center justify-center gap-2 transition-all group">
+              <i data-lucide="sliders" class="w-4 h-4 text-cyan-400 group-hover:rotate-90 transition-transform"></i>
+              <span>Match Your Taste</span>
+            </a>
+          </div>
+
+          <!-- Hero Metrics Strip -->
+          <div class="hero-reveal mt-12 pt-8 border-t border-white/10 grid grid-cols-3 gap-6 sm:gap-10 w-full max-w-lg">
+            <div>
+              <span class="font-display text-3xl sm:text-4xl text-cyan-400 tracking-wider">6.8%</span>
+              <p class="text-xs font-mono text-slate-400 uppercase mt-0.5">Peak Voltage</p>
+            </div>
+            <div>
+              <span class="font-display text-3xl sm:text-4xl text-amber-400 tracking-wider">65 IBU</span>
+              <p class="text-xs font-mono text-slate-400 uppercase mt-0.5">Cryo Crispness</p>
+            </div>
+            <div>
+              <span class="font-display text-3xl sm:text-4xl text-white tracking-wider">-1.5°C</span>
+              <p class="text-xs font-mono text-slate-400 uppercase mt-0.5">Sub-Zero Cold</p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right Hero: 3D Floating Can & Interactive Electric Aura -->
+        <div class="lg:col-span-5 relative flex items-center justify-center can-3d-wrap">
+          
+          <!-- Background Concentric Glow Rings -->
+          <div class="absolute w-72 sm:w-96 h-72 sm:h-96 rounded-full border border-cyan-400/20 animate-[spin_25s_linear_infinite] pointer-events-none"></div>
+          <div class="absolute w-60 sm:w-80 h-60 sm:h-80 rounded-full border border-dashed border-amber-400/20 animate-[spin_18s_linear_infinite_reverse] pointer-events-none"></div>
+          
+          <!-- Floating Badge 1 -->
+          <div class="absolute -top-4 -left-6 z-20 glass-panel px-4 py-2.5 rounded-2xl shadow-xl flex items-center gap-3 animate-bounce" style="animation-duration: 4s;">
+            <div class="w-8 h-8 rounded-lg bg-amber-400/20 text-amber-300 flex items-center justify-center font-bold text-xs">
+              ★
+            </div>
+            <div>
+              <p class="text-xs font-bold text-white leading-tight">World Beer Cup</p>
+              <p class="text-[10px] font-mono text-amber-400">2025 Gold Medal</p>
+            </div>
+          </div>
+
+          <!-- Floating Badge 2 -->
+          <div class="absolute bottom-6 -right-6 z-20 glass-panel px-4 py-2.5 rounded-2xl shadow-xl flex items-center gap-3 animate-bounce" style="animation-duration: 5s;">
+            <div class="w-8 h-8 rounded-lg bg-cyan-400/20 text-cyan-300 flex items-center justify-center">
+              <i data-lucide="snowflake" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <p class="text-xs font-bold text-white leading-tight">Cryo-Shocked</p>
+              <p class="text-[10px] font-mono text-cyan-400">Galaxy & Citra</p>
+            </div>
+          </div>
+
+          <!-- The 3D Hero Can SVG Representation -->
+          <div id="hero-can-interactive" class="can-3d-card relative z-10 cursor-pointer transform hover:scale-105 transition-transform duration-300 drop-shadow-[0_25px_45px_rgba(0,240,255,0.3)]">
+            <svg class="w-64 sm:w-80 h-auto filter drop-shadow-2xl" viewBox="0 0 320 520" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="canMetal" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#0a101d"/>
+                  <stop offset="25%" stop-color="#142136"/>
+                  <stop offset="48%" stop-color="#2a3f61"/>
+                  <stop offset="55%" stop-color="#60a5fa"/>
+                  <stop offset="65%" stop-color="#1e293b"/>
+                  <stop offset="90%" stop-color="#0b111e"/>
+                  <stop offset="100%" stop-color="#05080f"/>
+                </linearGradient>
+
+                <linearGradient id="rimMetal" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#64748b"/>
+                  <stop offset="45%" stop-color="#f8fafc"/>
+                  <stop offset="70%" stop-color="#94a3b8"/>
+                  <stop offset="100%" stop-color="#475569"/>
+                </linearGradient>
+
+                <linearGradient id="boltGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#ffffff"/>
+                  <stop offset="30%" stop-color="#00f0ff"/>
+                  <stop offset="75%" stop-color="#3b82f6"/>
+                  <stop offset="100%" stop-color="#f59e0b"/>
+                </linearGradient>
+
+                <filter id="dropletGlow" x="-20%" y="-20%" width="140%" height="140%">
+                  <feDropShadow dx="0" dy="1" stdDeviation="1" flood-color="#ffffff" flood-opacity="0.6"/>
+                </filter>
+              </defs>
+
+              <ellipse cx="160" cy="40" rx="90" ry="24" fill="url(#rimMetal)"/>
+              <ellipse cx="160" cy="38" rx="84" ry="20" fill="#1e293b"/>
+              <ellipse cx="160" cy="37" rx="76" ry="16" fill="#0f172a"/>
+              
+              <rect x="154" y="32" width="12" height="18" rx="3" fill="#cbd5e1"/>
+              <circle cx="160" cy="35" r="2" fill="#0f172a"/>
+
+              <path d="M70 40 C70 65, 80 85, 80 95 L240 95 C240 85, 250 65, 250 40 Z" fill="url(#canMetal)"/>
+              <rect x="76" y="95" width="168" height="360" rx="8" fill="url(#canMetal)"/>
+
+              <path d="M84 100 L84 450" stroke="#00f0ff" stroke-width="3" stroke-opacity="0.8" filter="drop-shadow(0 0 6px #00f0ff)"/>
+              <path d="M236 100 L236 450" stroke="#f59e0b" stroke-width="2.5" stroke-opacity="0.8" filter="drop-shadow(0 0 6px #f59e0b)"/>
+
+              <rect x="86" y="120" width="148" height="310" rx="6" fill="#090e17" fill-opacity="0.85"/>
+              
+              <path d="M96 140 H130 L145 155 H224" stroke="rgba(0,240,255,0.3)" stroke-width="1.5" stroke-dasharray="3 3"/>
+              <path d="M96 410 H175 L190 395 H224" stroke="rgba(245,158,11,0.3)" stroke-width="1.5" stroke-dasharray="3 3"/>
+
+              <g transform="translate(100, 165)">
+                <polygon points="60,0 25,65 52,65 35,120 95,50 65,50" fill="url(#boltGrad)" filter="drop-shadow(0 0 10px rgba(0,240,255,0.8))"/>
+                <text x="60" y="160" font-family="'Syne', sans-serif" font-weight="900" font-size="34" fill="#ffffff" text-anchor="middle" letter-spacing="3">BOLT</text>
+                <text x="60" y="180" font-family="'Bebas Neue', sans-serif" font-size="16" fill="#00f0ff" text-anchor="middle" letter-spacing="4">VOLT IPA</text>
+                <text x="60" y="200" font-family="'Space Mono', monospace" font-size="9" fill="#94a3b8" text-anchor="middle" letter-spacing="1">6.8% ABV · 65 IBU</text>
+                
+                <circle cx="60" cy="235" r="14" fill="none" stroke="#fbbf24" stroke-width="1.5"/>
+                <polygon points="60,227 62,233 68,233 63,237 65,243 60,239 55,243 57,237 52,233 58,233" fill="#fbbf24"/>
+              </g>
+
+              <g opacity="0.75" filter="url(#dropletGlow)">
+                <ellipse cx="105" cy="180" rx="2.5" ry="4" fill="#ffffff"/>
+                <ellipse cx="215" cy="220" rx="3" ry="5" fill="#ffffff"/>
+                <ellipse cx="110" cy="310" rx="2" ry="3" fill="#ffffff"/>
+                <ellipse cx="205" cy="360" rx="2.5" ry="4" fill="#ffffff"/>
+                <ellipse cx="130" cy="130" rx="2" ry="3" fill="#ffffff"/>
+                <ellipse cx="185" cy="140" rx="3" ry="4" fill="#ffffff"/>
+                <ellipse cx="150" cy="420" rx="3.5" ry="5" fill="#ffffff"/>
+                <ellipse cx="220" cy="300" rx="2" ry="3" fill="#ffffff"/>
+                <ellipse cx="95" cy="260" rx="3" ry="4.5" fill="#ffffff"/>
+              </g>
+
+              <path d="M76 455 C76 470, 85 490, 110 495 L210 495 C235 490, 244 470, 244 455 Z" fill="url(#canMetal)"/>
+              <ellipse cx="160" cy="495" rx="55" ry="12" fill="url(#rimMetal)"/>
+            </svg>
+
+            <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent rounded-3xl pointer-events-none transform -rotate-12 opacity-50 group-hover:opacity-100 transition-opacity"></div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Scroll Indicator Pill -->
+      <a href="#story" class="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-slate-400 hover:text-cyan-400 transition-colors z-20 cursor-pointer group" aria-label="Scroll to Brand Story">
+        <span class="text-[10px] font-mono uppercase tracking-widest group-hover:tracking-wider transition-all">Scroll to Charge</span>
+        <div class="w-5 h-9 rounded-full border border-white/20 flex justify-center pt-1 group-hover:border-cyan-400 transition-colors">
+          <div class="w-1.5 h-2.5 rounded-full bg-cyan-400 animate-bounce"></div>
+        </div>
+      </a>
+    </section>
+
+    <!-- ==================== SECTION 2: BRAND STORY ==================== -->
+    <section id="story" class="relative py-28 px-4 sm:px-6 lg:px-8 border-t border-white/5 overflow-hidden">
+      <div class="absolute top-1/3 -left-32 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute bottom-10 -right-32 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="max-w-7xl mx-auto">
+        
+        <div class="flex flex-col items-start max-w-3xl mb-16">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full glass-pill border-amber-400/30 text-amber-300 text-xs font-mono tracking-wider uppercase mb-4">
+            <i data-lucide="flame" class="w-3.5 h-3.5 text-amber-400"></i>
+            <span>The Genesis of Voltage</span>
+          </div>
+          <h2 class="font-headline font-black text-4xl sm:text-6xl text-white uppercase tracking-tight leading-[1.05]">
+            Crafted Where Lightning<br />
+            <span class="text-gradient-amber">Strikes The Kettle.</span>
+          </h2>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          
+          <div class="lg:col-span-7 flex flex-col gap-6 text-slate-300 text-lg sm:text-xl font-light leading-relaxed">
+            <p class="story-fade-text">
+              We started <strong class="text-white font-semibold">Bolt</strong> with a single radical thesis: <span class="text-cyan-300 font-normal">craft beer had grown too comfortable</span>. The world was flooded with dull ales and predictable lagers that lacked punch and vitality.
+            </p>
+            <p class="story-fade-text">
+              In our alpine micro-brewery, we pioneered the <strong class="text-amber-300 font-semibold">Ionized Cryo-Shock technique</strong>. By flash-freezing Pacific Northwest hops at -196°C and steeping them through pulsed electromagnetic agitation, we extract pure, unoxidized essential oils with microscopic precision.
+            </p>
+            <p class="story-fade-text">
+              The result is a mouthfeel so crisp, explosive, and hyper-defined, it feels like tasting liquid electricity for the very first time. No fillers. No artificial carbonation. Just raw botanical lightning.
+            </p>
+
+            <div class="mt-6 p-6 rounded-3xl glass-panel border border-cyan-400/20 grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
+              <div>
+                <span id="stat-voltage" class="font-display text-4xl sm:text-5xl text-cyan-400 tracking-wider">100,000</span>
+                <span class="font-display text-xl text-cyan-400">V</span>
+                <p class="text-xs font-mono text-slate-400 uppercase mt-1">Flavor Voltage</p>
+              </div>
+              <div class="border-t sm:border-t-0 sm:border-l border-white/10 pt-4 sm:pt-0 sm:pl-4">
+                <span id="stat-hops" class="font-display text-4xl sm:text-5xl text-amber-400 tracking-wider">4.5</span>
+                <span class="font-display text-xl text-amber-400">LBS</span>
+                <p class="text-xs font-mono text-slate-400 uppercase mt-1">Cryo-Hops / BBL</p>
+              </div>
+              <div class="border-t sm:border-t-0 sm:border-l border-white/10 pt-4 sm:pt-0 sm:pl-4">
+                <span id="stat-temp" class="font-display text-4xl sm:text-5xl text-white tracking-wider">28</span>
+                <span class="font-display text-xl text-white">DAYS</span>
+                <p class="text-xs font-mono text-slate-400 uppercase mt-1">Sub-Zero Ageing</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="lg:col-span-5 relative">
+            <div class="relative w-full aspect-square max-w-md mx-auto rounded-3xl p-8 glass-panel border border-white/15 overflow-hidden flex flex-col justify-between shadow-2xl">
+              <div class="absolute inset-0 bg-gradient-to-b from-amber-500/10 via-transparent to-cyan-500/10 pointer-events-none"></div>
+
+              <div class="flex items-center justify-between z-10">
+                <span class="font-mono text-xs text-slate-400 uppercase tracking-widest">Alchemical Formula // 01</span>
+                <span class="px-2.5 py-1 rounded-full bg-cyan-400/10 border border-cyan-400/30 text-cyan-300 text-[10px] font-mono">100% PURE</span>
+              </div>
+
+              <div class="relative py-10 flex flex-col items-center justify-center text-center z-10">
+                <div class="relative w-28 h-28 rounded-full bg-gradient-to-tr from-amber-400/20 to-cyan-400/20 border border-cyan-400/40 flex items-center justify-center mb-4 shadow-glow-cyan">
+                  <i data-lucide="zap" class="w-14 h-14 text-cyan-400"></i>
+                  <div class="absolute inset-0 rounded-full border border-cyan-400 animate-ping opacity-25"></div>
+                </div>
+                <h4 class="font-headline font-bold text-2xl text-white uppercase">Cryo-Charged Hops</h4>
+                <p class="text-sm text-slate-300 max-w-xs mt-1">Preserving 99.4% of volatile alpha acids through sub-zero ionization.</p>
+              </div>
+
+              <div class="pt-4 border-t border-white/10 flex items-center justify-between text-xs font-mono text-slate-400 z-10">
+                <span>Citra · Galaxy · Mosaic</span>
+                <span class="text-amber-400">Zero Oxygen Contact</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== SECTION 3: PRODUCT SHOWCASE ==================== -->
+    <section id="showcase" class="relative py-28 px-4 sm:px-6 lg:px-8 bg-[#090d16]/60 border-t border-white/5">
+      
+      <div class="max-w-7xl mx-auto">
+        
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
+          <div>
+            <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full glass-pill border-cyan-400/30 text-cyan-300 text-xs font-mono tracking-wider uppercase mb-4">
+              <i data-lucide="layers" class="w-3.5 h-3.5 text-cyan-400"></i>
+              <span>The Voltage Vault</span>
+            </div>
+            <h2 class="font-headline font-black text-4xl sm:text-6xl text-white uppercase tracking-tight">
+              Electrified <span class="text-gradient-cyan">Lineup.</span>
+            </h2>
+            <p class="text-slate-400 text-base max-w-lg mt-2">
+              Four distinct voltage frequencies. Engineered for unmatched flavor transmission and crisp finish.
+            </p>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2 glass-pill p-1.5 rounded-2xl self-start md:self-auto">
+            <button class="filter-tab-btn active px-4 py-2 rounded-xl text-xs font-mono uppercase tracking-wider transition-all bg-cyan-400 text-black font-bold" data-filter="all">All (4)</button>
+            <button class="filter-tab-btn px-4 py-2 rounded-xl text-xs font-mono uppercase tracking-wider text-slate-300 hover:text-white transition-all" data-filter="ipa">IPA</button>
+            <button class="filter-tab-btn px-4 py-2 rounded-xl text-xs font-mono uppercase tracking-wider text-slate-300 hover:text-white transition-all" data-filter="stout">Stout</button>
+            <button class="filter-tab-btn px-4 py-2 rounded-xl text-xs font-mono uppercase tracking-wider text-slate-300 hover:text-white transition-all" data-filter="lager">Lager</button>
+            <button class="filter-tab-btn px-4 py-2 rounded-xl text-xs font-mono uppercase tracking-wider text-slate-300 hover:text-white transition-all" data-filter="blonde">Blonde</button>
+          </div>
+        </div>
+
+        <div id="product-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+          <!-- PRODUCT 1: BOLT VOLT IPA -->
+          <div class="product-card group relative glass-panel rounded-3xl p-6 flex flex-col justify-between glass-card-hover" data-category="ipa">
+            <div class="flex items-center justify-between mb-4">
+              <span class="px-3 py-1 rounded-full bg-cyan-400/10 border border-cyan-400/30 text-cyan-300 font-mono text-[11px] uppercase font-bold">
+                6.8% ABV · 65 IBU
+              </span>
+              <span class="text-xs font-mono text-slate-400">#01 IPA</span>
+            </div>
+
+            <div class="relative py-8 flex items-center justify-center can-3d-wrap">
+              <div class="w-36 h-56 rounded-2xl bg-gradient-to-b from-cyan-900/40 via-blue-950/60 to-slate-900 border border-cyan-400/30 relative flex flex-col items-center justify-center p-4 shadow-glow-cyan group-hover:scale-105 transition-transform">
+                <i data-lucide="zap" class="w-12 h-12 text-cyan-400 fill-cyan-400/20 mb-2"></i>
+                <span class="font-headline font-black text-xl tracking-wider text-white">VOLT</span>
+                <span class="text-[10px] font-mono text-cyan-300 uppercase tracking-widest">Double Dry-Hop</span>
+                <div class="absolute top-4 right-4 w-1.5 h-1.5 rounded-full bg-white/70"></div>
+                <div class="absolute bottom-8 left-4 w-2 h-2 rounded-full bg-white/70"></div>
+              </div>
+            </div>
+
+            <div class="mt-4">
+              <h3 class="font-headline font-extrabold text-2xl text-white uppercase group-hover:text-cyan-400 transition-colors">Bolt Volt IPA</h3>
+              <p class="text-slate-400 text-xs mt-1.5 line-clamp-2">
+                High-voltage Citra & Galaxy hops delivering an explosion of passionfruit, ripe mango, and an electric citrus snap.
+              </p>
+
+              <div class="mt-4 pt-4 border-t border-white/10 flex flex-col gap-2">
+                <div class="flex justify-between text-[11px] font-mono text-slate-300">
+                  <span>Bitterness</span>
+                  <span class="text-cyan-400">8.5 / 10</span>
+                </div>
+                <div class="w-full h-1.5 rounded-full bg-white/10 overflow-hidden">
+                  <div class="h-full bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full" style="width: 85%"></div>
+                </div>
+
+                <div class="flex justify-between text-[11px] font-mono text-slate-300">
+                  <span>Juiciness</span>
+                  <span class="text-amber-400">9.2 / 10</span>
+                </div>
+                <div class="w-full h-1.5 rounded-full bg-white/10 overflow-hidden">
+                  <div class="h-full bg-gradient-to-r from-amber-400 to-yellow-300 rounded-full" style="width: 92%"></div>
+                </div>
+              </div>
+
+              <div class="mt-6 flex items-center justify-between pt-2">
+                <div>
+                  <span class="text-xs font-mono text-slate-400">4-Pack 16oz</span>
+                  <p class="font-headline font-bold text-xl text-white">$18.50</p>
+                </div>
+                <button class="add-to-crate-btn px-4 py-2.5 rounded-2xl bg-cyan-400 text-black font-bold text-xs uppercase tracking-wider hover:bg-white hover:scale-105 active:scale-95 transition-all shadow-glow-cyan flex items-center gap-1.5 cursor-pointer" data-name="Bolt Volt IPA" data-price="18.50" data-abv="6.8%">
+                  <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                  <span>Add</span>
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- PRODUCT 2: THUNDERBOLT IMPERIAL STOUT -->
+          <div class="product-card group relative glass-panel rounded-3xl p-6 flex flex-col justify-between glass-card-hover" data-category="stout">
+            <div class="flex items-center justify-between mb-4">
+              <span class="px-3 py-1 rounded-full bg-indigo-400/10 border border-indigo-400/30 text-indigo-300 font-mono text-[11px] uppercase font-bold">
+                10.2% ABV · 85 IBU
+              </span>
+              <span class="text-xs font-mono text-slate-400">#02 STOUT</span>
+            </div>
+
+            <div class="relative py-8 flex items-center justify-center can-3d-wrap">
+              <div class="w-36 h-56 rounded-2xl bg-gradient-to-b from-indigo-950/60 via-purple-950/50 to-slate-950 border border-indigo-400/30 relative flex flex-col items-center justify-center p-4 shadow-glow-violet group-hover:scale-105 transition-transform">
+                <i data-lucide="cloud-lightning" class="w-12 h-12 text-indigo-400 fill-indigo-400/20 mb-2"></i>
+                <span class="font-headline font-black text-xl tracking-wider text-white">THUNDER</span>
+                <span class="text-[10px] font-mono text-indigo-300 uppercase tracking-widest">Imperial Stout</span>
+                <div class="absolute top-6 left-4 w-1.5 h-1.5 rounded-full bg-white/70"></div>
+              </div>
+            </div>
+
+            <div class="mt-4">
+              <h3 class="font-headline font-extrabold text-2xl text-white uppercase group-hover:text-indigo-400 transition-colors">Thunderbolt Stout</h3>
+              <p class="text-slate-400 text-xs mt-1.5 line-clamp-2">
+                Heavy voltage dark roasted malt infused with single-origin Ethiopian cold brew espresso, dark cacao & bourbon oak smoke.
+              </p>
+
+              <div class="mt-4 pt-4 border-t border-white/10 flex flex-col gap-2">
+                <div class="flex justify-between text-[11px] font-mono text-slate-300">
+                  <span>Roast Intensity</span>
+                  <span class="text-indigo-400">9.8 / 10</span>
+                </div>
+                <div class="w-full h-1.5 rounded-full bg-white/10 overflow-hidden">
+                  <div class="h-full bg-gradient-to-r from-indigo-400 to-purple-500 rounded-full" style="width: 98%"></div>
+                </div>
+
+                <div class="flex justify-between text-[11px] font-mono text-slate-300">
+                  <span>Body & Silkiness</span>
+                  <span class="text-amber-400">9.5 / 10</span>
+                </div>
+                <div class="w-full h-1.5 rounded-full bg-white/10 overflow-hidden">
+                  <div class="h-full bg-gradient-to-r from-amber-400 to-yellow-300 rounded-full" style="width: 95%"></div>
+                </div>
+              </div>
+
+              <div class="mt-6 flex items-center justify-between pt-2">
+                <div>
+                  <span class="text-xs font-mono text-slate-400">4-Pack 16oz</span>
+                  <p class="font-headline font-bold text-xl text-white">$22.00</p>
+                </div>
+                <button class="add-to-crate-btn px-4 py-2.5 rounded-2xl bg-indigo-400 text-black font-bold text-xs uppercase tracking-wider hover:bg-white hover:scale-105 active:scale-95 transition-all shadow-glow-violet flex items-center gap-1.5 cursor-pointer" data-name="Thunderbolt Imperial Stout" data-price="22.00" data-abv="10.2%">
+                  <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                  <span>Add</span>
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- PRODUCT 3: NEON AMBER LAGER -->
+          <div class="product-card group relative glass-panel rounded-3xl p-6 flex flex-col justify-between glass-card-hover" data-category="lager">
+            <div class="flex items-center justify-between mb-4">
+              <span class="px-3 py-1 rounded-full bg-amber-400/10 border border-amber-400/30 text-amber-300 font-mono text-[11px] uppercase font-bold">
+                5.2% ABV · 28 IBU
+              </span>
+              <span class="text-xs font-mono text-slate-400">#03 LAGER</span>
+            </div>
+
+            <div class="relative py-8 flex items-center justify-center can-3d-wrap">
+              <div class="w-36 h-56 rounded-2xl bg-gradient-to-b from-amber-950/50 via-yellow-950/40 to-slate-950 border border-amber-400/30 relative flex flex-col items-center justify-center p-4 shadow-glow-amber group-hover:scale-105 transition-transform">
+                <i data-lucide="sun-medium" class="w-12 h-12 text-amber-400 fill-amber-400/20 mb-2"></i>
+                <span class="font-headline font-black text-xl tracking-wider text-white">NEON</span>
+                <span class="text-[10px] font-mono text-amber-300 uppercase tracking-widest">Amber Lager</span>
+                <div class="absolute top-8 right-6 w-1.5 h-1.5 rounded-full bg-white/70"></div>
+              </div>
+            </div>
+
+            <div class="mt-4">
+              <h3 class="font-headline font-extrabold text-2xl text-white uppercase group-hover:text-amber-400 transition-colors">Neon Amber Lager</h3>
+              <p class="text-slate-400 text-xs mt-1.5 line-clamp-2">
+                Pure copper voltage. Toasted Vienna malts, subtle honey biscuit undertones, and a razor-sharp, crystalline Bavarian snap.
+              </p>
+
+              <div class="mt-4 pt-4 border-t border-white/10 flex flex-col gap-2">
+                <div class="flex justify-between text-[11px] font-mono text-slate-300">
+                  <span>Malt Sweetness</span>
+                  <span class="text-amber-400">7.0 / 10</span>
+                </div>
+                <div class="w-full h-1.5 rounded-full bg-white/10 overflow-hidden">
+                  <div class="h-full bg-gradient-to-r from-amber-400 to-orange-400 rounded-full" style="width: 70%"></div>
+                </div>
+
+                <div class="flex justify-between text-[11px] font-mono text-slate-300">
+                  <span>Crisp Refreshment</span>
+                  <span class="text-cyan-400">9.6 / 10</span>
+                </div>
+                <div class="w-full h-1.5 rounded-full bg-white/10 overflow-hidden">
+                  <div class="h-full bg-gradient-to-r from-cyan-400 to-blue-400 rounded-full" style="width: 96%"></div>
+                </div>
+              </div>
+
+              <div class="mt-6 flex items-center justify-between pt-2">
+                <div>
+                  <span class="text-xs font-mono text-slate-400">4-Pack 16oz</span>
+                  <p class="font-headline font-bold text-xl text-white">$16.00</p>
+                </div>
+                <button class="add-to-crate-btn px-4 py-2.5 rounded-2xl bg-amber-400 text-black font-bold text-xs uppercase tracking-wider hover:bg-white hover:scale-105 active:scale-95 transition-all shadow-glow-amber flex items-center gap-1.5 cursor-pointer" data-name="Neon Amber Lager" data-price="16.00" data-abv="5.2%">
+                  <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                  <span>Add</span>
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- PRODUCT 4: ARCTIC SHOCK BLONDE ALE -->
+          <div class="product-card group relative glass-panel rounded-3xl p-6 flex flex-col justify-between glass-card-hover" data-category="blonde">
+            <div class="flex items-center justify-between mb-4">
+              <span class="px-3 py-1 rounded-full bg-teal-400/10 border border-teal-400/30 text-teal-300 font-mono text-[11px] uppercase font-bold">
+                4.8% ABV · 18 IBU
+              </span>
+              <span class="text-xs font-mono text-slate-400">#04 BLONDE</span>
+            </div>
+
+            <div class="relative py-8 flex items-center justify-center can-3d-wrap">
+              <div class="w-36 h-56 rounded-2xl bg-gradient-to-b from-teal-950/50 via-slate-900 to-slate-950 border border-teal-400/30 relative flex flex-col items-center justify-center p-4 shadow-glow-cyan group-hover:scale-105 transition-transform">
+                <i data-lucide="wind" class="w-12 h-12 text-teal-300 fill-teal-300/20 mb-2"></i>
+                <span class="font-headline font-black text-xl tracking-wider text-white">ARCTIC</span>
+                <span class="text-[10px] font-mono text-teal-300 uppercase tracking-widest">Shock Blonde</span>
+                <div class="absolute bottom-10 right-4 w-2 h-2 rounded-full bg-white/70"></div>
+              </div>
+            </div>
+
+            <div class="mt-4">
+              <h3 class="font-headline font-extrabold text-2xl text-white uppercase group-hover:text-teal-300 transition-colors">Arctic Shock Ale</h3>
+              <p class="text-slate-400 text-xs mt-1.5 line-clamp-2">
+                Glacial crispness brewed with organic unmalted wheat, crushed lemongrass, and a chilled ionized spark for all-day sessionability.
+              </p>
+
+              <div class="mt-4 pt-4 border-t border-white/10 flex flex-col gap-2">
+                <div class="flex justify-between text-[11px] font-mono text-slate-300">
+                  <span>Sessionability</span>
+                  <span class="text-teal-300">10 / 10</span>
+                </div>
+                <div class="w-full h-1.5 rounded-full bg-white/10 overflow-hidden">
+                  <div class="h-full bg-gradient-to-r from-teal-300 to-cyan-400 rounded-full" style="width: 100%"></div>
+                </div>
+
+                <div class="flex justify-between text-[11px] font-mono text-slate-300">
+                  <span>Citrus Spark</span>
+                  <span class="text-yellow-300">8.8 / 10</span>
+                </div>
+                <div class="w-full h-1.5 rounded-full bg-white/10 overflow-hidden">
+                  <div class="h-full bg-gradient-to-r from-yellow-300 to-lime-400 rounded-full" style="width: 88%"></div>
+                </div>
+              </div>
+
+              <div class="mt-6 flex items-center justify-between pt-2">
+                <div>
+                  <span class="text-xs font-mono text-slate-400">4-Pack 16oz</span>
+                  <p class="font-headline font-bold text-xl text-white">$15.50</p>
+                </div>
+                <button class="add-to-crate-btn px-4 py-2.5 rounded-2xl bg-teal-300 text-black font-bold text-xs uppercase tracking-wider hover:bg-white hover:scale-105 active:scale-95 transition-all shadow-glow-cyan flex items-center gap-1.5 cursor-pointer" data-name="Arctic Shock Blonde Ale" data-price="15.50" data-abv="4.8%">
+                  <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                  <span>Add</span>
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== SECTION 4: PARALLAX FEATURE (CAN ANATOMY) ==================== -->
+    <section id="anatomy" class="relative min-h-screen py-32 px-4 sm:px-6 lg:px-8 flex items-center justify-center overflow-hidden border-t border-white/5">
+      <div id="parallax-layer-back" class="absolute inset-0 electric-grid opacity-40 pointer-events-none"></div>
+      <div id="parallax-layer-mid" class="absolute w-[600px] h-[600px] rounded-full bg-gradient-to-r from-cyan-500/20 to-amber-500/20 blur-3xl pointer-events-none"></div>
+
+      <div class="max-w-7xl mx-auto w-full relative z-10">
+        
+        <div class="text-center max-w-2xl mx-auto mb-20">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full glass-pill border-cyan-400/30 text-cyan-300 text-xs font-mono tracking-wider uppercase mb-4">
+            <i data-lucide="crosshair" class="w-3.5 h-3.5 text-cyan-400"></i>
+            <span>Engineering Blueprint</span>
+          </div>
+          <h2 class="font-headline font-black text-4xl sm:text-6xl text-white uppercase tracking-tight">
+            Anatomy of a <span class="text-gradient-cyan">Strike.</span>
+          </h2>
+          <p class="text-slate-400 text-sm sm:text-base mt-3">
+            Every millimeter of a Bolt vessel is engineered to preserve maximum aroma voltage and cryogenic freshness.
+          </p>
+        </div>
+
+        <div class="relative grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          
+          <div class="lg:col-span-4 flex flex-col gap-6">
+            
+            <div class="hotspot-card glass-panel rounded-3xl p-6 border-l-4 border-l-cyan-400 hover:scale-102 transition-transform cursor-pointer">
+              <div class="flex items-center gap-3 mb-2">
+                <span class="w-7 h-7 rounded-xl bg-cyan-400/20 text-cyan-300 flex items-center justify-center font-mono font-bold text-xs">01</span>
+                <h4 class="font-headline font-bold text-lg text-white">Diamond Shield™ Top Seal</h4>
+              </div>
+              <p class="text-xs text-slate-300 leading-relaxed font-light">
+                Zero dissolved oxygen tolerance. Micro-crimped double seal prevents any ambient oxidation from degrading delicate hop terpenes.
+              </p>
+            </div>
+
+            <div class="hotspot-card glass-panel rounded-3xl p-6 border-l-4 border-l-amber-400 hover:scale-102 transition-transform cursor-pointer">
+              <div class="flex items-center gap-3 mb-2">
+                <span class="w-7 h-7 rounded-xl bg-amber-400/20 text-amber-300 flex items-center justify-center font-mono font-bold text-xs">02</span>
+                <h4 class="font-headline font-bold text-lg text-white">Ionized Spring Extraction</h4>
+              </div>
+              <p class="text-xs text-slate-300 leading-relaxed font-light">
+                High-altitude mineral spring water passed through magnetic ionizers to balance calcium sulfate ratios for razor-sharp crispness.
+              </p>
+            </div>
+
+          </div>
+
+          <div id="parallax-can-center" class="lg:col-span-4 flex items-center justify-center relative py-12">
+            <div class="relative w-64 sm:w-72 drop-shadow-[0_0_50px_rgba(0,240,255,0.4)]">
+              <svg viewBox="0 0 260 440" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full h-auto">
+                <rect x="30" y="40" width="200" height="360" rx="20" fill="url(#canMetal)"/>
+                <ellipse cx="130" cy="40" rx="80" ry="18" fill="url(#rimMetal)"/>
+                <ellipse cx="130" cy="400" rx="70" ry="16" fill="url(#rimMetal)"/>
+                <polygon points="135,110 95,210 130,210 110,310 180,190 145,190" fill="url(#boltGrad)" filter="drop-shadow(0 0 15px #00f0ff)"/>
+                <text x="130" y="350" font-family="'Syne', sans-serif" font-weight="900" font-size="28" fill="#ffffff" text-anchor="middle" letter-spacing="2">BOLT</text>
+              </svg>
+            </div>
+          </div>
+
+          <div class="lg:col-span-4 flex flex-col gap-6">
+            
+            <div class="hotspot-card glass-panel rounded-3xl p-6 border-r-4 border-r-cyan-400 hover:scale-102 transition-transform cursor-pointer">
+              <div class="flex items-center gap-3 mb-2">
+                <span class="w-7 h-7 rounded-xl bg-cyan-400/20 text-cyan-300 flex items-center justify-center font-mono font-bold text-xs">03</span>
+                <h4 class="font-headline font-bold text-lg text-white">Sub-Zero Nitrogen Dosing</h4>
+              </div>
+              <p class="text-xs text-slate-300 leading-relaxed font-light">
+                A micro-burst of liquid nitrogen dosed 0.05 seconds prior to seaming creates a velvety, dense head of electric foam.
+              </p>
+            </div>
+
+            <div class="hotspot-card glass-panel rounded-3xl p-6 border-r-4 border-r-indigo-400 hover:scale-102 transition-transform cursor-pointer">
+              <div class="flex items-center gap-3 mb-2">
+                <span class="w-7 h-7 rounded-xl bg-indigo-400/20 text-indigo-300 flex items-center justify-center font-mono font-bold text-xs">04</span>
+                <h4 class="font-headline font-bold text-lg text-white">Thermal UV Blackout Core</h4>
+              </div>
+              <p class="text-xs text-slate-300 leading-relaxed font-light">
+                Lightproof aluminium armor prevents skunking from solar UV rays, guaranteeing fresh-from-the-tank taste anywhere in the world.
+              </p>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== SECTION 5: INGREDIENTS & 4-STEP PROCESS ==================== -->
+    <section id="process" class="relative py-28 px-4 sm:px-6 lg:px-8 border-t border-white/5 bg-[#080c14]">
+      
+      <div class="max-w-7xl mx-auto">
+        
+        <div class="flex flex-col items-center text-center max-w-2xl mx-auto mb-20">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full glass-pill border-amber-400/30 text-amber-300 text-xs font-mono tracking-wider uppercase mb-4">
+            <i data-lucide="cpu" class="w-3.5 h-3.5 text-amber-400"></i>
+            <span>The 4-Step Voltage Circuit</span>
+          </div>
+          <h2 class="font-headline font-black text-4xl sm:text-6xl text-white uppercase tracking-tight">
+            How Voltage is <span class="text-gradient-amber">Born.</span>
+          </h2>
+          <p class="text-slate-400 text-sm sm:text-base mt-3">
+            A relentless four-stage brewing protocol calibrated to the nearest tenth of a degree and single microvolt.
+          </p>
+        </div>
+
+        <div class="relative grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          
+          <div class="process-step-card glass-panel rounded-3xl p-6 relative flex flex-col justify-between border-t-2 border-t-cyan-400 group hover:border-cyan-400 transition-colors">
+            <div>
+              <div class="w-12 h-12 rounded-2xl bg-cyan-400/10 border border-cyan-400/30 text-cyan-400 flex items-center justify-center mb-6 shadow-glow-cyan">
+                <i data-lucide="droplet" class="w-6 h-6"></i>
+              </div>
+              <span class="font-mono text-xs text-cyan-400 uppercase tracking-widest">Phase 01 // Input</span>
+              <h3 class="font-headline font-bold text-xl text-white uppercase mt-1 mb-3">Ionized Spring Extraction</h3>
+              <p class="text-xs text-slate-300 font-light leading-relaxed">
+                We draw glacier run-off water and subject it to a multi-stage magnetic resonance chamber to ensure optimal hop oil solubility.
+              </p>
+            </div>
+            <div class="mt-6 pt-4 border-t border-white/10 flex items-center justify-between text-[11px] font-mono text-slate-400">
+              <span>Target PPM: 120</span>
+              <span class="text-cyan-400">Stage: Ready</span>
+            </div>
+          </div>
+
+          <div class="process-step-card glass-panel rounded-3xl p-6 relative flex flex-col justify-between border-t-2 border-t-amber-400 group hover:border-amber-400 transition-colors">
+            <div>
+              <div class="w-12 h-12 rounded-2xl bg-amber-400/10 border border-amber-400/30 text-amber-400 flex items-center justify-center mb-6 shadow-glow-amber">
+                <i data-lucide="wheat" class="w-6 h-6"></i>
+              </div>
+              <span class="font-mono text-xs text-amber-400 uppercase tracking-widest">Phase 02 // Mash</span>
+              <h3 class="font-headline font-bold text-xl text-white uppercase mt-1 mb-3">Cryo-Shock Mashing</h3>
+              <p class="text-xs text-slate-300 font-light leading-relaxed">
+                Organic two-row barley is crushed under low-oxygen nitrogen blankets, converting starches into clean, highly fermentable sugars.
+              </p>
+            </div>
+            <div class="mt-6 pt-4 border-t border-white/10 flex items-center justify-between text-[11px] font-mono text-slate-400">
+              <span>Temp: 65.2°C</span>
+              <span class="text-amber-400">Stage: Active</span>
+            </div>
+          </div>
+
+          <div class="process-step-card glass-panel rounded-3xl p-6 relative flex flex-col justify-between border-t-2 border-t-cyan-400 group hover:border-cyan-400 transition-colors">
+            <div>
+              <div class="w-12 h-12 rounded-2xl bg-cyan-400/10 border border-cyan-400/30 text-cyan-400 flex items-center justify-center mb-6 shadow-glow-cyan">
+                <i data-lucide="zap" class="w-6 h-6"></i>
+              </div>
+              <span class="font-mono text-xs text-cyan-400 uppercase tracking-widest">Phase 03 // Hop Strike</span>
+              <h3 class="font-headline font-bold text-xl text-white uppercase mt-1 mb-3">Electrified Dry-Hop</h3>
+              <p class="text-xs text-slate-300 font-light leading-relaxed">
+                Pulsed ultrasonic vibrations circulate cryo-pelletized hops through the fermentation vessel, locking in maximum tropical aroma without bitterness harshness.
+              </p>
+            </div>
+            <div class="mt-6 pt-4 border-t border-white/10 flex items-center justify-between text-[11px] font-mono text-slate-400">
+              <span>Pressure: 1.8 Bar</span>
+              <span class="text-cyan-400">Stage: Pulsing</span>
+            </div>
+          </div>
+
+          <div class="process-step-card glass-panel rounded-3xl p-6 relative flex flex-col justify-between border-t-2 border-t-indigo-400 group hover:border-indigo-400 transition-colors">
+            <div>
+              <div class="w-12 h-12 rounded-2xl bg-indigo-400/10 border border-indigo-400/30 text-indigo-400 flex items-center justify-center mb-6 shadow-glow-violet">
+                <i data-lucide="snowflake" class="w-6 h-6"></i>
+              </div>
+              <span class="font-mono text-xs text-indigo-400 uppercase tracking-widest">Phase 04 // Condition</span>
+              <h3 class="font-headline font-bold text-xl text-white uppercase mt-1 mb-3">Sub-Zero Conditioning</h3>
+              <p class="text-xs text-slate-300 font-light leading-relaxed">
+                Lagering at -1.5°C for 28 straight days drops any remaining yeast haze, producing immaculate brilliance and a crystalline, razor-sharp clean swallow.
+              </p>
+            </div>
+            <div class="mt-6 pt-4 border-t border-white/10 flex items-center justify-between text-[11px] font-mono text-slate-400">
+              <span>Temp: -1.5°C</span>
+              <span class="text-indigo-400">Stage: Chilling</span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== SECTION 6: INTERACTIVE TASTE LAB ==================== -->
+    <section id="taste-lab" class="relative py-28 px-4 sm:px-6 lg:px-8 border-t border-white/5 overflow-hidden">
+      <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-cyan-900/20 via-transparent to-transparent pointer-events-none"></div>
+
+      <div class="max-w-7xl mx-auto relative z-10">
+        
+        <div class="text-center max-w-2xl mx-auto mb-16">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full glass-pill border-cyan-400/30 text-cyan-300 text-xs font-mono tracking-wider uppercase mb-4">
+            <i data-lucide="sparkles" class="w-3.5 h-3.5 text-cyan-400"></i>
+            <span>Interactive Simulator</span>
+          </div>
+          <h2 class="font-headline font-black text-4xl sm:text-6xl text-white uppercase tracking-tight">
+            Find Your <span class="text-gradient-cyan">Voltage Match.</span>
+          </h2>
+          <p class="text-slate-400 text-sm sm:text-base mt-3">
+            Adjust the sliders below to calibrate your palate parameters and discover your precision Bolt craft pairing.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          
+          <div class="lg:col-span-7 glass-panel rounded-3xl p-6 sm:p-8 flex flex-col gap-6">
+            <h3 class="font-headline font-bold text-xl text-white uppercase flex items-center gap-2">
+              <i data-lucide="sliders" class="w-5 h-5 text-cyan-400"></i>
+              <span>Calibrate Sensory Frequency</span>
+            </h3>
+
+            <div class="flex flex-col gap-2">
+              <div class="flex justify-between items-center text-sm font-mono">
+                <span class="text-slate-300">Hop Bitterness & Pine (IBU)</span>
+                <span id="val-bitterness" class="text-cyan-400 font-bold">65 IBU</span>
+              </div>
+              <input type="range" id="range-bitterness" min="10" max="100" value="65" class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer" />
+              <div class="flex justify-between text-[10px] font-mono text-slate-500">
+                <span>Smooth Mellow (10)</span>
+                <span>Electric Shock (100)</span>
+              </div>
+            </div>
+
+            <div class="flex flex-col gap-2">
+              <div class="flex justify-between items-center text-sm font-mono">
+                <span class="text-slate-300">Alcohol Voltage (ABV)</span>
+                <span id="val-abv" class="text-amber-400 font-bold">6.8% ABV</span>
+              </div>
+              <input type="range" id="range-abv" min="4.0" max="12.0" step="0.2" value="6.8" class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer" />
+              <div class="flex justify-between text-[10px] font-mono text-slate-500">
+                <span>Session Refresh (4%)</span>
+                <span>Heavy Surge (12%)</span>
+              </div>
+            </div>
+
+            <div class="flex flex-col gap-2">
+              <div class="flex justify-between items-center text-sm font-mono">
+                <span class="text-slate-300">Malt Color & Roast Depth</span>
+                <span id="val-malt" class="text-indigo-400 font-bold">Golden Citrus (Medium)</span>
+              </div>
+              <input type="range" id="range-malt" min="1" max="4" value="2" class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer" />
+              <div class="flex justify-between text-[10px] font-mono text-slate-500">
+                <span>Pale Straw</span>
+                <span>Amber Copper</span>
+                <span>Deep Dark</span>
+                <span>Obsidian Smoke</span>
+              </div>
+            </div>
+
+            <button id="reset-taste-btn" class="mt-2 text-xs font-mono text-slate-400 hover:text-cyan-400 flex items-center gap-1.5 self-start cursor-pointer transition-colors">
+              <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+              <span>Reset Sensory Defaults</span>
+            </button>
+          </div>
+
+          <div class="lg:col-span-5">
+            <div id="match-result-card" class="glass-panel rounded-3xl p-8 border border-cyan-400/40 relative overflow-hidden flex flex-col justify-between shadow-glow-cyan transition-all duration-300">
+              
+              <div class="flex items-center justify-between">
+                <span class="px-3 py-1 rounded-full bg-cyan-400/20 text-cyan-300 text-xs font-mono font-bold uppercase tracking-wider">
+                  ⚡ 98% Match Identified
+                </span>
+                <span id="match-category-tag" class="text-xs font-mono text-slate-400">Flagship IPA</span>
+              </div>
+
+              <div class="py-8 flex flex-col items-center text-center">
+                <div id="match-icon-wrap" class="w-20 h-20 rounded-2xl bg-cyan-400/10 border border-cyan-400/30 text-cyan-400 flex items-center justify-center mb-4 shadow-glow-cyan">
+                  <i data-lucide="zap" class="w-10 h-10"></i>
+                </div>
+                <h4 id="match-beer-title" class="font-headline font-black text-3xl text-white uppercase tracking-tight">Bolt Volt IPA</h4>
+                <p id="match-beer-desc" class="text-xs text-slate-300 max-w-xs mt-2 font-light">
+                  Citra & Galaxy dry-hop charge. Matches your craving for bold aromatic bitterness and crisp electric citrus finish.
+                </p>
+                <div class="mt-4 flex items-center gap-4 text-xs font-mono">
+                  <span id="match-abv" class="text-cyan-400 font-bold">6.8% ABV</span>
+                  <span class="text-slate-500">•</span>
+                  <span id="match-ibu" class="text-amber-400 font-bold">65 IBU</span>
+                </div>
+              </div>
+
+              <div class="pt-4 border-t border-white/10 flex items-center justify-between">
+                <span id="match-price" class="font-headline font-bold text-2xl text-white">$18.50</span>
+                <button id="claim-match-btn" class="px-6 py-3 rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 text-black font-headline font-bold text-xs uppercase tracking-wider hover:scale-105 active:scale-95 transition-all shadow-glow-cyan flex items-center gap-2 cursor-pointer">
+                  <span>Order Matched Crate</span>
+                  <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                </button>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== SECTION 7: TESTIMONIALS & CRITICAL ACCLAIM ==================== -->
+    <section id="reviews" class="relative py-28 px-4 sm:px-6 lg:px-8 border-t border-white/5 bg-[#090d16]/70">
+      
+      <div class="max-w-7xl mx-auto">
+        
+        <div class="flex flex-col items-center text-center max-w-2xl mx-auto mb-16">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full glass-pill border-amber-400/30 text-amber-300 text-xs font-mono tracking-wider uppercase mb-4">
+            <i data-lucide="award" class="w-3.5 h-3.5 text-amber-400"></i>
+            <span>Critical Acclaim</span>
+          </div>
+          <h2 class="font-headline font-black text-4xl sm:text-6xl text-white uppercase tracking-tight">
+            Certified <span class="text-gradient-amber">High-Voltage.</span>
+          </h2>
+          <p class="text-slate-400 text-sm sm:text-base mt-3">
+            What Master Cicerones, world sommeliers, and craft zealots are saying about the Bolt experience.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+          <!-- Review 1 -->
+          <div class="review-card glass-panel rounded-3xl p-6 sm:p-8 flex flex-col justify-between glass-card-hover">
+            <div>
+              <div class="flex items-center gap-1 text-amber-400 mb-4">
+                <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+                <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+                <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+                <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+                <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+              </div>
+              <p class="text-slate-200 text-sm sm:text-base font-light italic leading-relaxed">
+                "Bolt Volt IPA is the cleanest expression of cryogenic hopping I’ve evaluated in a decade. The ionized snap leaves virtually zero residual astringency."
+              </p>
+            </div>
+            
+            <div class="mt-6 pt-4 border-t border-white/10 flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-cyan-500/20 border border-cyan-400/40 flex items-center justify-center font-bold text-cyan-300 text-sm">
+                MK
+              </div>
+              <div>
+                <h5 class="font-headline font-bold text-sm text-white">Marcus Keller</h5>
+                <p class="text-[11px] font-mono text-cyan-400">Master Cicerone, European Craft Jury</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Review 2 -->
+          <div class="review-card glass-panel rounded-3xl p-6 sm:p-8 flex flex-col justify-between glass-card-hover">
+            <div>
+              <div class="flex items-center gap-1 text-amber-400 mb-4">
+                <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+                <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+                <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+                <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+                <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+              </div>
+              <p class="text-slate-200 text-sm sm:text-base font-light italic leading-relaxed">
+                "Thunderbolt Stout is a sensory revelation. The espresso voltage hits with velvet decadence and a warm bourbon finish that lingers forever."
+              </p>
+            </div>
+            
+            <div class="mt-6 pt-4 border-t border-white/10 flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-indigo-500/20 border border-indigo-400/40 flex items-center justify-center font-bold text-indigo-300 text-sm">
+                EL
+              </div>
+              <div>
+                <h5 class="font-headline font-bold text-sm text-white">Elena Rostova</h5>
+                <p class="text-[11px] font-mono text-indigo-400">Editor-in-Chief, Hop Culture Journal</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Review 3 -->
+          <div class="review-card glass-panel rounded-3xl p-6 sm:p-8 flex flex-col justify-between glass-card-hover">
+            <div>
+              <div class="flex items-center gap-1 text-amber-400 mb-4">
+                <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+                <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+                <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+                <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+                <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+              </div>
+              <p class="text-slate-200 text-sm sm:text-base font-light italic leading-relaxed">
+                "Finding a craft brand with this caliber of aesthetic polish and sheer liquid excellence is rare. Neon Amber Lager has become our taproom's #1 request."
+              </p>
+            </div>
+            
+            <div class="mt-6 pt-4 border-t border-white/10 flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-amber-500/20 border border-amber-400/40 flex items-center justify-center font-bold text-amber-300 text-sm">
+                DV
+              </div>
+              <div>
+                <h5 class="font-headline font-bold text-sm text-white">Dave Vance</h5>
+                <p class="text-[11px] font-mono text-amber-400">Founder, The Vault Taphouse NY</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="mt-16 p-6 rounded-3xl glass-panel border border-white/10 flex flex-wrap items-center justify-around gap-8 text-center">
+          <div class="flex items-center gap-3">
+            <i data-lucide="award" class="w-8 h-8 text-amber-400"></i>
+            <div class="text-left">
+              <p class="font-headline font-bold text-sm text-white">World Beer Cup 2025</p>
+              <p class="text-[11px] font-mono text-amber-400">Gold Medal — Experimental IPA</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <i data-lucide="trophy" class="w-8 h-8 text-cyan-400"></i>
+            <div class="text-left">
+              <p class="font-headline font-bold text-sm text-white">GABF Innovation Trophy</p>
+              <p class="text-[11px] font-mono text-cyan-400">Cryo-Brewing Master Award</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <i data-lucide="shield-check" class="w-8 h-8 text-indigo-400"></i>
+            <div class="text-left">
+              <p class="font-headline font-bold text-sm text-white">100% Certified Independent</p>
+              <p class="text-[11px] font-mono text-indigo-400">Craft Brewers Association</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== SECTION 8: THE BOLT SOCIETY (NEWSLETTER / CTA) ==================== -->
+    <section id="society" class="relative py-28 px-4 sm:px-6 lg:px-8 border-t border-white/5 overflow-hidden">
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-gradient-to-r from-cyan-600/15 via-blue-600/10 to-amber-500/15 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="max-w-4xl mx-auto relative z-10">
+        
+        <div class="glass-panel rounded-3xl p-8 sm:p-14 border border-cyan-400/30 text-center relative overflow-hidden shadow-glow-cyan">
+          
+          <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full glass-pill border-cyan-400/40 text-cyan-300 text-xs font-mono tracking-wider uppercase mb-6 shimmer-badge">
+            <i data-lucide="zap" class="w-3.5 h-3.5 text-cyan-400"></i>
+            <span>VIP Drop Access // The Bolt Society</span>
+          </div>
+
+          <h2 class="font-headline font-black text-4xl sm:text-6xl text-white uppercase tracking-tight mb-4">
+            Join The <span class="text-gradient-cyan">Voltage Grid.</span>
+          </h2>
+
+          <p class="text-slate-300 text-sm sm:text-base max-w-lg mx-auto font-light mb-8">
+            Get exclusive first-strike invitations to small-batch cryogenic seasonal drops, private brewery tastings, and 
+            <span class="text-amber-400 font-semibold">15% off your first crate delivery</span>.
+          </p>
+
+          <form id="newsletter-form" class="max-w-md mx-auto flex flex-col sm:flex-row gap-3">
+            <div class="relative flex-1">
+              <input 
+                type="email" 
+                id="email-input"
+                required
+                placeholder="Enter your email for early access..." 
+                class="w-full px-5 py-4 rounded-full bg-slate-900/80 border border-white/20 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/30 transition-all font-mono"
+              />
+              <span id="input-spark-indicator" class="hidden absolute right-4 top-1/2 -translate-y-1/2 text-cyan-400 animate-pulse">⚡</span>
+            </div>
+            
+            <button 
+              type="submit" 
+              id="subscribe-btn"
+              class="px-8 py-4 rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 text-black font-headline font-black text-sm tracking-wider uppercase shadow-glow-cyan hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <span>Electrify</span>
+              <i data-lucide="zap" class="w-4 h-4 fill-current"></i>
+            </button>
+          </form>
+
+          <div id="newsletter-success" class="hidden mt-6 p-4 rounded-2xl bg-cyan-400/10 border border-cyan-400/40 text-cyan-300 text-xs font-mono">
+            ⚡ Welcome to the Grid! Your VIP voucher code: <strong class="text-white">BOLT-VOLT-15</strong> has been activated.
+          </div>
+
+          <p class="text-[11px] font-mono text-slate-500 mt-6">
+            Zero spam. Unsubscribe with a single click. 21+ verification required upon checkout.
+          </p>
+
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==================== SLIDE-OUT CRATE DRAWER ==================== -->
+  <div id="crate-drawer" class="fixed inset-0 z-50 pointer-events-none transition-all duration-300 opacity-0">
+    <div id="crate-backdrop" class="absolute inset-0 bg-black/70 backdrop-blur-sm pointer-events-auto"></div>
+    
+    <div id="crate-panel" class="absolute top-0 right-0 bottom-0 w-full max-w-md glass-panel bg-[#090e18]/95 border-l border-cyan-400/30 p-6 sm:p-8 flex flex-col justify-between transform translate-x-full transition-transform duration-300 pointer-events-auto shadow-2xl">
+      
+      <div>
+        <div class="flex items-center justify-between pb-4 border-b border-white/10">
+          <div class="flex items-center gap-2">
+            <i data-lucide="shopping-bag" class="w-5 h-5 text-cyan-400"></i>
+            <h3 class="font-headline font-black text-xl text-white uppercase">Your Voltage Crate</h3>
+          </div>
+          <button id="close-crate-btn" class="p-2 rounded-full glass-pill text-slate-400 hover:text-white cursor-pointer" aria-label="Close Crate">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <div id="crate-items-list" class="mt-6 flex flex-col gap-4 max-h-[50vh] overflow-y-auto pr-1">
+          <div id="crate-empty-msg" class="py-12 text-center text-slate-400 text-sm font-light">
+            <i data-lucide="package-open" class="w-12 h-12 text-slate-600 mx-auto mb-3"></i>
+            <p>Your crate is currently empty.</p>
+            <p class="text-xs font-mono text-cyan-400 mt-1">Select a brew to charge your delivery.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-6 border-t border-white/10">
+        <div class="flex justify-between items-center text-sm font-mono mb-2 text-slate-300">
+          <span>Subtotal</span>
+          <span id="crate-subtotal-price" class="text-white font-bold">$0.00</span>
+        </div>
+        <div class="flex justify-between items-center text-xs font-mono mb-4 text-cyan-400">
+          <span>Cold-Chain Shipping</span>
+          <span>Calculated at checkout</span>
+        </div>
+        <button id="checkout-btn" class="w-full py-4 rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 text-black font-headline font-black text-sm uppercase tracking-wider hover:scale-102 active:scale-98 transition-all shadow-glow-cyan flex items-center justify-center gap-2 cursor-pointer">
+          <span>Proceed To Delivery</span>
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </button>
+        <p class="text-[10px] font-mono text-center text-slate-500 mt-3">
+          ⚡ 21+ Age verification enforced at door. Drink Responsibly.
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="relative bg-[#05070a] border-t border-white/10 pt-16 pb-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto">
+      
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-12 pb-12 border-b border-white/10">
+        
+        <div class="md:col-span-5 flex flex-col items-start">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-9 h-9 rounded-xl bg-cyan-400 flex items-center justify-center text-black font-black">
+              ⚡
+            </div>
+            <span class="font-headline font-black text-2xl tracking-tight text-white uppercase">BOLT CRAFT BEER</span>
+          </div>
+          <p class="text-xs text-slate-400 max-w-sm leading-relaxed font-light mb-6">
+            Liquid voltage engineered in small batches. Cryogenic dry-hopping, ionized water purification, and sub-zero conditioning.
+          </p>
+          <div class="flex items-center gap-3">
+            <a href="#" class="p-2.5 rounded-full glass-pill text-slate-400 hover:text-cyan-400 hover:border-cyan-400/40 transition-colors" aria-label="Instagram"><i data-lucide="instagram" class="w-4 h-4"></i></a>
+            <a href="#" class="p-2.5 rounded-full glass-pill text-slate-400 hover:text-cyan-400 hover:border-cyan-400/40 transition-colors" aria-label="Twitter"><i data-lucide="twitter" class="w-4 h-4"></i></a>
+            <a href="#" class="p-2.5 rounded-full glass-pill text-slate-400 hover:text-cyan-400 hover:border-cyan-400/40 transition-colors" aria-label="Facebook"><i data-lucide="facebook" class="w-4 h-4"></i></a>
+            <a href="#" class="p-2.5 rounded-full glass-pill text-slate-400 hover:text-cyan-400 hover:border-cyan-400/40 transition-colors" aria-label="Youtube"><i data-lucide="youtube" class="w-4 h-4"></i></a>
+          </div>
+        </div>
+
+        <div class="md:col-span-2">
+          <h5 class="font-mono text-xs text-white uppercase tracking-widest mb-4">The Brews</h5>
+          <ul class="flex flex-col gap-2.5 text-xs text-slate-400 font-light">
+            <li><a href="#showcase" class="hover:text-cyan-400 transition-colors">Bolt Volt IPA (6.8%)</a></li>
+            <li><a href="#showcase" class="hover:text-cyan-400 transition-colors">Thunderbolt Stout (10.2%)</a></li>
+            <li><a href="#showcase" class="hover:text-cyan-400 transition-colors">Neon Amber Lager (5.2%)</a></li>
+            <li><a href="#showcase" class="hover:text-cyan-400 transition-colors">Arctic Shock Ale (4.8%)</a></li>
+            <li><a href="#society" class="hover:text-cyan-400 transition-colors">Limited Experimental Batches</a></li>
+          </ul>
+        </div>
+
+        <div class="md:col-span-2">
+          <h5 class="font-mono text-xs text-white uppercase tracking-widest mb-4">Brewery & Lab</h5>
+          <ul class="flex flex-col gap-2.5 text-xs text-slate-400 font-light">
+            <li><a href="#story" class="hover:text-cyan-400 transition-colors">Our Philosophy</a></li>
+            <li><a href="#process" class="hover:text-cyan-400 transition-colors">Cryo-Shock Process</a></li>
+            <li><a href="#anatomy" class="hover:text-cyan-400 transition-colors">Can Engineering</a></li>
+            <li><a href="#taste-lab" class="hover:text-cyan-400 transition-colors">Palate Matcher Lab</a></li>
+            <li><a href="#reviews" class="hover:text-cyan-400 transition-colors">Awards & Accolades</a></li>
+          </ul>
+        </div>
+
+        <div class="md:col-span-3">
+          <h5 class="font-mono text-xs text-white uppercase tracking-widest mb-4">Brewery HQ & Taproom</h5>
+          <p class="text-xs text-slate-400 leading-relaxed font-light">
+            4400 Voltage Way, Cascade Alps<br />
+            Open Daily: 11:00 AM – 11:00 PM<br />
+            taproom@boltbeer.craft · +1 (800) 555-BOLT
+          </p>
+          <div class="mt-4 p-3 rounded-2xl glass-pill flex items-center gap-3">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+            <span class="text-[11px] font-mono text-slate-300">Taproom Status: Open & Pouring</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] font-mono text-slate-500">
+        <p>© 2026 Bolt Brewing Co. All rights reserved. Please Drink Responsibly. Must be 21+ to purchase.</p>
+        
+        <button id="back-to-top" class="flex items-center gap-1.5 hover:text-cyan-400 transition-colors cursor-pointer" aria-label="Scroll back to top">
+          <span>Back to Peak</span>
+          <i data-lucide="arrow-up" class="w-3.5 h-3.5"></i>
+        </button>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- ==================== JAVASCRIPT ANIMATIONS & INTERACTIONS ==================== -->
+  <script>
+    lucide.createIcons();
+
+    // 1. Lenis Smooth Scrolling Integration
+    let lenis;
+    try {
+      lenis = new Lenis({
+        duration: 1.2,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        smoothWheel: true,
+        smoothTouch: false
+      });
+
+      function raf(time) {
+        lenis.raf(time);
+        requestAnimationFrame(raf);
+      }
+      requestAnimationFrame(raf);
+
+      lenis.on('scroll', ScrollTrigger.update);
+      gsap.ticker.add((time) => {
+        lenis.raf(time * 1000);
+      });
+      gsap.ticker.lagSmoothing(0);
+    } catch (e) {
+      console.warn('Lenis smooth scroll fallback to native', e);
+    }
+
+    // 2. Custom Cursor Follower
+    const cursorSpark = document.getElementById('cursor-spark');
+    const cursorDot = document.getElementById('cursor-dot');
+
+    if (cursorSpark && cursorDot && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+      window.addEventListener('mousemove', (e) => {
+        cursorDot.style.left = `${e.clientX}px`;
+        cursorDot.style.top = `${e.clientY}px`;
+        
+        cursorSpark.animate({
+          left: `${e.clientX}px`,
+          top: `${e.clientY}px`
+        }, { duration: 300, fill: 'forwards' });
+      });
+
+      document.querySelectorAll('a, button, input, .hotspot-card, .product-card').forEach(el => {
+        el.addEventListener('mouseenter', () => {
+          cursorSpark.style.width = '50px';
+          cursorSpark.style.height = '50px';
+          cursorSpark.style.borderColor = '#fbbf24';
+        });
+        el.addEventListener('mouseleave', () => {
+          cursorSpark.style.width = '28px';
+          cursorSpark.style.height = '28px';
+          cursorSpark.style.borderColor = 'rgba(0, 240, 255, 0.6)';
+        });
+      });
+    }
+
+    // 3. Full-Screen Interactive Effervescent Canvas & Lightning Spiders
+    const canvas = document.getElementById('voltage-canvas');
+    const ctx = canvas.getContext('2d');
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+
+    window.addEventListener('resize', () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    });
+
+    const bubbles = [];
+    const bubbleCount = Math.min(width < 768 ? 35 : 75, 80);
+
+    class Bubble {
+      constructor() {
+        this.reset();
+        this.y = Math.random() * height;
+      }
+      reset() {
+        this.x = Math.random() * width;
+        this.y = height + 10 + Math.random() * 20;
+        this.radius = Math.random() * 2.2 + 0.6;
+        this.speedY = Math.random() * 1.2 + 0.4;
+        this.speedX = (Math.random() - 0.5) * 0.4;
+        this.alpha = Math.random() * 0.6 + 0.2;
+        this.hue = Math.random() > 0.6 ? 185 : 42;
+      }
+      update() {
+        this.y -= this.speedY;
+        this.x += this.speedX;
+        if (this.y < -10) this.reset();
+      }
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = this.hue === 185 ? `rgba(0, 240, 255, ${this.alpha})` : `rgba(251, 191, 36, ${this.alpha})`;
+        ctx.fill();
+      }
+    }
+
+    for (let i = 0; i < bubbleCount; i++) {
+      bubbles.push(new Bubble());
+    }
+
+    let lightningArcs = [];
+
+    function createLightningArc(startX, startY, endX, endY) {
+      const segments = [];
+      const steps = 14;
+      let currentX = startX;
+      let currentY = startY;
+
+      for (let i = 0; i < steps; i++) {
+        const progress = (i + 1) / steps;
+        const targetX = startX + (endX - startX) * progress;
+        const targetY = startY + (endY - startY) * progress;
+        const jitter = (1 - Math.abs(progress - 0.5) * 2) * 28;
+        const nextX = targetX + (Math.random() - 0.5) * jitter;
+        const nextY = targetY + (Math.random() - 0.5) * jitter;
+        segments.push({ x1: currentX, y1: currentY, x2: nextX, y2: nextY });
+        currentX = nextX;
+        currentY = nextY;
+      }
+      lightningArcs.push({ segments, life: 1.0 });
+    }
+
+    function animateCanvas() {
+      ctx.clearRect(0, 0, width, height);
+
+      for (let i = 0; i < bubbles.length; i++) {
+        bubbles[i].update();
+        bubbles[i].draw();
+      }
+
+      for (let i = lightningArcs.length - 1; i >= 0; i--) {
+        const arc = lightningArcs[i];
+        ctx.strokeStyle = `rgba(0, 240, 255, ${arc.life})`;
+        ctx.lineWidth = arc.life * 2.5;
+        ctx.shadowColor = '#00f0ff';
+        ctx.shadowBlur = 10;
+
+        ctx.beginPath();
+        for (let j = 0; j < arc.segments.length; j++) {
+          const seg = arc.segments[j];
+          ctx.moveTo(seg.x1, seg.y1);
+          ctx.lineTo(seg.x2, seg.y2);
+        }
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+
+        arc.life -= 0.08;
+        if (arc.life <= 0) {
+          lightningArcs.splice(i, 1);
+        }
+      }
+
+      requestAnimationFrame(animateCanvas);
+    }
+    animateCanvas();
+
+    window.addEventListener('click', (e) => {
+      const randomTopX = e.clientX + (Math.random() - 0.5) * 300;
+      createLightningArc(randomTopX, 0, e.clientX, e.clientY);
+    });
+
+    // 4. Lightning Flash Strike Function
+    const flashOverlay = document.getElementById('lightning-flash-fx');
+    const strikeTriggerBtn = document.getElementById('trigger-strike-btn');
+
+    function triggerStrike() {
+      gsap.to(flashOverlay, {
+        opacity: 0.9,
+        duration: 0.08,
+        onComplete: () => {
+          gsap.to(flashOverlay, { opacity: 0, duration: 0.4, ease: 'power2.out' });
+        }
+      });
+      createLightningArc(width * 0.5, 0, width * 0.5, height * 0.45);
+      createLightningArc(width * 0.4, 0, width * 0.52, height * 0.5);
+    }
+
+    if (strikeTriggerBtn) {
+      strikeTriggerBtn.addEventListener('click', triggerStrike);
+    }
+
+    // 5. GSAP ScrollTrigger Animations & Parallax
+    gsap.registerPlugin(ScrollTrigger);
+
+    const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+    heroTl
+      .from('.hero-reveal', {
+        y: 40,
+        opacity: 0,
+        stagger: 0.15,
+        duration: 1
+      })
+      .from('#hero-can-interactive', {
+        scale: 0.8,
+        y: 60,
+        opacity: 0,
+        duration: 1.2,
+        ease: 'back.out(1.4)'
+      }, '-=0.8');
+
+    gsap.to('#hero-can-interactive', {
+      y: -14,
+      duration: 3,
+      repeat: -1,
+      yoyo: true,
+      ease: 'sine.inOut'
+    });
+
+    const heroCanWrap = document.querySelector('.can-3d-wrap');
+    const heroCan = document.getElementById('hero-can-interactive');
+
+    if (heroCanWrap && heroCan) {
+      heroCanWrap.addEventListener('mousemove', (e) => {
+        const rect = heroCanWrap.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+        const rotX = -(y / rect.height) * 20;
+        const rotY = (x / rect.width) * 20;
+        gsap.to(heroCan, {
+          rotationX: rotX,
+          rotationY: rotY,
+          duration: 0.4,
+          ease: 'power2.out'
+        });
+      });
+
+      heroCanWrap.addEventListener('mouseleave', () => {
+        gsap.to(heroCan, {
+          rotationX: 0,
+          rotationY: 0,
+          duration: 0.8,
+          ease: 'elastic.out(1, 0.4)'
+        });
+      });
+    }
+
+    gsap.from('.story-fade-text', {
+      scrollTrigger: {
+        trigger: '#story',
+        start: 'top 75%'
+      },
+      y: 30,
+      opacity: 0,
+      stagger: 0.2,
+      duration: 0.9,
+      ease: 'power2.out'
+    });
+
+    gsap.from('.product-card', {
+      scrollTrigger: {
+        trigger: '#showcase',
+        start: 'top 75%'
+      },
+      y: 50,
+      opacity: 0,
+      stagger: 0.15,
+      duration: 0.9,
+      ease: 'power3.out'
+    });
+
+    gsap.to('#parallax-layer-back', {
+      scrollTrigger: {
+        trigger: '#anatomy',
+        start: 'top bottom',
+        end: 'bottom top',
+        scrub: true
+      },
+      y: -80
+    });
+
+    gsap.to('#parallax-can-center', {
+      scrollTrigger: {
+        trigger: '#anatomy',
+        start: 'top bottom',
+        end: 'bottom top',
+        scrub: true
+      },
+      y: 60
+    });
+
+    gsap.from('.process-step-card', {
+      scrollTrigger: {
+        trigger: '#process',
+        start: 'top 75%'
+      },
+      y: 40,
+      opacity: 0,
+      stagger: 0.2,
+      duration: 0.8,
+      ease: 'power2.out'
+    });
+
+    // 6. Product Category Filtering
+    const filterBtns = document.querySelectorAll('.filter-tab-btn');
+    const productCards = document.querySelectorAll('.product-card');
+
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => {
+          b.classList.remove('active', 'bg-cyan-400', 'text-black', 'font-bold');
+          b.classList.add('text-slate-300');
+        });
+        btn.classList.add('active', 'bg-cyan-400', 'text-black', 'font-bold');
+        btn.classList.remove('text-slate-300');
+
+        const filter = btn.getAttribute('data-filter');
+        productCards.forEach(card => {
+          const category = card.getAttribute('data-category');
+          if (filter === 'all' || category === filter) {
+            gsap.to(card, { display: 'flex', opacity: 1, scale: 1, duration: 0.4 });
+          } else {
+            gsap.to(card, { display: 'none', opacity: 0, scale: 0.9, duration: 0.3 });
+          }
+        });
+      });
+    });
+
+    // 7. Interactive Taste Lab Matcher Engine
+    const rangeBitterness = document.getElementById('range-bitterness');
+    const rangeAbv = document.getElementById('range-abv');
+    const rangeMalt = document.getElementById('range-malt');
+
+    const valBitterness = document.getElementById('val-bitterness');
+    const valAbv = document.getElementById('val-abv');
+    const valMalt = document.getElementById('val-malt');
+
+    const matchTitle = document.getElementById('match-beer-title');
+    const matchDesc = document.getElementById('match-beer-desc');
+    const matchAbv = document.getElementById('match-abv');
+    const matchIbu = document.getElementById('match-ibu');
+    const matchPrice = document.getElementById('match-price');
+    const matchCategoryTag = document.getElementById('match-category-tag');
+    const matchResultCard = document.getElementById('match-result-card');
+
+    const maltNames = ['Pale Straw', 'Golden Citrus', 'Amber Caramel', 'Obsidian Espresso'];
+
+    function updateTasteMatch() {
+      const bit = parseInt(rangeBitterness.value);
+      const abv = parseFloat(rangeAbv.value);
+      const malt = parseInt(rangeMalt.value);
+
+      valBitterness.textContent = `${bit} IBU`;
+      valAbv.textContent = `${abv.toFixed(1)}% ABV`;
+      valMalt.textContent = maltNames[malt - 1];
+
+      if (malt === 4 || abv >= 8.5) {
+        matchTitle.textContent = 'Thunderbolt Imperial Stout';
+        matchCategoryTag.textContent = 'Dark Core Imperial';
+        matchDesc.textContent = 'Single-origin espresso voltage, smoked cacao and bourbon oak. Engineered for deep roast lovers.';
+        matchAbv.textContent = '10.2% ABV';
+        matchIbu.textContent = '85 IBU';
+        matchPrice.textContent = '$22.00';
+        matchResultCard.style.borderColor = 'rgba(129, 140, 248, 0.5)';
+      } else if (malt === 3 || (bit < 40 && abv >= 5.0)) {
+        matchTitle.textContent = 'Neon Amber Lager';
+        matchCategoryTag.textContent = 'Copper Precision';
+        matchDesc.textContent = 'Toasted Vienna malts and clean Bavarian snap. Perfect balance of malt sweetness and crisp swallow.';
+        matchAbv.textContent = '5.2% ABV';
+        matchIbu.textContent = '28 IBU';
+        matchPrice.textContent = '$16.00';
+        matchResultCard.style.borderColor = 'rgba(245, 158, 11, 0.5)';
+      } else if (abv < 5.0 || bit < 30) {
+        matchTitle.textContent = 'Arctic Shock Blonde Ale';
+        matchCategoryTag.textContent = 'Glacial Session';
+        matchDesc.textContent = 'Lemongrass, organic wheat, and chilled ionized spark for all-day crisp refreshment.';
+        matchAbv.textContent = '4.8% ABV';
+        matchIbu.textContent = '18 IBU';
+        matchPrice.textContent = '$15.50';
+        matchResultCard.style.borderColor = 'rgba(45, 212, 191, 0.5)';
+      } else {
+        matchTitle.textContent = 'Bolt Volt IPA';
+        matchCategoryTag.textContent = 'Flagship Cryo IPA';
+        matchDesc.textContent = 'Citra & Galaxy dry-hop charge. High-voltage tropical aromatics and electrifying citrus bite.';
+        matchAbv.textContent = '6.8% ABV';
+        matchIbu.textContent = '65 IBU';
+        matchPrice.textContent = '$18.50';
+        matchResultCard.style.borderColor = 'rgba(0, 240, 255, 0.5)';
+      }
+
+      gsap.fromTo(matchResultCard, { scale: 0.98 }, { scale: 1, duration: 0.3, ease: 'back.out(2)' });
+    }
+
+    rangeBitterness.addEventListener('input', updateTasteMatch);
+    rangeAbv.addEventListener('input', updateTasteMatch);
+    rangeMalt.addEventListener('input', updateTasteMatch);
+
+    const resetTasteBtn = document.getElementById('reset-taste-btn');
+    if (resetTasteBtn) {
+      resetTasteBtn.addEventListener('click', () => {
+        rangeBitterness.value = 65;
+        rangeAbv.value = 6.8;
+        rangeMalt.value = 2;
+        updateTasteMatch();
+      });
+    }
+
+    // 8. Crate Drawer & Add-To-Cart State
+    const crate = [];
+    const openCrateBtn = document.getElementById('open-crate-btn');
+    const closeCrateBtn = document.getElementById('close-crate-btn');
+    const crateDrawer = document.getElementById('crate-drawer');
+    const cratePanel = document.getElementById('crate-panel');
+    const crateBackdrop = document.getElementById('crate-backdrop');
+    const crateCountBadge = document.getElementById('crate-count-badge');
+    const crateItemsList = document.getElementById('crate-items-list');
+    const crateEmptyMsg = document.getElementById('crate-empty-msg');
+    const crateSubtotal = document.getElementById('crate-subtotal-price');
+
+    function openCrate() {
+      crateDrawer.classList.remove('pointer-events-none', 'opacity-0');
+      cratePanel.classList.remove('translate-x-full');
+    }
+
+    function closeCrate() {
+      crateDrawer.classList.add('pointer-events-none', 'opacity-0');
+      cratePanel.classList.add('translate-x-full');
+    }
+
+    if (openCrateBtn) openCrateBtn.addEventListener('click', openCrate);
+    if (closeCrateBtn) closeCrateBtn.addEventListener('click', closeCrate);
+    if (crateBackdrop) crateBackdrop.addEventListener('click', closeCrate);
+
+    function updateCrateUI() {
+      const totalItems = crate.reduce((sum, item) => sum + item.qty, 0);
+      crateCountBadge.textContent = totalItems;
+
+      if (crate.length === 0) {
+        crateEmptyMsg.classList.remove('hidden');
+        crateSubtotal.textContent = '$0.00';
+      } else {
+        crateEmptyMsg.classList.add('hidden');
+        
+        let subtotal = 0;
+        let itemsHtml = '';
+        
+        crate.forEach((item, index) => {
+          subtotal += item.price * item.qty;
+          itemsHtml += `
+            <div class="glass-panel p-3.5 rounded-2xl flex items-center justify-between border border-white/10">
+              <div>
+                <h6 class="font-headline font-bold text-sm text-white">${item.name}</h6>
+                <p class="text-[11px] font-mono text-cyan-400">${item.abv} · $${item.price.toFixed(2)}</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <button class="crate-qty-dec w-6 h-6 rounded-lg glass-pill text-xs flex items-center justify-center text-slate-300 hover:text-white" data-index="${index}">-</button>
+                <span class="text-xs font-mono font-bold">${item.qty}</span>
+                <button class="crate-qty-inc w-6 h-6 rounded-lg glass-pill text-xs flex items-center justify-center text-slate-300 hover:text-white" data-index="${index}">+</button>
+              </div>
+            </div>
+          `;
+        });
+
+        crateItemsList.innerHTML = itemsHtml;
+        crateSubtotal.textContent = `$${subtotal.toFixed(2)}`;
+
+        document.querySelectorAll('.crate-qty-inc').forEach(b => {
+          b.addEventListener('click', (e) => {
+            const idx = parseInt(e.target.getAttribute('data-index'));
+            crate[idx].qty += 1;
+            updateCrateUI();
+          });
+        });
+
+        document.querySelectorAll('.crate-qty-dec').forEach(b => {
+          b.addEventListener('click', (e) => {
+            const idx = parseInt(e.target.getAttribute('data-index'));
+            crate[idx].qty -= 1;
+            if (crate[idx].qty <= 0) crate.splice(idx, 1);
+            updateCrateUI();
+          });
+        });
+      }
+    }
+
+    document.querySelectorAll('.add-to-crate-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const name = btn.getAttribute('data-name');
+        const price = parseFloat(btn.getAttribute('data-price'));
+        const abv = btn.getAttribute('data-abv');
+
+        const existing = crate.find(i => i.name === name);
+        if (existing) {
+          existing.qty += 1;
+        } else {
+          crate.push({ name, price, abv, qty: 1 });
+        }
+        
+        updateCrateUI();
+        openCrate();
+        
+        gsap.fromTo(btn, { scale: 1.2 }, { scale: 1, duration: 0.3 });
+      });
+    });
+
+    const claimMatchBtn = document.getElementById('claim-match-btn');
+    if (claimMatchBtn) {
+      claimMatchBtn.addEventListener('click', () => {
+        const name = matchTitle.textContent;
+        const price = parseFloat(matchPrice.textContent.replace('$', ''));
+        const abv = matchAbv.textContent;
+
+        const existing = crate.find(i => i.name === name);
+        if (existing) {
+          existing.qty += 1;
+        } else {
+          crate.push({ name, price, abv, qty: 1 });
+        }
+
+        updateCrateUI();
+        openCrate();
+      });
+    }
+
+    const checkoutBtn = document.getElementById('checkout-btn');
+    if (checkoutBtn) {
+      checkoutBtn.addEventListener('click', () => {
+        if (crate.length === 0) {
+          alert('Please add a Bolt craft brew to your crate first!');
+          return;
+        }
+        alert('⚡ Connecting to Bolt Ultra-Fast Cold Delivery Network. Age Verification (21+) will be required upon receipt.');
+      });
+    }
+
+    // 9. Synthesized Web Audio Ambience Engine
+    let audioCtx = null;
+    let isPlayingSound = false;
+    let noiseNode = null;
+    let humNode = null;
+    const soundToggle = document.getElementById('sound-toggle');
+    const soundIcon = document.getElementById('sound-icon');
+    const soundWave = document.getElementById('sound-wave');
+
+    function toggleAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+
+      if (!isPlayingSound) {
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+
+        const bufferSize = audioCtx.sampleRate * 2;
+        const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+        const output = noiseBuffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+          output[i] = Math.random() * 2 - 1;
+        }
+
+        const whiteNoise = audioCtx.createBufferSource();
+        whiteNoise.buffer = noiseBuffer;
+        whiteNoise.loop = true;
+
+        const noiseFilter = audioCtx.createBiquadFilter();
+        noiseFilter.type = 'bandpass';
+        noiseFilter.frequency.value = 4200;
+        noiseFilter.Q.value = 1.8;
+
+        const noiseGain = audioCtx.createGain();
+        noiseGain.gain.value = 0.035;
+
+        whiteNoise.connect(noiseFilter);
+        noiseFilter.connect(noiseGain);
+        noiseGain.connect(audioCtx.destination);
+        whiteNoise.start();
+        noiseNode = { source: whiteNoise, gain: noiseGain };
+
+        const osc = audioCtx.createOscillator();
+        osc.type = 'sine';
+        osc.frequency.value = 60;
+
+        const humGain = audioCtx.createGain();
+        humGain.gain.value = 0.025;
+
+        osc.connect(humGain);
+        humGain.connect(audioCtx.destination);
+        osc.start();
+        humNode = { osc, gain: humGain };
+
+        isPlayingSound = true;
+        soundIcon.setAttribute('data-lucide', 'volume-2');
+        soundWave.classList.remove('hidden');
+        lucide.createIcons();
+      } else {
+        if (noiseNode) {
+          noiseNode.source.stop();
+          noiseNode = null;
+        }
+        if (humNode) {
+          humNode.osc.stop();
+          humNode = null;
+        }
+        isPlayingSound = false;
+        soundIcon.setAttribute('data-lucide', 'volume-x');
+        soundWave.classList.add('hidden');
+        lucide.createIcons();
+      }
+    }
+
+    if (soundToggle) soundToggle.addEventListener('click', toggleAudio);
+
+    // 10. Newsletter VIP Form Interaction
+    const newsletterForm = document.getElementById('newsletter-form');
+    const newsletterSuccess = document.getElementById('newsletter-success');
+    const emailInput = document.getElementById('email-input');
+    const inputSpark = document.getElementById('input-spark-indicator');
+
+    if (emailInput && inputSpark) {
+      emailInput.addEventListener('focus', () => {
+        inputSpark.classList.remove('hidden');
+      });
+      emailInput.addEventListener('blur', () => {
+        inputSpark.classList.add('hidden');
+      });
+    }
+
+    if (newsletterForm) {
+      newsletterForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        triggerStrike();
+        newsletterSuccess.classList.remove('hidden');
+        newsletterForm.reset();
+        gsap.from(newsletterSuccess, { y: 20, opacity: 0, duration: 0.5 });
+      });
+    }
+
+    // 11. Mobile Menu Toggle
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    if (mobileMenuBtn && mobileMenu) {
+      mobileMenuBtn.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+      });
+      document.querySelectorAll('.mobile-nav-link').forEach(link => {
+        link.addEventListener('click', () => {
+          mobileMenu.classList.add('hidden');
+        });
+      });
+    }
+
+    // 12. Smooth Back to Top
+    const backToTopBtn = document.getElementById('back-to-top');
+    if (backToTopBtn) {
+      backToTopBtn.addEventListener('click', () => {
+        if (lenis) {
+          lenis.scrollTo(0, { duration: 1.5 });
+        } else {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      });
+    }
+  </script>
+</body>
+</html>

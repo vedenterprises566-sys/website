@@ -19,7 +19,8 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(express.json());
+app.use(express.json({ limit: '25mb' }));
+app.use(express.urlencoded({ extended: true, limit: '25mb' }));
 
 // Initialize Gemini AI Client
 const getAi = () => {
@@ -42,7 +43,7 @@ function getDomainKnowledgeAnswer(query: string): string {
 
 1. 300 Denier Space Polyester:
 • Thickness: Finer, lighter yarn with smooth drape and soft hand feel.
-• Best Uses: Fashion sweaters, light cardigans, activewear, and lightweight accessories.
+• Best Uses: Fashion winter wear, light cardigans, activewear, and lightweight accessories.
 • Effect: Subtler multicolored space-dyed transitions.
 
 2. 550 Denier Space Polyester:
@@ -58,11 +59,11 @@ Both yarns are high-bulk space-dyed polyester providing vibrant variegated color
 
 1. 18 NM Chenille Yarn:
 • Structure: Fine velvet pile, lightweight and silky smooth.
-• Best Uses: Standard gauge sweaters (10GG/12GG), ladies fashion tops, and lightweight scarves.
+• Best Uses: Standard gauge winter wear (10GG/12GG), ladies fashion tops, and lightweight scarves.
 
 2. 13 NM Chenille Yarn:
 • Structure: Heavier, denser velvet pile offering maximum plush warmth.
-• Best Uses: Chunky winter sweaters, cozy cardigans, baby blankets, and luxury knitwear.
+• Best Uses: Chunky winter wear, cozy cardigans, baby blankets, and luxury knitwear.
 
 Both qualities deliver a velvety, non-shedding finish with rich color absorption. Direct China import stock available at our Ludhiana warehouse.`;
   }
@@ -73,7 +74,7 @@ Both qualities deliver a velvety, non-shedding finish with rich color absorption
 • Yarn Count: 2/28 Nm (Metric Count)
 • Composition: 100% High-Bulk Acrylic
 • Key Characteristics: Excellent thermal insulation, pill-resistant finish, and brilliant dye vibrancy.
-• Recommended Uses: Sweaters, school uniform cardigans, corporate knitwear, and winter apparel.
+• Recommended Uses: Winter wear, school uniform cardigans, corporate knitwear, and winter apparel.
 • Compatibility: Performs exceptionally well on 5GG to 10GG flat knitting and circular knitting machines.`;
   }
 
@@ -83,7 +84,7 @@ Both qualities deliver a velvety, non-shedding finish with rich color absorption
 • Yarn Count: 2/26 Nm (Metric Count)
 • Composition: 82% Acrylic / 18% Shiny Soft Nylon (Polyamide)
 • Key Characteristics: Lustrous soft sheen, luxurious hand feel, and high elastic recovery.
-• Recommended Uses: Designer fashion sweaters, chic cardigans, boutique knitwear, and kids winterwear.
+• Recommended Uses: Designer fashion winter wear, chic cardigans, boutique knitwear, and kids winterwear.
 • Machine Gauges: Ideal for 7GG, 10GG, and 12GG flat knitting setups.`;
   }
 
@@ -102,7 +103,7 @@ Both qualities deliver a velvety, non-shedding finish with rich color absorption
 • Yarn Count: 2/48 Nm
 • Composition: Viscose / PBT / Nylon blend
 • Key Characteristics: Cashmere-soft feel, silky lustre, high pilling resistance, and uniform twist.
-• Recommended Uses: 12GG and 14GG fine gauge flat knit sweaters, ladies cardigans, and premium innerwear.`;
+• Recommended Uses: 12GG and 14GG fine gauge flat knit winter wear, ladies cardigans, and premium innerwear.`;
   }
 
   if (q.includes('sample') || q.includes('hank') || q.includes('dispatch') || q.includes('surat') || q.includes('tirupur') || q.includes('delhi') || q.includes('ahmedabad')) {
@@ -132,7 +133,7 @@ We supply 100% Acrylic, Acrylic/Wool blends, Cotton blends, Fancy yarns, and dir
     return `Fancy Yarns for Winter & Fashion Knitwear
 
 1. MX Lurex 50/85: Metallic shimmer yarn for borders, shawls, and festive knitwear.
-2. Nylon Hair Yarn / Swad (0.9 / 0.7 / 1.3cm): Ultra-fluffy eyelash fur yarn for plush coats and sweaters.
+2. Nylon Hair Yarn / Swad (0.9 / 0.7 / 1.3cm): Ultra-fluffy eyelash fur yarn for plush coats and winter wear.
 3. 0.9 & 0.7 Suede Yarns: Velvety peach-skin matte touch for luxury garments.
 4. Megamix Yarn: Slub effect Acrylic/Cotton for textured designer knitwear.
 5. E Nigma Yarn (550D): Heavy textured 100% polyester for outerwear.
@@ -173,7 +174,7 @@ Partner Spinning Mills:
 
 Complete Product Portfolio & Technical Counts:
 1. ACRYLIC & BLENDS:
-   - Daffodil Yarn: 2/28 Nm 100% Acrylic, high bulk warmth, pilling resistant, ideal for sweaters, cardigans & school uniforms.
+   - Daffodil Yarn: 2/28 Nm 100% Acrylic, high bulk warmth, pilling resistant, ideal for winter wear, cardigans & school uniforms.
    - Rainbow Yarn: 2/26 Nm (82/18 Acrylic/Nylon), shiny soft sheen, soft hand feel for fashion tops and designer knitwear.
    - Wooly Yarns: 2/18 Nm (high-bulk warm yarn) & 2/48 Nm (fine cashmere-feel yarn).
    - Acrylic Cotton & Polyester Blends: In all commercial counts.
@@ -181,23 +182,23 @@ Complete Product Portfolio & Technical Counts:
 2. FANCY YARNS:
    - Hazel Yarn: 2/28 NM & 2/36 NM (75/25 Viscose/Nylon blend), silky luxury touch for cardigans and fine knitwear.
    - Megamix Yarn: Slub effect fine count Acrylic/Cotton blend for distinct textured knitwear.
-   - E Nigma Yarn: 550 Denier heavy textured 100% polyester for outerwear and heavy sweaters.
+   - E Nigma Yarn: 550 Denier heavy textured 100% polyester for outerwear and heavy winter wear.
    - MX Lurex 50/85: Metallic shimmer yarn for borders, shawls, sarees, and knitwear.
    - Fancy Jari: Finest gauge gold and silver threads for embroidery, laces, and royal borders.
-   - Space Polyester Yarn: 300D to 550D space dyed for multicolored sweaters.
+   - Space Polyester Yarn: 300D to 550D space dyed for multicolored winter wear.
 
 3. CHINA / IMPORTED YARNS:
-   - Vislon 2/48 Yarn: 2/48 Nm Viscose/PBT/Nylon blend, silky sheen for 12GG/14GG flat knit sweaters.
+   - Vislon 2/48 Yarn: 2/48 Nm Viscose/PBT/Nylon blend, silky sheen for 12GG/14GG flat knit winter wear.
    - 2/48 Vislon Lurex: Vislon with embedded metallic shimmer.
-   - Nylon Hair Yarn / Swad: 0.9 Swad, 0.7 Crystal, 1.3cm eyelash fur hair yarn for fuzzy coats and sweaters.
+   - Nylon Hair Yarn / Swad: 0.9 Swad, 0.7 Crystal, 1.3cm eyelash fur hair yarn for fuzzy coats and winter wear.
    - 0.9 Suede Yarn & 0.7 Suede Yarn: Matte peach-skin velvety finish for luxury apparel.
-   - 18 NM & 13 NM Chenille Yarn: Velvet pile yarns for plush sweaters and scarves.
+   - 18 NM & 13 NM Chenille Yarn: Velvet pile yarns for plush winter wear and scarves.
    - Ring Spun Yarns: High tensile strength for weaving & circular knitting.
 
 4. FINISHED GARMENTS:
-   - Men's Classic Wooly Crewneck Sweaters (7GG flat knit, 2/18 Wooly yarn).
+   - Men's Classic Wooly Crewneck Winter Wear (7GG flat knit, 2/18 Wooly yarn).
    - Ladies Cashmere-Feel Vislon Cardigans (12GG fine gauge, 2/48 Vislon yarn).
-   - Kids Heavy Cable Knit Sweaters (5GG heavy gauge, Daffodil Acrylic yarn).
+   - Kids Heavy Cable Knit Winter Wear (5GG heavy gauge, Daffodil Acrylic yarn).
 
 Behavioral Directives:
 - Answer all customer queries with precise, technically accurate textile information (counts, deniers, machine gauges 3GG to 14GG, and composition).

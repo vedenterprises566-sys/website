@@ -127,7 +127,7 @@ export const Catalog: React.FC<CatalogProps> = ({
               Yarn & Garment Catalog
             </h2>
             <p className="text-slate-600 dark:text-slate-400 text-xs sm:text-sm mt-1">
-              Explore wholesale Yarns (Fancy Yarns & China Yarns) and Finished Garments (Sweaters).
+              Explore wholesale Yarns (Fancy Yarns & China Yarns) and Finished Garments (Winter Wear).
             </p>
           </div>
 
@@ -210,7 +210,7 @@ export const Catalog: React.FC<CatalogProps> = ({
             ))
           ) : (
             [
-              { id: 'garments', label: 'SWEATERS (FINISHED SWEATERS)', route: '/catalog/garments/sweaters' },
+              { id: 'garments', label: 'WINTER WEAR (FINISHED GARMENTS)', route: '/catalog/garments/winter-wear' },
             ].map((tab) => (
               <motion.button
                 key={tab.id}
@@ -309,18 +309,18 @@ export const Catalog: React.FC<CatalogProps> = ({
           >
             <div className="inline-flex items-center gap-2 bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest shadow-xs">
               <Clock className="w-4 h-4 text-amber-500 animate-pulse" />
-              <span>Finished Sweater Collection • Coming Soon</span>
+              <span>Finished Winter Wear Collection • Coming Soon</span>
             </div>
 
             <div className="space-y-3">
               <h3 className="text-2xl sm:text-4xl font-extrabold font-serif text-slate-900 dark:text-white tracking-tight">
-                Garment & Sweater Collection <br />
+                Garment & Winter Wear Collection <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 via-amber-500 to-red-700">
                   Coming Soon
                 </span>
               </h3>
               <p className="text-slate-600 dark:text-slate-300 text-xs sm:text-sm max-w-xl mx-auto leading-relaxed">
-                We are currently preparing our exclusive wholesale showcase of finished sweaters, cardigans, turtlenecks, and knitted winterwear—crafted from Ved Enterprises' premium imported mill yarns (Vislon, Wooly, Chenille & Daffodil).
+                We are currently preparing our exclusive wholesale showcase of finished winter wear, cardigans, turtlenecks, and knitted pullovers—crafted from Ved Enterprises' premium imported mill yarns (Vislon, Wooly, Chenille & Daffodil).
               </p>
             </div>
 
@@ -329,7 +329,7 @@ export const Catalog: React.FC<CatalogProps> = ({
                 <div className="w-8 h-8 bg-red-100 dark:bg-red-950/80 text-red-600 dark:text-red-400 rounded-xl flex items-center justify-center font-bold text-xs">
                   🧥
                 </div>
-                <h4 className="text-xs font-bold text-slate-900 dark:text-white uppercase">Men & Ladies Sweaters</h4>
+                <h4 className="text-xs font-bold text-slate-900 dark:text-white uppercase">Men & Ladies Winter Wear</h4>
                 <p className="text-[0.6875rem] text-slate-500 dark:text-slate-400 leading-relaxed">Pullovers, cardigans, cable knits, and turtlenecks in 3GG to 14GG flat knits.</p>
               </div>
               <div className="bg-slate-50 dark:bg-slate-800/60 p-4 rounded-2xl border border-slate-200 dark:border-slate-700/60 space-y-1.5">
@@ -350,13 +350,13 @@ export const Catalog: React.FC<CatalogProps> = ({
 
             <div className="pt-4 border-t border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-center gap-3">
               <a
-                href="https://wa.me/917986716117?text=Hello%20Ved%20Enterprises,%20I%20have%20an%20inquiry%20regarding%20finished%20sweaters%20and%20knitted%20garments."
+                href="https://wa.me/917986716117?text=Hello%20Ved%20Enterprises,%20I%20have%20an%20inquiry%20regarding%20finished%20winter%20wear%20and%20knitted%20garments."
                 target="_blank"
                 rel="noopener noreferrer"
                 className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-3 rounded-2xl text-xs shadow-md transition-all inline-flex items-center gap-2"
               >
                 <MessageSquare className="w-4 h-4" />
-                <span>Direct WhatsApp Sweater Inquiry (+91 7986716117)</span>
+                <span>Direct WhatsApp Winter Wear Inquiry (+91 7986716117)</span>
               </a>
             </div>
           </motion.div>

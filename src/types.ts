@@ -29,11 +29,11 @@ export interface Product {
   pictureUrl?: string; // Google Drive link or direct URL for Picture from spreadsheet
   shades?: YarnShade[];
   badge?: string;
-  // Garment specific optional fields (for Sweaters)
+  // Garment specific optional fields (for Winter Wear)
   gauge?: string;
   yarnUsed?: string;
   availableSizes?: string[];
-  garmentStyle?: 'Men Sweater' | 'Ladies Cardigan' | 'High-Neck Pullover' | 'Cable Knit' | 'Kids Winterwear' | 'Zip Sweater';
+  garmentStyle?: 'Men Winter Wear' | 'Ladies Cardigan' | 'High-Neck Pullover' | 'Cable Knit' | 'Kids Winterwear' | 'Zip Cardigan' | string;
   [key: string]: any; // Allows extensible attributes without breaking code
 }
 

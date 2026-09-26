@@ -6,5 +6,7 @@ Allow: /catalog/yarns/
 Allow: /catalog/yarns/*
 Allow: /catalog/garments/
 Allow: /catalog/garments/*
+Disallow: /admin
+Disallow: /admin/*
 
 Sitemap: https://www.ved.enterprises/sitemap.xml

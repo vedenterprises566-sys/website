@@ -133,7 +133,7 @@ export function generateFAQSchema() {
         'name': 'What type of yarn products does VED Enterprises supply?',
         'acceptedAnswer': {
           '@type': 'Answer',
-          'text': 'VED Enterprises supplies a wide spectrum of wholesale yarns including Fancy Yarns (slub, Lurex, space dyed, stretch), China Imported Yarns (Vislon 2/48, 2/18 Wooly, Chenille, Suede, Eyelash hair yarns), 100% Acrylic Blends (Daffodil, Rainbow), and finished sweater garments.',
+          'text': 'VED Enterprises supplies a wide spectrum of wholesale yarns including Fancy Yarns (slub, Lurex, space dyed, stretch), China Imported Yarns (Vislon 2/48, 2/18 Wooly, Chenille, Suede, Eyelash hair yarns), 100% Acrylic Blends (Daffodil, Rainbow), and finished winter wear garments.',
         },
       },
       {

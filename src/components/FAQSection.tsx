@@ -15,7 +15,7 @@ export const FAQ_DATA = [
   },
   {
     question: 'Does VED Enterprises supply yarn in bulk?',
-    answer: 'Yes, VED Enterprises specializes exclusively in B2B wholesale and bulk yarn supply for sweater manufacturers, hosiery units, weaving mills, and garment factories.',
+    answer: 'Yes, VED Enterprises specializes exclusively in B2B wholesale and bulk yarn supply for winter wear manufacturers, hosiery units, weaving mills, and garment factories.',
   },
   {
     question: 'Where does VED Enterprises supply yarn?',

@@ -104,7 +104,7 @@ export const Hero: React.FC<HeroProps> = ({
             <div className="flex items-center gap-1.5 pt-1 text-xs text-slate-600 dark:text-slate-400 overflow-x-auto scrollbar-none -mx-4 px-4 sm:mx-0 sm:px-0">
               <span className="font-semibold py-1 text-slate-400 whitespace-nowrap text-[0.6875rem]">Popular:</span>
               {[
-                { label: '👕 Sweaters (Garments)', cat: 'garments' },
+                { label: '👕 Winter Wear (Garments)', cat: 'garments' },
                 { label: 'Fancy Yarns', cat: 'fancy' },
                 { label: 'China Vislon & Wooly', cat: 'china' },
                 { label: 'Chenille & Hair', cat: 'china' },

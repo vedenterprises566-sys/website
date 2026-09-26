@@ -36,11 +36,11 @@ export function getProductSection(product: Product): 'garments' | 'yarns' {
 }
 
 /**
- * Returns the subcategory slug ('fancy-yarns' | 'china-yarns' | 'sweaters') for a product.
+ * Returns the subcategory slug ('fancy-yarns' | 'china-yarns' | 'winter-wear') for a product.
  */
 export function getProductSubcategorySlug(product: Product): string {
   if (!product) return 'fancy-yarns';
-  if (product.category === 'garments') return 'sweaters';
+  if (product.category === 'garments') return 'winter-wear';
   if (product.category === 'china') return 'china-yarns';
   if (product.category === 'fancy') return 'fancy-yarns';
   if (product.category === 'acrylic-blends') return 'acrylic-blends';
@@ -52,7 +52,7 @@ export function getProductSubcategorySlug(product: Product): string {
  */
 export function getProductSubcategoryLabel(product: Product): string {
   if (!product) return 'Fancy Yarns';
-  if (product.category === 'garments') return 'Sweaters';
+  if (product.category === 'garments') return 'Winter Wear';
   if (product.category === 'china') return 'China Yarns';
   if (product.category === 'fancy') return 'Fancy Yarns';
   if (product.category === 'acrylic-blends') return 'Acrylic & Blends';

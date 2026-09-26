@@ -507,7 +507,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                 className="w-full py-2.5 text-xs font-bold text-amber-700 dark:text-amber-400 hover:underline flex items-center justify-center gap-1.5"
               >
                 <Sparkles className="w-4 h-4 text-amber-500" />
-                <span>Ask AI Assistant about yarn counts, sweater gauge & specs</span>
+                <span>Ask AI Assistant about yarn counts, winter wear gauge & specs</span>
               </button>
             </div>
 

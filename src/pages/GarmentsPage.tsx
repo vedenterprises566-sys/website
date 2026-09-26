@@ -46,19 +46,19 @@ export const GarmentsPage: React.FC<GarmentsPageProps> = ({
           {/* Badge */}
           <div className="inline-flex items-center gap-2 bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest shadow-xs">
             <Clock className="w-4 h-4 text-amber-500 animate-pulse" />
-            <span>Finished Sweater Collection • Launching Soon</span>
+            <span>Finished Winter Wear Collection • Launching Soon</span>
           </div>
 
           {/* Title */}
           <div className="space-y-3">
             <h1 className="text-3xl sm:text-5xl font-black font-serif text-slate-900 dark:text-white tracking-tight leading-tight">
-              Garments & Sweater Showcase <br className="hidden sm:inline" />
+              Garments & Winter Wear Showcase <br className="hidden sm:inline" />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 via-amber-500 to-red-700">
                 Coming Soon
               </span>
             </h1>
             <p className="text-slate-600 dark:text-slate-300 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
-              We are currently preparing our exclusive wholesale showcase of finished sweaters, cardigans, turtlenecks, and knitted winterwear—crafted from Ved Enterprises' premium imported mill yarns.
+              We are currently preparing our exclusive wholesale showcase of finished winter wear, cardigans, turtlenecks, and knitted pullovers—crafted from Ved Enterprises' premium imported mill yarns.
             </p>
           </div>
 
@@ -69,7 +69,7 @@ export const GarmentsPage: React.FC<GarmentsPageProps> = ({
                 <Shirt className="w-5 h-5" />
               </div>
               <h4 className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
-                Full Sweater Range
+                Full Winter Wear Range
               </h4>
               <p className="text-[0.6875rem] text-slate-500 dark:text-slate-400 leading-relaxed">
                 Men's pullovers, ladies cardigans, cable knits, and kidswear in 3GG to 14GG flat knits.
@@ -104,11 +104,11 @@ export const GarmentsPage: React.FC<GarmentsPageProps> = ({
           {/* Direct WhatsApp / Phone Contact Action */}
           <div className="pt-6 border-t border-slate-200 dark:border-slate-800 space-y-4">
             <p className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-              Have an urgent finished sweater order requirement?
+              Have an urgent finished winter wear order requirement?
             </p>
             <div className="flex flex-wrap items-center justify-center gap-3">
               <a
-                href="https://wa.me/917986716117?text=Hello%20Ved%20Enterprises,%20I%20have%20an%20inquiry%20regarding%20finished%20sweaters%20and%20knitted%20garments."
+                href="https://wa.me/917986716117?text=Hello%20Ved%20Enterprises,%20I%20have%20an%20inquiry%20regarding%20finished%20winter%20wear%20and%20knitted%20garments."
                 target="_blank"
                 rel="noopener noreferrer"
                 className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-3 rounded-2xl text-xs sm:text-sm shadow-md transition-all inline-flex items-center gap-2"
@@ -118,7 +118,7 @@ export const GarmentsPage: React.FC<GarmentsPageProps> = ({
               </a>
 
               <a
-                href="https://wa.me/918556949433?text=Hello%20Ved%20Enterprises,%20I%20have%20an%20inquiry%20regarding%20finished%20sweaters%20and%20knitted%20garments."
+                href="https://wa.me/918556949433?text=Hello%20Ved%20Enterprises,%20I%20have%20an%20inquiry%20regarding%20finished%20winter%20wear%20and%20knitted%20garments."
                 target="_blank"
                 rel="noopener noreferrer"
                 className="bg-slate-900 hover:bg-slate-800 dark:bg-red-600 dark:hover:bg-red-700 text-white font-bold px-5 py-3 rounded-2xl text-xs sm:text-sm shadow-md transition-all inline-flex items-center gap-2"

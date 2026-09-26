@@ -34,7 +34,7 @@ function getProductSection(product) {
 }
 
 function getProductSubcategorySlug(product) {
-  if (product.category === 'garments') return 'sweaters';
+  if (product.category === 'garments') return 'winter-wear';
   if (product.category === 'china') return 'china-yarns';
   if (product.category === 'fancy') return 'fancy-yarns';
   if (product.category === 'acrylic-blends') return 'acrylic-blends';
@@ -109,14 +109,15 @@ async function runStaticSeoGeneration() {
 
   // 1. Define Hierarchical Category URLs
   const staticCategoryUrls = [
-    { loc: `${SITE_URL}/`, priority: '1.0', changefreq: 'daily', title: 'Yarn Trader & Bulk Yarn Supplier in India | VED Enterprises', desc: 'VED Enterprises is a leading B2B yarn trader and bulk yarn supplier based in Ludhiana, Punjab, supplying Fancy Yarns, China Imported Yarns, and finished sweaters across India.' },
+    { loc: `${SITE_URL}/`, priority: '1.0', changefreq: 'daily', title: 'Yarn Trader & Bulk Yarn Supplier in India | VED Enterprises', desc: 'VED Enterprises is a leading B2B yarn trader and bulk yarn supplier based in Ludhiana, Punjab, supplying Fancy Yarns, China Imported Yarns, and finished winter wear across India.' },
     { loc: `${SITE_URL}/catalog`, priority: '0.9', changefreq: 'daily', title: 'Catalog | VED Enterprises', desc: 'Explore the complete wholesale Yarn and Garments product catalog from VED Enterprises, B2B yarn supplier in Ludhiana, India.' },
     { loc: `${SITE_URL}/catalog/yarns`, priority: '0.9', changefreq: 'daily', title: 'Yarns | Yarn Supplier India | VED Enterprises', desc: 'Complete wholesale yarn directory from VED Enterprises Ludhiana featuring Fancy Yarns, China Imported Yarns, and 100% Acrylic Blends.' },
     { loc: `${SITE_URL}/catalog/yarns/fancy-yarns`, priority: '0.8', changefreq: 'weekly', title: 'Fancy Yarns | Yarn Supplier India | VED Enterprises', desc: 'Explore Fancy Yarns supplied by VED Enterprises Ludhiana including Lurex, space dyed, slub yarns, and metallic zari.' },
     { loc: `${SITE_URL}/catalog/yarns/china-yarns`, priority: '0.8', changefreq: 'weekly', title: 'China Yarns | Yarn Supplier India | VED Enterprises', desc: 'Explore Imported China Yarns supplied by VED Enterprises Ludhiana including Vislon 2/48, 2/18 Wooly, Chenille, Suede, and Nylon Hair yarns.' },
-    { loc: `${SITE_URL}/catalog/yarns/acrylic-blends`, priority: '0.8', changefreq: 'weekly', title: 'Acrylic & Blends Yarn | Yarn Supplier India | VED Enterprises', desc: 'Explore 100% Acrylic & Blended Yarns from VED Enterprises Ludhiana including Daffodil, Rainbow, and high-bulk acrylic yarns for sweaters and knitwear.' },
-    { loc: `${SITE_URL}/catalog/garments`, priority: '0.8', changefreq: 'weekly', title: 'Garments | VED Enterprises', desc: 'Wholesale Finished Garments and Knitted Sweaters directory from VED Enterprises Ludhiana.' },
-    { loc: `${SITE_URL}/catalog/garments/sweaters`, priority: '0.8', changefreq: 'weekly', title: 'Sweaters | VED Enterprises', desc: 'Finished Sweater Garments Collection from VED Enterprises Ludhiana crafted from premium Vislon, Wooly, and Daffodil yarns.' },
+    { loc: `${SITE_URL}/catalog/yarns/acrylic-blends`, priority: '0.8', changefreq: 'weekly', title: 'Acrylic & Blends Yarn | Yarn Supplier India | VED Enterprises', desc: 'Explore 100% Acrylic & Blended Yarns from VED Enterprises Ludhiana including Daffodil, Rainbow, and high-bulk acrylic yarns for winter wear and knitwear.' },
+    { loc: `${SITE_URL}/catalog/garments`, priority: '0.8', changefreq: 'weekly', title: 'Garments | VED Enterprises', desc: 'Wholesale Finished Garments and Knitted Winter Wear directory from VED Enterprises Ludhiana.' },
+    { loc: `${SITE_URL}/catalog/garments/winter-wear`, priority: '0.8', changefreq: 'weekly', title: 'Winter Wear | VED Enterprises', desc: 'Finished Winter Wear Garments Collection from VED Enterprises Ludhiana crafted from premium Vislon, Wooly, and Daffodil yarns.' },
+    { loc: `${SITE_URL}/catalog/garments/sweaters`, priority: '0.8', changefreq: 'weekly', title: 'Winter Wear | VED Enterprises', desc: 'Finished Winter Wear Garments Collection from VED Enterprises Ludhiana crafted from premium Vislon, Wooly, and Daffodil yarns.' },
   ];
 
   const sitemapUrls = [...staticCategoryUrls.map((u) => ({ loc: u.loc, priority: u.priority, changefreq: u.changefreq }))];
@@ -154,6 +155,8 @@ Allow: /catalog/yarns/
 Allow: /catalog/yarns/*
 Allow: /catalog/garments/
 Allow: /catalog/garments/*
+Disallow: /admin
+Disallow: /admin/*
 
 Sitemap: ${SITE_URL}/sitemap.xml
 `;
@@ -212,13 +215,13 @@ Sitemap: ${SITE_URL}/sitemap.xml
     const prodCanonical = `${SITE_URL}${relPath}`;
 
     const prodImage = product.imageUrl || product.image || product.pictureUrl || '';
-    const recommendedUsesStr = Array.isArray(product.recommendedUses) ? product.recommendedUses.join(', ') : (product.recommendedUses || 'Sweaters, Knitwear, Apparel');
+    const recommendedUsesStr = Array.isArray(product.recommendedUses) ? product.recommendedUses.join(', ') : (product.recommendedUses || 'Winter Wear, Knitwear, Apparel');
     const featuresStr = Array.isArray(product.features) ? product.features.join(', ') : (product.features || 'High Quality, Durable');
 
     const section = getProductSection(product);
     const sectionLabel = section === 'garments' ? 'Garments' : 'Yarns';
     const subcategorySlug = getProductSubcategorySlug(product);
-    const subcategoryLabel = product.category === 'garments' ? 'Sweaters' : (product.category === 'china' ? 'China Yarns' : 'Fancy Yarns');
+    const subcategoryLabel = product.category === 'garments' ? 'Winter Wear' : (product.category === 'china' ? 'China Yarns' : 'Fancy Yarns');
 
     const productJsonLd = {
       '@context': 'https://schema.org',
