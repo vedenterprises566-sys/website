@@ -554,6 +554,283 @@ export const AdminPanel: React.FC = () => {
     fabrics: products.filter((p) => p.category === 'fabrics').length,
   };
 
+  // Render products responsive listing: mobile cards + desktop 5-column table
+  const renderProductListing = (items: Product[]) => {
+    return (
+      <>
+        {/* Mobile View: High-performance touch cards (< md) */}
+        <div className="md:hidden divide-y divide-slate-100">
+          {items.map((p) => {
+            const isGarment = p.category === 'garments' || (p.category as any) === 'winter-wear';
+            const detailUrl = isGarment
+              ? `/catalog/garments/winter-wear/${p.id}`
+              : `/catalog/yarns/${p.category}-yarns/${p.id}`;
+            const hasShadeCard = Boolean(p.shadeCardUrl);
+            const isPdfShade =
+              hasShadeCard &&
+              (p.shadeCardUrl!.toLowerCase().endsWith('.pdf') || p.shadeCardUrl!.includes('.pdf'));
+
+            return (
+              <div key={`m-${p.id}`} className="p-3.5 sm:p-4 space-y-3 hover:bg-slate-50/70 transition-colors">
+                <div className="flex items-start gap-3">
+                  <div className="w-12 h-12 rounded-xl bg-slate-100 border border-slate-200 flex-shrink-0 overflow-hidden flex items-center justify-center relative">
+                    {p.imageUrl || p.image || p.pictureUrl ? (
+                      <img
+                        src={p.imageUrl || p.image || p.pictureUrl}
+                        alt={p.name}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          (e.target as HTMLElement).style.display = 'none';
+                        }}
+                      />
+                    ) : (
+                      <ImageIcon className="w-5 h-5 text-slate-300" />
+                    )}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="font-bold text-sm text-slate-900 flex items-center gap-1.5 flex-wrap">
+                      <span>{p.name}</span>
+                      {p.badge && (
+                        <span className="text-[0.5625rem] font-extrabold bg-slate-100 text-slate-600 px-1.5 py-0.2 rounded border border-slate-200">
+                          {p.badge}
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex flex-wrap items-center gap-1.5 mt-1 text-[0.6875rem]">
+                      <span className="font-mono text-slate-400 font-semibold">{p.id}</span>
+                      {p.countOrDenier && (
+                        <span className="bg-slate-100 text-slate-700 font-semibold px-2 py-0.5 rounded-md border border-slate-200/80">
+                          {p.countOrDenier}
+                        </span>
+                      )}
+                      {isGarment ? (
+                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[0.625rem] font-bold bg-red-50 text-red-700 border border-red-200">
+                          Winter Wear
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[0.625rem] font-bold bg-slate-100 text-slate-700 border border-slate-200">
+                          {getCategoryLabel(p.category)}
+                        </span>
+                      )}
+                      {hasShadeCard && (
+                        <a
+                          href={p.shadeCardUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={`inline-flex items-center gap-1 text-[0.625rem] font-bold px-1.5 py-0.5 rounded border transition-colors ${
+                            isPdfShade
+                              ? 'bg-red-50 text-red-700 border-red-200'
+                              : 'bg-amber-50 text-amber-800 border-amber-200'
+                          }`}
+                        >
+                          {isPdfShade ? <FileText className="w-2.5 h-2.5 text-red-600" /> : <ImageIcon className="w-2.5 h-2.5 text-amber-600" />}
+                          <span>{isPdfShade ? 'PDF Shade' : 'Image Shade'}</span>
+                        </a>
+                      )}
+                    </div>
+                    {p.description && (
+                      <p className="text-[0.6875rem] text-slate-500 mt-1 line-clamp-1">
+                        {p.description}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Touch Actions Bar */}
+                <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+                  <a
+                    href={detailUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-1 px-3 py-1.5 text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200/80 rounded-xl text-xs font-semibold min-h-[38px] transition-colors"
+                  >
+                    <ExternalLink className="w-3.5 h-3.5" />
+                    <span>Preview</span>
+                  </a>
+                  <button
+                    onClick={() => handleEditProduct(p)}
+                    className="inline-flex items-center justify-center gap-1 px-3 py-1.5 bg-amber-50 hover:bg-amber-500 text-amber-800 hover:text-white rounded-xl text-xs font-bold border border-amber-200 hover:border-amber-500 min-h-[38px] transition-all cursor-pointer"
+                  >
+                    <Pencil className="w-3.5 h-3.5" />
+                    <span>Edit</span>
+                  </button>
+                  <button
+                    onClick={() => setProductToDelete(p)}
+                    className="inline-flex items-center justify-center gap-1 px-3 py-1.5 text-red-600 hover:text-white hover:bg-red-600 bg-red-50 rounded-xl text-xs font-bold border border-red-200 min-h-[38px] transition-all cursor-pointer"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    <span>Delete</span>
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Desktop Table View (hidden md:block) */}
+        <div className="hidden md:block overflow-x-auto">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="bg-slate-50/50 border-b border-slate-100 text-[0.625rem] font-bold text-slate-400 uppercase tracking-wider">
+                <th className="py-2.5 px-4 sm:px-5">Product Details</th>
+                <th className="py-2.5 px-3">Count / Denier</th>
+                <th className="py-2.5 px-3">Category</th>
+                <th className="py-2.5 px-3">Shade Card</th>
+                <th className="py-2.5 px-4 sm:px-5 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100 text-xs">
+              {items.map((p) => {
+                const isGarment = p.category === 'garments' || (p.category as any) === 'winter-wear';
+                const detailUrl = isGarment
+                  ? `/catalog/garments/winter-wear/${p.id}`
+                  : `/catalog/yarns/${p.category}-yarns/${p.id}`;
+                const hasShadeCard = Boolean(p.shadeCardUrl);
+                const isPdfShade =
+                  hasShadeCard &&
+                  (p.shadeCardUrl!.toLowerCase().endsWith('.pdf') || p.shadeCardUrl!.includes('.pdf'));
+
+                return (
+                  <tr key={p.id} className="hover:bg-slate-50/80 transition-colors group">
+                    {/* 1. Name & Thumbnail */}
+                    <td className="py-2.5 px-4 sm:px-5">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 flex-shrink-0 overflow-hidden flex items-center justify-center relative">
+                          {p.imageUrl || p.image || p.pictureUrl ? (
+                            <img
+                              src={p.imageUrl || p.image || p.pictureUrl}
+                              alt={p.name}
+                              className="w-full h-full object-cover"
+                              onError={(e) => {
+                                (e.target as HTMLElement).style.display = 'none';
+                              }}
+                            />
+                          ) : (
+                            <ImageIcon className="w-4 h-4 text-slate-300" />
+                          )}
+                        </div>
+                        <div className="min-w-0">
+                          <div className="font-bold text-slate-900 group-hover:text-red-600 transition-colors flex items-center gap-1.5">
+                            <span className="truncate">{p.name}</span>
+                            {p.badge && (
+                              <span className="text-[0.5625rem] font-extrabold bg-slate-100 text-slate-600 px-1.5 py-0.2 rounded border border-slate-200">
+                                {p.badge}
+                              </span>
+                            )}
+                          </div>
+                          <div className="text-[0.6875rem] text-slate-400 font-mono flex items-center gap-1.5 mt-0.5">
+                            <span>{p.id}</span>
+                            {p.description && (
+                              <span className="text-slate-400 truncate max-w-xs hidden sm:inline">
+                                • {p.description}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+
+                    {/* 2. Count / Denier */}
+                    <td className="py-2.5 px-3 whitespace-nowrap">
+                      <span className="bg-slate-100 text-slate-700 text-xs font-semibold px-2 py-0.5 rounded-lg border border-slate-200/80">
+                        {p.countOrDenier || '-'}
+                      </span>
+                    </td>
+
+                    {/* 3. Category Badge */}
+                    <td className="py-2.5 px-3 whitespace-nowrap">
+                      {isGarment ? (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[0.6875rem] font-extrabold bg-red-50 text-red-700 border border-red-200">
+                          <Shirt className="w-2.5 h-2.5 text-red-500" />
+                          Winter Wear
+                        </span>
+                      ) : p.category === 'china' ? (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[0.6875rem] font-bold bg-blue-50 text-blue-700 border border-blue-200">
+                          China / Imported
+                        </span>
+                      ) : p.category === 'acrylic-blends' ? (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[0.6875rem] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                          Acrylic & Blends
+                        </span>
+                      ) : p.category === 'fabrics' ? (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[0.6875rem] font-bold bg-purple-50 text-purple-700 border border-purple-200">
+                          Fabrics
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[0.6875rem] font-bold bg-amber-50 text-amber-700 border border-amber-200">
+                          Fancy Yarn
+                        </span>
+                      )}
+                    </td>
+
+                    {/* 4. Shade Card */}
+                    <td className="py-2.5 px-3 whitespace-nowrap">
+                      {hasShadeCard ? (
+                        <a
+                          href={p.shadeCardUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={`inline-flex items-center gap-1 text-[0.6875rem] font-bold px-2 py-0.5 rounded-md border transition-all hover:scale-105 ${
+                            isPdfShade
+                              ? 'bg-red-50 text-red-700 border-red-200 hover:bg-red-100'
+                              : 'bg-amber-50 text-amber-800 border-amber-200 hover:bg-amber-100'
+                          }`}
+                          title="Open Shade Card document"
+                        >
+                          {isPdfShade ? (
+                            <FileText className="w-3 h-3 text-red-600" />
+                          ) : (
+                            <ImageIcon className="w-3 h-3 text-amber-600" />
+                          )}
+                          <span>{isPdfShade ? 'PDF Card' : 'Image Card'}</span>
+                          <ExternalLink className="w-2.5 h-2.5 opacity-60" />
+                        </a>
+                      ) : (
+                        <span className="text-slate-300 text-xs">-</span>
+                      )}
+                    </td>
+
+                    {/* 5. Actions: Edit, Preview, Delete */}
+                    <td className="py-2.5 px-4 sm:px-5 text-right whitespace-nowrap">
+                      <div className="flex items-center justify-end gap-1.5">
+                        <button
+                          onClick={() => handleEditProduct(p)}
+                          className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-amber-50 hover:bg-amber-500 text-amber-800 hover:text-white rounded-lg text-xs font-bold border border-amber-200 hover:border-amber-500 transition-all shadow-2xs cursor-pointer"
+                          title="Edit product details, count, image or shade card"
+                        >
+                          <Pencil className="w-3 h-3" />
+                          <span>Edit</span>
+                        </button>
+
+                        <a
+                          href={detailUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="p-1.5 text-slate-400 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors min-h-[34px] min-w-[34px] flex items-center justify-center"
+                          title="Preview on website"
+                        >
+                          <ExternalLink className="w-3.5 h-3.5" />
+                        </a>
+
+                        <button
+                          onClick={() => setProductToDelete(p)}
+                          className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors min-h-[34px] min-w-[34px] flex items-center justify-center cursor-pointer"
+                          title="Delete product from Google Sheet and website"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </>
+    );
+  };
+
   // Render Login page if not authenticated
   if (!isAuthenticated) {
     return <AdminLogin onLoginSuccess={() => setIsAuthenticated(true)} />;
@@ -564,42 +841,43 @@ export const AdminPanel: React.FC = () => {
       {/* ============================================================== */}
       {/* 1. TOP WHITE HEADER BAR */}
       {/* ============================================================== */}
-      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-xs">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between gap-4">
+      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-xs pt-safe">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 min-h-[4rem] py-2 sm:py-2.5 flex items-center justify-between gap-2 sm:gap-4">
           {/* Brand & Title */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
             <a
               href={getMainWebsiteUrl()}
-              className="w-10 h-10 bg-gradient-to-tr from-red-600 to-amber-500 rounded-xl flex items-center justify-center text-white font-black text-xl shadow-xs hover:scale-105 transition-transform"
+              className="w-9 h-9 sm:w-10 sm:h-10 bg-gradient-to-tr from-red-600 to-amber-500 rounded-xl flex items-center justify-center text-white font-black text-lg sm:text-xl shadow-xs hover:scale-105 transition-transform flex-shrink-0"
               title="Return to Live Website"
             >
               V
             </a>
-            <div>
-              <div className="flex flex-wrap items-center gap-2">
-                <h1 className="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight">
-                  Ved Enterprises Admin
+            <div className="min-w-0">
+              <div className="flex items-center gap-1.5 sm:gap-2">
+                <h1 className="text-sm sm:text-lg font-extrabold text-slate-900 tracking-tight truncate">
+                  <span className="hidden sm:inline">Ved Enterprises Admin</span>
+                  <span className="sm:hidden">Ved Admin</span>
                 </h1>
-                <span className="bg-red-50 text-red-700 border border-red-200 text-[0.625rem] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
+                <span className="hidden sm:inline-flex bg-red-50 text-red-700 border border-red-200 text-[0.625rem] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
                   Product Manager
                 </span>
-                <span className="hidden sm:inline-flex items-center gap-1 bg-slate-100 text-slate-700 border border-slate-200 text-[0.6875rem] font-mono font-medium px-2 py-0.5 rounded-lg">
+                <span className="hidden lg:inline-flex items-center gap-1 bg-slate-100 text-slate-700 border border-slate-200 text-[0.6875rem] font-mono font-medium px-2 py-0.5 rounded-lg">
                   <Globe className="w-3 h-3 text-blue-600" />
                   admin.ved.enterprises
                 </span>
               </div>
-              <p className="text-xs text-slate-500 hidden sm:block">
+              <p className="text-xs text-slate-500 hidden md:block truncate">
                 Add, delete and synchronize wholesale products with Google Sheets & website
               </p>
             </div>
           </div>
 
           {/* Action Buttons */}
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-1.5 sm:gap-2.5 flex-shrink-0">
             {/* Apps Script Status Pill */}
             <button
               onClick={() => setIsSettingsOpen(true)}
-              className={`hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-semibold transition-all ${
+              className={`hidden lg:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-semibold transition-all ${
                 scriptUrl
                   ? 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100'
                   : 'bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100'
@@ -616,11 +894,11 @@ export const AdminPanel: React.FC = () => {
               whileTap={{ scale: 0.97 }}
               onClick={handleSyncWebsite}
               disabled={isSyncing}
-              className="inline-flex items-center gap-1.5 bg-white hover:bg-slate-100 text-slate-700 px-3.5 py-2 rounded-xl text-xs font-bold border border-slate-300 shadow-xs transition-colors disabled:opacity-50"
+              className="inline-flex items-center justify-center gap-1.5 bg-white hover:bg-slate-100 text-slate-700 px-2.5 sm:px-3.5 py-2 rounded-xl text-xs font-bold border border-slate-300 shadow-xs transition-colors disabled:opacity-50 min-h-[38px]"
               title="Trigger catalog regeneration and Vercel rebuild"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin text-red-600' : 'text-slate-500'}`} />
-              <span className="hidden sm:inline">{isSyncing ? 'Syncing...' : 'Sync Website'}</span>
+              <span className="hidden sm:inline">{isSyncing ? 'Syncing...' : 'Sync'}</span>
             </motion.button>
 
             {/* Add Product Button */}
@@ -628,17 +906,19 @@ export const AdminPanel: React.FC = () => {
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
               onClick={() => handleOpenAddModal()}
-              className="inline-flex items-center gap-1.5 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl text-xs font-extrabold shadow-sm transition-all"
+              className="inline-flex items-center justify-center gap-1 sm:gap-1.5 bg-red-600 hover:bg-red-700 text-white px-3 sm:px-4 py-2 rounded-xl text-xs font-extrabold shadow-sm transition-all min-h-[38px]"
             >
               <Plus className="w-4 h-4" />
-              <span>Add Product</span>
+              <span className="hidden sm:inline">Add Product</span>
+              <span className="sm:hidden">Add</span>
             </motion.button>
 
             {/* Settings Button */}
             <button
               onClick={() => setIsSettingsOpen(true)}
-              className="p-2 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-xl transition-colors"
+              className="p-2 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-xl transition-colors min-h-[38px] min-w-[38px] flex items-center justify-center"
               title="Settings & Apps Script Webhook"
+              aria-label="Admin Settings"
             >
               <Settings className="w-4 h-4" />
             </button>
@@ -646,7 +926,7 @@ export const AdminPanel: React.FC = () => {
             {/* Back to Live Website */}
             <a
               href={getMainWebsiteUrl()}
-              className="inline-flex items-center gap-1 text-xs font-semibold text-slate-600 hover:text-red-600 px-2 py-1 rounded-lg transition-colors"
+              className="hidden sm:inline-flex items-center gap-1 text-xs font-semibold text-slate-600 hover:text-red-600 px-2 py-1.5 rounded-lg transition-colors min-h-[38px]"
               title="Open public website"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
@@ -659,11 +939,11 @@ export const AdminPanel: React.FC = () => {
                 AuthService.logout();
                 setIsAuthenticated(false);
               }}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 hover:border-red-200 text-slate-600 hover:text-red-600 hover:bg-red-50 text-xs font-bold transition-all cursor-pointer"
+              className="inline-flex items-center justify-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl border border-slate-200 hover:border-red-200 text-slate-600 hover:text-red-600 hover:bg-red-50 text-xs font-bold transition-all cursor-pointer min-h-[38px]"
               title="Sign out of Admin Console"
             >
               <LogOut className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Logout</span>
+              <span className="hidden md:inline">Logout</span>
             </button>
           </div>
         </div>
@@ -723,20 +1003,25 @@ export const AdminPanel: React.FC = () => {
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
             {/* Search Input */}
             <div className="relative flex-1">
-              <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+              <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
               <input
                 type="text"
+                autoComplete="off"
+                autoCorrect="off"
+                spellCheck={false}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search products by name, count, description or ID..."
-                className="w-full pl-10 pr-4 py-2.5 bg-slate-50 hover:bg-slate-100/70 focus:bg-white border border-slate-200 rounded-xl text-xs sm:text-sm font-medium focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all placeholder:text-slate-400"
+                className="w-full pl-10 pr-4 py-2.5 bg-slate-50 hover:bg-slate-100/70 focus:bg-white border border-slate-200 rounded-xl text-base sm:text-sm font-medium focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all placeholder:text-slate-400 min-h-[44px]"
               />
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1"
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-2 min-h-[36px] min-w-[36px] flex items-center justify-center cursor-pointer"
+                  title="Clear search"
+                  aria-label="Clear search"
                 >
-                  <X className="w-3.5 h-3.5" />
+                  <X className="w-4 h-4" />
                 </button>
               )}
             </div>
@@ -744,7 +1029,7 @@ export const AdminPanel: React.FC = () => {
             {/* Quick Action buttons: Sort, View Mode, Count, Refresh */}
             <div className="flex flex-wrap items-center gap-2">
               {/* Sort Selector */}
-              <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs text-slate-700">
+              <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs text-slate-700 min-h-[38px]">
                 <ArrowUpDown className="w-3.5 h-3.5 text-slate-400" />
                 <span className="font-semibold text-slate-500 hidden sm:inline">Sort:</span>
                 <select
@@ -760,11 +1045,11 @@ export const AdminPanel: React.FC = () => {
               </div>
 
               {/* View Mode Switcher */}
-              <div className="flex items-center bg-slate-100 p-0.5 rounded-xl border border-slate-200 text-xs">
+              <div className="flex items-center bg-slate-100 p-0.5 rounded-xl border border-slate-200 text-xs min-h-[38px]">
                 <button
                   type="button"
                   onClick={() => setViewMode('grouped')}
-                  className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg font-bold transition-all ${
+                  className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg font-bold transition-all min-h-[34px] ${
                     viewMode === 'grouped'
                       ? 'bg-white text-slate-900 shadow-2xs'
                       : 'text-slate-500 hover:text-slate-800'
@@ -777,7 +1062,7 @@ export const AdminPanel: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setViewMode('list')}
-                  className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg font-bold transition-all ${
+                  className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg font-bold transition-all min-h-[34px] ${
                     viewMode === 'list'
                       ? 'bg-white text-slate-900 shadow-2xs'
                       : 'text-slate-500 hover:text-slate-800'
@@ -795,8 +1080,9 @@ export const AdminPanel: React.FC = () => {
 
               <button
                 onClick={loadProducts}
-                className="p-2 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-xl transition-colors"
+                className="p-2 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-xl transition-colors min-h-[38px] min-w-[38px] flex items-center justify-center cursor-pointer"
                 title="Reload from source"
+                aria-label="Reload products"
               >
                 <RefreshCw className="w-3.5 h-3.5" />
               </button>
@@ -804,7 +1090,7 @@ export const AdminPanel: React.FC = () => {
           </div>
 
           {/* Category Tabs */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none border-t border-slate-100 pt-3">
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scroll-touch scrollbar-none border-t border-slate-100 pt-3 -mx-1 px-1">
             {[
               { id: 'all', label: 'All Products', count: categoryCounts.all },
               { id: 'garments', label: '🧥 Winter Wear', count: categoryCounts.garments },
@@ -816,7 +1102,7 @@ export const AdminPanel: React.FC = () => {
               <button
                 key={tab.id}
                 onClick={() => setSelectedCategoryTab(tab.id as any)}
-                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5 ${
+                className={`px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5 min-h-[36px] ${
                   selectedCategoryTab === tab.id
                     ? 'bg-slate-900 text-white shadow-xs'
                     : 'bg-slate-100 hover:bg-slate-200/70 text-slate-600'
@@ -894,176 +1180,15 @@ export const AdminPanel: React.FC = () => {
 
                     <button
                       onClick={() => handleOpenAddModal(group.category)}
-                      className="inline-flex items-center gap-1 px-3 py-1.5 bg-slate-50 hover:bg-slate-100 text-slate-700 hover:text-red-600 text-xs font-bold rounded-xl border border-slate-200 transition-colors"
+                      className="inline-flex items-center gap-1 px-3 py-1.5 bg-slate-50 hover:bg-slate-100 text-slate-700 hover:text-red-600 text-xs font-bold rounded-xl border border-slate-200 transition-colors min-h-[36px]"
                     >
                       <Plus className="w-3.5 h-3.5 text-red-600" />
                       <span>Add to {getCategoryLabel(group.category)}</span>
                     </button>
                   </div>
 
-                  {/* Compact Shortened Table */}
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
-                      <thead>
-                        <tr className="bg-slate-50/50 border-b border-slate-100 text-[0.625rem] font-bold text-slate-400 uppercase tracking-wider">
-                          <th className="py-2.5 px-4 sm:px-5">Product Details</th>
-                          <th className="py-2.5 px-3">Count / Denier</th>
-                          <th className="py-2.5 px-3">Category</th>
-                          <th className="py-2.5 px-3">Shade Card</th>
-                          <th className="py-2.5 px-4 sm:px-5 text-right">Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-slate-100 text-xs">
-                        {group.items.map((p) => {
-                          const isGarment = p.category === 'garments' || (p.category as any) === 'winter-wear';
-                          const detailUrl = isGarment
-                            ? `/catalog/garments/winter-wear/${p.id}`
-                            : `/catalog/yarns/${p.category}-yarns/${p.id}`;
-                          const hasShadeCard = Boolean(p.shadeCardUrl);
-                          const isPdfShade =
-                            hasShadeCard &&
-                            (p.shadeCardUrl!.toLowerCase().endsWith('.pdf') || p.shadeCardUrl!.includes('.pdf'));
-
-                          return (
-                            <tr key={p.id} className="hover:bg-slate-50/80 transition-colors group">
-                              {/* 1. Name & Thumbnail */}
-                              <td className="py-2.5 px-4 sm:px-5">
-                                <div className="flex items-center gap-3">
-                                  <div className="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 flex-shrink-0 overflow-hidden flex items-center justify-center relative">
-                                    {p.imageUrl || p.image || p.pictureUrl ? (
-                                      <img
-                                        src={p.imageUrl || p.image || p.pictureUrl}
-                                        alt={p.name}
-                                        className="w-full h-full object-cover"
-                                        onError={(e) => {
-                                          (e.target as HTMLElement).style.display = 'none';
-                                        }}
-                                      />
-                                    ) : (
-                                      <ImageIcon className="w-4 h-4 text-slate-300" />
-                                    )}
-                                  </div>
-                                  <div className="min-w-0">
-                                    <div className="font-bold text-slate-900 group-hover:text-red-600 transition-colors flex items-center gap-1.5">
-                                      <span className="truncate">{p.name}</span>
-                                      {p.badge && (
-                                        <span className="text-[0.5625rem] font-extrabold bg-slate-100 text-slate-600 px-1.5 py-0.2 rounded border border-slate-200">
-                                          {p.badge}
-                                        </span>
-                                      )}
-                                    </div>
-                                    <div className="text-[0.6875rem] text-slate-400 font-mono flex items-center gap-1.5 mt-0.5">
-                                      <span>{p.id}</span>
-                                      {p.description && (
-                                        <span className="text-slate-400 truncate max-w-xs hidden sm:inline">
-                                          • {p.description}
-                                        </span>
-                                      )}
-                                    </div>
-                                  </div>
-                                </div>
-                              </td>
-
-                              {/* 2. Count / Denier */}
-                              <td className="py-2.5 px-3 whitespace-nowrap">
-                                <span className="bg-slate-100 text-slate-700 text-xs font-semibold px-2 py-0.5 rounded-lg border border-slate-200/80">
-                                  {p.countOrDenier || '-'}
-                                </span>
-                              </td>
-
-                              {/* 3. Category Badge */}
-                              <td className="py-2.5 px-3 whitespace-nowrap">
-                                {isGarment ? (
-                                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[0.6875rem] font-extrabold bg-red-50 text-red-700 border border-red-200">
-                                    <Shirt className="w-2.5 h-2.5 text-red-500" />
-                                    Winter Wear
-                                  </span>
-                                ) : p.category === 'china' ? (
-                                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[0.6875rem] font-bold bg-blue-50 text-blue-700 border border-blue-200">
-                                    China / Imported
-                                  </span>
-                                ) : p.category === 'acrylic-blends' ? (
-                                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[0.6875rem] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                                    Acrylic & Blends
-                                  </span>
-                                ) : p.category === 'fabrics' ? (
-                                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[0.6875rem] font-bold bg-purple-50 text-purple-700 border border-purple-200">
-                                    Fabrics
-                                  </span>
-                                ) : (
-                                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[0.6875rem] font-bold bg-amber-50 text-amber-700 border border-amber-200">
-                                    Fancy Yarn
-                                  </span>
-                                )}
-                              </td>
-
-                              {/* 4. Shade Card */}
-                              <td className="py-2.5 px-3 whitespace-nowrap">
-                                {hasShadeCard ? (
-                                  <a
-                                    href={p.shadeCardUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className={`inline-flex items-center gap-1 text-[0.6875rem] font-bold px-2 py-0.5 rounded-md border transition-all hover:scale-105 ${
-                                      isPdfShade
-                                        ? 'bg-red-50 text-red-700 border-red-200 hover:bg-red-100'
-                                        : 'bg-amber-50 text-amber-800 border-amber-200 hover:bg-amber-100'
-                                    }`}
-                                    title="Open Shade Card document"
-                                  >
-                                    {isPdfShade ? (
-                                      <FileText className="w-3 h-3 text-red-600" />
-                                    ) : (
-                                      <ImageIcon className="w-3 h-3 text-amber-600" />
-                                    )}
-                                    <span>{isPdfShade ? 'PDF Card' : 'Image Card'}</span>
-                                    <ExternalLink className="w-2.5 h-2.5 opacity-60" />
-                                  </a>
-                                ) : (
-                                  <span className="text-slate-300 text-xs">-</span>
-                                )}
-                              </td>
-
-                              {/* 5. Actions: Edit, Preview, Delete */}
-                              <td className="py-2.5 px-4 sm:px-5 text-right whitespace-nowrap">
-                                <div className="flex items-center justify-end gap-1.5">
-                                  {/* Edit Button */}
-                                  <button
-                                    onClick={() => handleEditProduct(p)}
-                                    className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-amber-50 hover:bg-amber-500 text-amber-800 hover:text-white rounded-lg text-xs font-bold border border-amber-200 hover:border-amber-500 transition-all shadow-2xs"
-                                    title="Edit product details, count, image or shade card"
-                                  >
-                                    <Pencil className="w-3 h-3" />
-                                    <span>Edit</span>
-                                  </button>
-
-                                  {/* Preview Button */}
-                                  <a
-                                    href={detailUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="p-1.5 text-slate-400 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors"
-                                    title="Preview on website"
-                                  >
-                                    <ExternalLink className="w-3.5 h-3.5" />
-                                  </a>
-
-                                  {/* Delete Button */}
-                                  <button
-                                    onClick={() => setProductToDelete(p)}
-                                    className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                                    title="Delete product from Google Sheet and website"
-                                  >
-                                    <Trash2 className="w-3.5 h-3.5" />
-                                  </button>
-                                </div>
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
-                  </div>
+                  {/* Responsive Product Listing (Mobile Cards + Desktop Table) */}
+                  {renderProductListing(group.items)}
                 </div>
               );
             })}
@@ -1096,168 +1221,8 @@ export const AdminPanel: React.FC = () => {
               </button>
             </div>
 
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="bg-slate-50/70 border-b border-slate-100 text-[0.625rem] font-bold text-slate-400 uppercase tracking-wider">
-                    <th className="py-2.5 px-4 sm:px-5">Product Details</th>
-                    <th className="py-2.5 px-3">Count / Denier</th>
-                    <th className="py-2.5 px-3">Category</th>
-                    <th className="py-2.5 px-3">Shade Card</th>
-                    <th className="py-2.5 px-4 sm:px-5 text-right">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100 text-xs">
-                  {sortedAndFilteredProducts.map((p) => {
-                    const isGarment = p.category === 'garments' || (p.category as any) === 'winter-wear';
-                    const detailUrl = isGarment
-                      ? `/catalog/garments/winter-wear/${p.id}`
-                      : `/catalog/yarns/${p.category}-yarns/${p.id}`;
-                    const hasShadeCard = Boolean(p.shadeCardUrl);
-                    const isPdfShade =
-                      hasShadeCard &&
-                      (p.shadeCardUrl!.toLowerCase().endsWith('.pdf') || p.shadeCardUrl!.includes('.pdf'));
-
-                    return (
-                      <tr key={p.id} className="hover:bg-slate-50/80 transition-colors group">
-                        {/* 1. Name & Thumbnail */}
-                        <td className="py-2.5 px-4 sm:px-5">
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 flex-shrink-0 overflow-hidden flex items-center justify-center relative">
-                              {p.imageUrl || p.image || p.pictureUrl ? (
-                                <img
-                                  src={p.imageUrl || p.image || p.pictureUrl}
-                                  alt={p.name}
-                                  className="w-full h-full object-cover"
-                                  onError={(e) => {
-                                    (e.target as HTMLElement).style.display = 'none';
-                                  }}
-                                />
-                              ) : (
-                                <ImageIcon className="w-4 h-4 text-slate-300" />
-                              )}
-                            </div>
-                            <div className="min-w-0">
-                              <div className="font-bold text-slate-900 group-hover:text-red-600 transition-colors flex items-center gap-1.5">
-                                <span className="truncate">{p.name}</span>
-                                {p.badge && (
-                                  <span className="text-[0.5625rem] font-extrabold bg-slate-100 text-slate-600 px-1.5 py-0.2 rounded border border-slate-200">
-                                    {p.badge}
-                                  </span>
-                                )}
-                              </div>
-                              <div className="text-[0.6875rem] text-slate-400 font-mono flex items-center gap-1.5 mt-0.5">
-                                <span>{p.id}</span>
-                                {p.description && (
-                                  <span className="text-slate-400 truncate max-w-xs hidden sm:inline">
-                                    • {p.description}
-                                  </span>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-
-                        {/* 2. Count / Denier */}
-                        <td className="py-2.5 px-3 whitespace-nowrap">
-                          <span className="bg-slate-100 text-slate-700 text-xs font-semibold px-2 py-0.5 rounded-lg border border-slate-200/80">
-                            {p.countOrDenier || '-'}
-                          </span>
-                        </td>
-
-                        {/* 3. Category Badge */}
-                        <td className="py-2.5 px-3 whitespace-nowrap">
-                          {isGarment ? (
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[0.6875rem] font-extrabold bg-red-50 text-red-700 border border-red-200">
-                              <Shirt className="w-2.5 h-2.5 text-red-500" />
-                              Winter Wear
-                            </span>
-                          ) : p.category === 'china' ? (
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[0.6875rem] font-bold bg-blue-50 text-blue-700 border border-blue-200">
-                              China / Imported
-                            </span>
-                          ) : p.category === 'acrylic-blends' ? (
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[0.6875rem] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                              Acrylic & Blends
-                            </span>
-                          ) : p.category === 'fabrics' ? (
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[0.6875rem] font-bold bg-purple-50 text-purple-700 border border-purple-200">
-                              Fabrics
-                            </span>
-                          ) : (
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[0.6875rem] font-bold bg-amber-50 text-amber-700 border border-amber-200">
-                              Fancy Yarn
-                            </span>
-                          )}
-                        </td>
-
-                        {/* 4. Shade Card */}
-                        <td className="py-2.5 px-3 whitespace-nowrap">
-                          {hasShadeCard ? (
-                            <a
-                              href={p.shadeCardUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className={`inline-flex items-center gap-1 text-[0.6875rem] font-bold px-2 py-0.5 rounded-md border transition-all hover:scale-105 ${
-                                isPdfShade
-                                  ? 'bg-red-50 text-red-700 border-red-200 hover:bg-red-100'
-                                  : 'bg-amber-50 text-amber-800 border-amber-200 hover:bg-amber-100'
-                              }`}
-                              title="Open Shade Card document"
-                            >
-                              {isPdfShade ? (
-                                <FileText className="w-3 h-3 text-red-600" />
-                              ) : (
-                                <ImageIcon className="w-3 h-3 text-amber-600" />
-                              )}
-                              <span>{isPdfShade ? 'PDF Card' : 'Image Card'}</span>
-                              <ExternalLink className="w-2.5 h-2.5 opacity-60" />
-                            </a>
-                          ) : (
-                            <span className="text-slate-300 text-xs">-</span>
-                          )}
-                        </td>
-
-                        {/* 5. Actions: Edit, Preview, Delete */}
-                        <td className="py-2.5 px-4 sm:px-5 text-right whitespace-nowrap">
-                          <div className="flex items-center justify-end gap-1.5">
-                            {/* Edit Button */}
-                            <button
-                              onClick={() => handleEditProduct(p)}
-                              className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-amber-50 hover:bg-amber-500 text-amber-800 hover:text-white rounded-lg text-xs font-bold border border-amber-200 hover:border-amber-500 transition-all shadow-2xs"
-                              title="Edit product details, count, image or shade card"
-                            >
-                              <Pencil className="w-3 h-3" />
-                              <span>Edit</span>
-                            </button>
-
-                            {/* Preview Button */}
-                            <a
-                              href={detailUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="p-1.5 text-slate-400 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors"
-                              title="Preview on website"
-                            >
-                              <ExternalLink className="w-3.5 h-3.5" />
-                            </a>
-
-                            {/* Delete Button */}
-                            <button
-                              onClick={() => setProductToDelete(p)}
-                              className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                              title="Delete product from Google Sheet and website"
-                            >
-                              <Trash2 className="w-3.5 h-3.5" />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
+            {/* Responsive Product Listing (Mobile Cards + Desktop Table) */}
+            {renderProductListing(sortedAndFilteredProducts)}
           </div>
         )}
       </main>
@@ -1267,12 +1232,12 @@ export const AdminPanel: React.FC = () => {
       {/* ============================================================== */}
       <AnimatePresence>
         {isAddFormOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs overflow-y-auto">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-xs overflow-y-auto">
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 10 }}
-              className="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-2xl w-full p-6 sm:p-8 space-y-6 my-8 max-h-[90vh] overflow-y-auto relative"
+              className="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-2xl w-full p-4 sm:p-7 space-y-5 my-4 sm:my-8 max-h-[calc(100dvh-2rem)] overflow-y-auto relative scroll-touch"
             >
               {/* Modal Header */}
               <div className="flex items-center justify-between pb-4 border-b border-slate-100">
@@ -1616,11 +1581,11 @@ export const AdminPanel: React.FC = () => {
                 )}
 
                 {/* Submit Actions */}
-                <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
+                <div className="flex flex-col-reverse sm:flex-row items-center justify-end gap-2.5 sm:gap-3 pt-4 border-t border-slate-100">
                   <button
                     type="button"
                     onClick={() => setIsAddFormOpen(false)}
-                    className="px-4 py-2.5 text-xs font-bold text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-xl transition-colors"
+                    className="w-full sm:w-auto px-5 py-2.5 text-xs font-bold text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-xl transition-colors min-h-[44px] cursor-pointer"
                   >
                     Cancel
                   </button>
@@ -1630,7 +1595,7 @@ export const AdminPanel: React.FC = () => {
                     whileTap={{ scale: 0.98 }}
                     type="submit"
                     disabled={isSubmitting}
-                    className={`inline-flex items-center gap-2 font-extrabold px-6 py-2.5 rounded-xl text-xs shadow-md transition-all disabled:opacity-50 text-white ${
+                    className={`w-full sm:w-auto inline-flex items-center justify-center gap-2 font-extrabold px-6 py-2.5 rounded-xl text-xs shadow-md transition-all disabled:opacity-50 text-white min-h-[44px] cursor-pointer ${
                       editingProduct
                         ? 'bg-amber-600 hover:bg-amber-700'
                         : 'bg-red-600 hover:bg-red-700'
@@ -1660,12 +1625,12 @@ export const AdminPanel: React.FC = () => {
       {/* ============================================================== */}
       <AnimatePresence>
         {productToDelete && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-xs">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-md w-full p-6 space-y-4"
+              className="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-md w-full p-5 sm:p-6 space-y-4 max-h-[calc(100dvh-2rem)] overflow-y-auto scroll-touch"
             >
               <div className="w-12 h-12 bg-red-50 text-red-600 rounded-2xl flex items-center justify-center mx-auto">
                 <Trash2 className="w-6 h-6" />
@@ -1687,12 +1652,12 @@ export const AdminPanel: React.FC = () => {
                 </div>
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-2">
+              <div className="flex flex-col-reverse sm:flex-row items-center justify-end gap-2 pt-2">
                 <button
                   type="button"
                   onClick={() => setProductToDelete(null)}
                   disabled={isDeleting}
-                  className="w-1/2 py-2.5 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors"
+                  className="w-full sm:w-1/2 py-2.5 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors min-h-[44px] cursor-pointer"
                 >
                   Cancel
                 </button>
@@ -1700,7 +1665,7 @@ export const AdminPanel: React.FC = () => {
                   type="button"
                   onClick={confirmDelete}
                   disabled={isDeleting}
-                  className="w-1/2 py-2.5 text-xs font-bold text-white bg-red-600 hover:bg-red-700 rounded-xl shadow-md transition-colors flex items-center justify-center gap-1.5 disabled:opacity-50"
+                  className="w-full sm:w-1/2 py-2.5 text-xs font-bold text-white bg-red-600 hover:bg-red-700 rounded-xl shadow-md transition-colors flex items-center justify-center gap-1.5 disabled:opacity-50 min-h-[44px] cursor-pointer"
                 >
                   {isDeleting ? (
                     <>
@@ -1725,12 +1690,12 @@ export const AdminPanel: React.FC = () => {
       {/* ============================================================== */}
       <AnimatePresence>
         {isSettingsOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-xs overflow-y-auto">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-lg w-full p-6 sm:p-7 space-y-5"
+              className="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-lg w-full p-4 sm:p-7 space-y-5 my-4 sm:my-8 max-h-[calc(100dvh-2rem)] overflow-y-auto scroll-touch relative"
             >
               <div className="flex items-center justify-between pb-3 border-b border-slate-100">
                 <div className="flex items-center gap-2">
@@ -1739,7 +1704,8 @@ export const AdminPanel: React.FC = () => {
                 </div>
                 <button
                   onClick={() => setIsSettingsOpen(false)}
-                  className="p-1.5 text-slate-400 hover:text-slate-600 rounded-xl"
+                  className="p-1.5 text-slate-400 hover:text-slate-600 rounded-xl min-h-[36px] min-w-[36px] flex items-center justify-center cursor-pointer"
+                  aria-label="Close settings"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -1750,13 +1716,13 @@ export const AdminPanel: React.FC = () => {
                   Google Apps Script Web App URL
                 </label>
                 <div className="relative">
-                  <Link2 className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <Link2 className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
                   <input
                     type="url"
                     value={scriptUrl}
                     onChange={(e) => setScriptUrl(e.target.value)}
                     placeholder="https://script.google.com/macros/s/.../exec"
-                    className="w-full pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500"
+                    className="w-full pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-base sm:text-xs font-mono focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 min-h-[44px]"
                   />
                 </div>
                 <p className="text-[0.6875rem] text-slate-500 leading-relaxed">
@@ -1791,13 +1757,13 @@ export const AdminPanel: React.FC = () => {
                   </span>
                   <span className="text-[10px] font-mono text-slate-400">Current active</span>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-2">
                   <input
                     type="password"
                     value={newPasswordInput}
                     onChange={(e) => setNewPasswordInput(e.target.value)}
                     placeholder="Enter new admin password"
-                    className="flex-1 px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500"
+                    className="flex-1 px-3 py-2.5 bg-white border border-slate-200 rounded-xl text-base sm:text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 min-h-[44px]"
                   />
                   <button
                     type="button"
@@ -1811,7 +1777,7 @@ export const AdminPanel: React.FC = () => {
                         showToast('Password must be at least 4 characters long.', 'error');
                       }
                     }}
-                    className="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition-colors cursor-pointer"
+                    className="px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition-colors cursor-pointer min-h-[44px]"
                   >
                     Save
                   </button>
@@ -1860,11 +1826,11 @@ export const AdminPanel: React.FC = () => {
               </div>
 
               {/* Actions */}
-              <div className="flex items-center justify-end gap-2 pt-2">
+              <div className="flex flex-col-reverse sm:flex-row items-center justify-end gap-2 pt-2">
                 <button
                   type="button"
                   onClick={() => setIsSettingsOpen(false)}
-                  className="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl"
+                  className="w-full sm:w-auto px-4 py-2.5 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl min-h-[44px] cursor-pointer"
                 >
                   Close
                 </button>
@@ -1872,7 +1838,7 @@ export const AdminPanel: React.FC = () => {
                   type="button"
                   onClick={handleSaveSettings}
                   disabled={isSyncing}
-                  className="px-5 py-2 text-xs font-extrabold text-white bg-red-600 hover:bg-red-700 rounded-xl shadow-sm transition-colors flex items-center gap-1.5"
+                  className="w-full sm:w-auto px-5 py-2.5 text-xs font-extrabold text-white bg-red-600 hover:bg-red-700 rounded-xl shadow-sm transition-colors flex items-center justify-center gap-1.5 min-h-[44px] cursor-pointer disabled:opacity-50"
                 >
                   {isSyncing ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : null}
                   <span>Test & Save</span>
@@ -1892,7 +1858,7 @@ export const AdminPanel: React.FC = () => {
             initial={{ opacity: 0, y: 20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            className={`fixed bottom-6 right-6 z-50 px-4 py-3 rounded-2xl shadow-xl border flex items-center gap-2.5 text-xs font-bold ${
+            className={`fixed bottom-6 left-4 right-4 sm:left-auto sm:right-6 sm:max-w-md z-50 px-4 py-3 rounded-2xl shadow-xl border flex items-center gap-2.5 text-xs font-bold ${
               toast.type === 'error'
                 ? 'bg-red-600 text-white border-red-700 shadow-red-500/20'
                 : toast.type === 'success'

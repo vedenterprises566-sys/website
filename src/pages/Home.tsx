@@ -7,7 +7,8 @@ import { VisitingCard } from '../components/VisitingCard';
 import { FAQSection } from '../components/FAQSection';
 import { SEOHead } from '../components/SEOHead';
 import { generateOrganizationSchema } from '../utils/seoUtils';
-import { YarnCategory } from '../types';
+import { InteractiveYarnStudio } from '../components/InteractiveYarnStudio';
+import { Product, YarnCategory } from '../types';
 
 interface HomeProps {
   searchQuery: string;
@@ -16,6 +17,7 @@ interface HomeProps {
   onOpenAi: () => void;
   onSelectCategory: (cat: YarnCategory | 'all') => void;
   onSelectPartnerYarns: (partnerName: string) => void;
+  onAddToBasket?: (product: Product, qtyKg?: number, e?: React.MouseEvent) => void;
   scrollSection?: string;
 }
 
@@ -26,6 +28,7 @@ export const Home: React.FC<HomeProps> = ({
   onOpenAi,
   onSelectCategory,
   onSelectPartnerYarns,
+  onAddToBasket,
   scrollSection,
 }) => {
   useEffect(() => {
@@ -65,6 +68,13 @@ export const Home: React.FC<HomeProps> = ({
         onExploreCatalog={onExploreCatalog}
         onOpenAi={onOpenAi}
         onSelectCategory={onSelectCategory}
+        onAddToBasket={onAddToBasket}
+      />
+
+      {/* Interactive 3D Yarn & Shade Studio + Count Estimator */}
+      <InteractiveYarnStudio
+        onAddToBasket={onAddToBasket}
+        onExploreCatalog={onExploreCatalog}
       />
 
       {/* Featured Yarn Catalog Banner on Home */}

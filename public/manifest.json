@@ -1,0 +1,18 @@
+{
+  "short_name": "Ved Enterprises",
+  "name": "Ved Enterprises | Wholesale Yarn & Textiles Ludhiana",
+  "description": "Premier Yarn Trading & Distribution firm in Ludhiana, Punjab. Supplying Fancy Yarns, China Yarns, Acrylic Blends, and Winter Wear Garments nationwide.",
+  "icons": [
+    {
+      "src": "/src/assets/images/ved_enterprises_logo.png",
+      "sizes": "192x192 512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#ffffff",
+  "theme_color": "#dc2626",
+  "display": "standalone",
+  "orientation": "any"
+}

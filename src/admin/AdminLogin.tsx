@@ -52,31 +52,31 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess }) => {
       <div className="absolute bottom-0 right-0 w-[30rem] h-[18rem] bg-gradient-to-tl from-slate-200/50 to-transparent blur-3xl pointer-events-none rounded-full" />
 
       {/* Top Navigation Bar */}
-      <header className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-5 flex items-center justify-between z-10">
+      <header className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-4 sm:py-5 flex items-center justify-between z-10 pt-safe">
         <a
           href={getMainWebsiteUrl()}
-          className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-slate-600 hover:text-red-600 transition-colors bg-white/80 backdrop-blur-md px-3.5 py-1.5 rounded-xl border border-slate-200 shadow-2xs hover:shadow-xs"
+          className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-slate-600 hover:text-red-600 transition-colors bg-white/90 backdrop-blur-md px-3 sm:px-3.5 py-1.5 rounded-xl border border-slate-200 shadow-2xs hover:shadow-xs min-h-[38px]"
         >
           <ArrowLeft className="w-4 h-4 text-slate-400 group-hover:text-red-600" />
-          <span>Return to Live Website</span>
+          <span>Live Website</span>
         </a>
 
-        <div className="flex items-center gap-1.5 text-[0.6875rem] font-bold text-slate-500 bg-white/80 px-2.5 py-1 rounded-lg border border-slate-200">
+        <div className="flex items-center gap-1.5 text-[0.6875rem] font-bold text-slate-500 bg-white/90 px-2.5 py-1.5 rounded-xl border border-slate-200">
           <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-          <span>Secure Admin Portal</span>
+          <span>Admin Portal</span>
         </div>
       </header>
 
       {/* Center Login Box */}
-      <main className="max-w-md w-full mx-auto px-4 py-8 z-10">
+      <main className="max-w-md w-full mx-auto px-4 py-6 sm:py-8 z-10">
         <motion.div
           animate={shake ? { x: [-10, 10, -8, 8, -4, 4, 0] } : {}}
           transition={{ duration: 0.5 }}
-          className="bg-white rounded-3xl border border-slate-200 shadow-xl p-7 sm:p-9 space-y-6 relative"
+          className="bg-white rounded-3xl border border-slate-200 shadow-xl p-5 sm:p-9 space-y-5 sm:space-y-6 relative"
         >
           {/* Brand & Heading */}
           <div className="text-center space-y-2">
-            <div className="w-14 h-14 bg-gradient-to-tr from-red-600 to-amber-500 rounded-2xl flex items-center justify-center text-white font-black text-2xl mx-auto shadow-md shadow-red-500/20">
+            <div className="w-13 h-13 sm:w-14 sm:h-14 bg-gradient-to-tr from-red-600 to-amber-500 rounded-2xl flex items-center justify-center text-white font-black text-2xl mx-auto shadow-md shadow-red-500/20">
               V
             </div>
             <div>
@@ -109,7 +109,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess }) => {
                 Username or Email
               </label>
               <div className="relative">
-                <User className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <User className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                 <input
                   type="text"
                   required
@@ -121,7 +121,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess }) => {
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   placeholder="Enter administrator username"
-                  className="w-full pl-10 pr-4 py-2.5 bg-slate-50 hover:bg-slate-100/70 focus:bg-white border border-slate-200 rounded-xl text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all placeholder:text-slate-400"
+                  className="w-full pl-10 pr-4 py-2.5 sm:py-2.5 bg-slate-50 hover:bg-slate-100/70 focus:bg-white border border-slate-200 rounded-xl text-base sm:text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all placeholder:text-slate-400 min-h-[44px]"
                 />
               </div>
             </div>
@@ -134,7 +134,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess }) => {
                 </label>
               </div>
               <div className="relative">
-                <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   required
@@ -142,13 +142,14 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess }) => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter admin password"
-                  className="w-full pl-10 pr-10 py-2.5 bg-slate-50 hover:bg-slate-100/70 focus:bg-white border border-slate-200 rounded-xl text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all placeholder:text-slate-400"
+                  className="w-full pl-10 pr-11 py-2.5 sm:py-2.5 bg-slate-50 hover:bg-slate-100/70 focus:bg-white border border-slate-200 rounded-xl text-base sm:text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all placeholder:text-slate-400 min-h-[44px]"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-0.5"
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-2 min-h-[38px] min-w-[38px] flex items-center justify-center cursor-pointer"
                   title={showPassword ? 'Hide password' : 'Show password'}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>

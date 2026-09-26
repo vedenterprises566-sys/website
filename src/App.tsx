@@ -275,6 +275,7 @@ export default function App() {
                       }}
                       onSelectCategory={(cat) => handleCategoryChange(cat as any)}
                       onSelectPartnerYarns={handleSelectPartnerYarns}
+                      onAddToBasket={handleAddToBasket}
                       scrollSection={activeSection}
                     />
                   }
@@ -293,6 +294,7 @@ export default function App() {
                       }}
                       onSelectCategory={(cat) => handleCategoryChange(cat as any)}
                       onSelectPartnerYarns={handleSelectPartnerYarns}
+                      onAddToBasket={handleAddToBasket}
                       scrollSection="mills"
                     />
                   }
@@ -310,6 +312,7 @@ export default function App() {
                       }}
                       onSelectCategory={(cat) => handleCategoryChange(cat as any)}
                       onSelectPartnerYarns={handleSelectPartnerYarns}
+                      onAddToBasket={handleAddToBasket}
                       scrollSection="card"
                     />
                   }
@@ -327,6 +330,7 @@ export default function App() {
                       }}
                       onSelectCategory={(cat) => handleCategoryChange(cat as any)}
                       onSelectPartnerYarns={handleSelectPartnerYarns}
+                      onAddToBasket={handleAddToBasket}
                       scrollSection="faq"
                     />
                   }
