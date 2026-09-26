@@ -8,15 +8,39 @@ const CACHE_DURATION_MS = 60 * 1000; // 1 minute in-memory cache
 const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/13dYmzJoPkpLGCDt7gZ7znKJARPSknghUzcEmG2PKtFM/export?format=csv';
 
 function getDeletedKeysFromStorage(): Set<string> {
+  const set = new Set<string>();
   try {
     if (typeof window !== 'undefined' && window.localStorage) {
       const stored = localStorage.getItem('ved_deleted_product_ids');
       if (stored) {
-        return new Set(JSON.parse(stored).map((k: string) => String(k).toLowerCase().trim()));
+        JSON.parse(stored).forEach((k: string) => {
+          const clean = String(k).toLowerCase().trim();
+          set.add(clean);
+          const withoutYarn = clean.replace(/\s+yarn$/i, '').trim();
+          if (withoutYarn) set.add(withoutYarn);
+          set.add(withoutYarn + ' yarn');
+        });
       }
     }
   } catch (e) {}
-  return new Set();
+  return set;
+}
+
+function isProductDeleted(p: { id?: string; name?: string }, deletedKeys: Set<string>): boolean {
+  if (!p) return false;
+  const id = String(p.id || '').toLowerCase().trim();
+  const name = String(p.name || '').toLowerCase().trim();
+  const nameWithoutYarn = name.replace(/\s+yarn$/i, '').trim();
+
+  if (id && deletedKeys.has(id)) return true;
+  if (name && deletedKeys.has(name)) return true;
+  if (nameWithoutYarn && deletedKeys.has(nameWithoutYarn)) return true;
+  if (nameWithoutYarn && deletedKeys.has(nameWithoutYarn + ' yarn')) return true;
+
+  for (const k of deletedKeys) {
+    if (k && id && (id === k || id.includes(k) || k.includes(id))) return true;
+  }
+  return false;
 }
 
 function parseCSV(text: string): string[][] {
@@ -75,7 +99,7 @@ export function parseLiveGoogleSheetProducts(csvText: string): Product[] {
     const shadeUrl = r[3] || '';
     const pictureUrl = r[4] || '';
 
-    if (!rawName || rawName.toLowerCase().includes('connection test') || rawName.toLowerCase().includes('woolly')) return;
+    if (!rawName || rawName.toLowerCase().includes('connection test')) return;
 
     const lowerDesc = (rawName + ' ' + description).toLowerCase();
     const isGarment =
@@ -159,40 +183,34 @@ export class ProductService {
       return cachedCatalog;
     }
 
+    // 1. Gather deleted keys from localStorage and server
+    const deletedKeys = getDeletedKeysFromStorage();
     try {
-      // 1. Try Live Auto-Sync directly from public Google Sheet CSV
-      const sheetResponse = await fetch(`${GOOGLE_SHEET_CSV_URL}&v=${now}`, {
-        headers: { 'Accept': 'text/csv' }
-      });
-
-      if (sheetResponse.ok) {
-        const csvText = await sheetResponse.text();
-        const liveSheetProducts = parseLiveGoogleSheetProducts(csvText);
-
-        if (liveSheetProducts.length > 0) {
-          const liveIds = new Set(liveSheetProducts.map(p => p.name.toLowerCase().trim()));
-          const extraStaticProducts = PRODUCTS_CATALOG.filter(p => !liveIds.has(p.name.toLowerCase().trim()));
-
-          const mergedCatalog = [...liveSheetProducts, ...extraStaticProducts];
-          cachedCatalog = mergedCatalog;
-          lastFetchTime = now;
-          return mergedCatalog;
+      const delRes = await fetch('/api/admin/deleted-products');
+      if (delRes.ok) {
+        const serverDeleted = await delRes.json();
+        if (Array.isArray(serverDeleted)) {
+          serverDeleted.forEach((k: string) => {
+            const clean = String(k).toLowerCase().trim();
+            deletedKeys.add(clean);
+            const withoutYarn = clean.replace(/\s+yarn$/i, '').trim();
+            if (withoutYarn) deletedKeys.add(withoutYarn);
+            deletedKeys.add(withoutYarn + ' yarn');
+          });
         }
       }
-    } catch (sheetErr) {
-      console.warn('[ProductService] Live Google Sheet fetch notice, loading fallback catalog:', sheetErr);
-    }
+    } catch (e) {}
 
+    // 2. Load disk/static catalog.json as primary baseline
+    let baseProducts: Product[] = [];
     try {
-      // 2. Secondary fallback to /catalog.json static file
       const response = await fetch(`/catalog.json?v=${now}`, {
         headers: { 'Accept': 'application/json', 'Cache-Control': 'no-cache' },
       });
-
       if (response.ok) {
         const rawData = await response.json();
-        if (Array.isArray(rawData)) {
-          const normalizedProducts: Product[] = rawData.map((item: any, index: number) => ({
+        if (Array.isArray(rawData) && rawData.length > 0) {
+          baseProducts = rawData.map((item: any, index: number) => ({
             ...item,
             id: item.id ? String(item.id) : `prod-${index + 1}`,
             name: item.name || 'Yarn Product',
@@ -200,43 +218,65 @@ export class ProductService {
             categoryLabel: item.categoryLabel || this.getCategoryLabel(item.category),
             countOrDenier: item.countOrDenier || item.count || 'Standard Count',
             description: item.description || 'High quality wholesale yarn from Ved Enterprises Ludhiana.',
-            recommendedUses: Array.isArray(item.recommendedUses) ? item.recommendedUses : ['Knitwear', 'Winter Wear'],
-            features: Array.isArray(item.features) ? item.features : ['High Quality', 'Soft Touch'],
+            recommendedUses: Array.isArray(item.recommendedUses)
+              ? item.recommendedUses
+              : (typeof item.recommendedUses === 'string' && item.recommendedUses ? item.recommendedUses.split(',').map((s: string) => s.trim()) : ['Knitwear', 'Winter Wear']),
+            features: Array.isArray(item.features)
+              ? item.features
+              : (typeof item.features === 'string' && item.features ? item.features.split(',').map((s: string) => s.trim()) : ['High Quality', 'Soft Touch']),
             sampleAvailable: item.sampleAvailable !== false,
             origin: item.origin || 'Ved Enterprises Wholesale',
             popularFor: item.popularFor || 'Wholesale Knitwear',
-            shade: item.shade || 'Standard Mill Shade',
-            image: item.image || item.imageUrl || '',
-            imageUrl: item.image || item.imageUrl || '',
-            shadeUrl: item.shadeUrl || item.shadeCardUrl || '',
-            pictureUrl: item.pictureUrl || item.imageUrl || '',
+            imageUrl: item.imageUrl || item.image || '',
+            shadeCardUrl: item.shadeCardUrl || item.shadeUrl || '',
+            pictureUrl: item.pictureUrl || item.imageUrl || item.image || '',
+            badge: item.badge || '',
           }));
-
-          const deletedKeys = getDeletedKeysFromStorage();
-          const filteredProducts = normalizedProducts.filter(
-            (p) =>
-              !deletedKeys.has(String(p.id).toLowerCase().trim()) &&
-              !deletedKeys.has(String(p.name).toLowerCase().trim())
-          );
-
-          cachedCatalog = filteredProducts;
-          lastFetchTime = now;
-          return filteredProducts;
         }
       }
     } catch (err) {
-      console.warn('[ProductService] Warning loading /catalog.json, falling back to bundled catalog:', err);
+      console.warn('[ProductService] Warning loading /catalog.json:', err);
     }
 
-    const deletedKeys = getDeletedKeysFromStorage();
-    const filteredStatic = PRODUCTS_CATALOG.filter(
-      (p) =>
-        !deletedKeys.has(String(p.id).toLowerCase().trim()) &&
-        !deletedKeys.has(String(p.name).toLowerCase().trim())
-    );
-    cachedCatalog = filteredStatic;
+    if (baseProducts.length === 0) {
+      baseProducts = [...PRODUCTS_CATALOG];
+    }
+
+    // 3. Try Live Auto-Sync directly from public Google Sheet CSV and merge any new items
+    try {
+      const sheetResponse = await fetch(`${GOOGLE_SHEET_CSV_URL}&v=${now}`, {
+        headers: { 'Accept': 'text/csv' },
+      });
+
+      if (sheetResponse.ok) {
+        const csvText = await sheetResponse.text();
+        const liveSheetProducts = parseLiveGoogleSheetProducts(csvText);
+
+        if (liveSheetProducts.length > 0) {
+          const existingNames = new Set(
+            baseProducts.map((p) => p.name.toLowerCase().trim().replace(/\s+yarn$/i, ''))
+          );
+
+          // Add any new products from Google Sheet that aren't already in catalog.json
+          liveSheetProducts.forEach((p) => {
+            const clean = p.name.toLowerCase().trim().replace(/\s+yarn$/i, '');
+            if (!existingNames.has(clean) && !isProductDeleted(p, deletedKeys)) {
+              baseProducts.push(p);
+              existingNames.add(clean);
+            }
+          });
+        }
+      }
+    } catch (sheetErr) {
+      console.warn('[ProductService] Live Google Sheet fetch notice:', sheetErr);
+    }
+
+    // 4. Filter all products against deletedKeys
+    const filteredProducts = baseProducts.filter((p) => !isProductDeleted(p, deletedKeys));
+
+    cachedCatalog = filteredProducts;
     lastFetchTime = now;
-    return filteredStatic;
+    return filteredProducts;
   }
 
   /**

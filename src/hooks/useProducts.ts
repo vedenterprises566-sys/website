@@ -15,8 +15,8 @@ export function useProducts(): UseProductsResult {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchProducts = useCallback(async (force = false) => {
-    setLoading(true);
+  const fetchProducts = useCallback(async (force = false, silent = false) => {
+    if (!silent) setLoading(true);
     setError(null);
     try {
       const data = await ProductService.getCatalog(force);
@@ -25,21 +25,21 @@ export function useProducts(): UseProductsResult {
       console.error('[useProducts] Error loading products:', err);
       setError(err?.message || 'Failed to load product catalog.');
     } finally {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
   }, []);
 
   useEffect(() => {
     fetchProducts();
 
-    // Auto-poll Google Sheet for new products every 30 seconds
+    // Auto-poll Google Sheet for new products every 30 seconds silently
     const interval = setInterval(() => {
-      fetchProducts(true);
+      fetchProducts(true, true);
     }, 30000);
 
     // Sync when user re-focuses tab
     const handleFocus = () => {
-      fetchProducts(true);
+      fetchProducts(true, true);
     };
     window.addEventListener('focus', handleFocus);
 

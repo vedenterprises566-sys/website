@@ -7,7 +7,6 @@ import { VisitingCard } from '../components/VisitingCard';
 import { FAQSection } from '../components/FAQSection';
 import { SEOHead } from '../components/SEOHead';
 import { generateOrganizationSchema } from '../utils/seoUtils';
-import { InteractiveYarnStudio } from '../components/InteractiveYarnStudio';
 import { Product, YarnCategory } from '../types';
 
 interface HomeProps {
@@ -71,11 +70,6 @@ export const Home: React.FC<HomeProps> = ({
         onAddToBasket={onAddToBasket}
       />
 
-      {/* Interactive 3D Yarn & Shade Studio + Count Estimator */}
-      <InteractiveYarnStudio
-        onAddToBasket={onAddToBasket}
-        onExploreCatalog={onExploreCatalog}
-      />
 
       {/* Featured Yarn Catalog Banner on Home */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-8 sm:my-12">

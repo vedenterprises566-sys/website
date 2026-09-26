@@ -6,8 +6,18 @@
     "categoryLabel": "Acrylic & Blends",
     "countOrDenier": "2/28 Nm 100% Acrylic",
     "description": "100% Acrylic Yarn certified for high-bulk warmth, vibrant color brilliance, and pilling resistance.",
-    "recommendedUses": ["Winter Wear", "Knitwear", "Uniform Cardigans", "Winterwear"],
-    "features": ["100% Acrylic", "High Bulk Warmth", "Vibrant Dyes", "Pilling Resistant"],
+    "recommendedUses": [
+      "Winter Wear",
+      "Knitwear",
+      "Uniform Cardigans",
+      "Winterwear"
+    ],
+    "features": [
+      "100% Acrylic",
+      "High Bulk Warmth",
+      "Vibrant Dyes",
+      "Pilling Resistant"
+    ],
     "sampleAvailable": true,
     "origin": "Ved Domestic Premium Mill",
     "popularFor": "Hosiery Winter Wear & School Uniforms",
@@ -22,8 +32,17 @@
     "categoryLabel": "Acrylic & Blends",
     "countOrDenier": "2/26 Nm (82/18 Acrylic/Nylon)",
     "description": "The Blend of Acrylic & Shiny Soft Nylon 82/18. Count is 2/26 NM.",
-    "recommendedUses": ["Shiny Soft Winter Wear", "Designer Knitwear", "Fashion Tops"],
-    "features": ["82/18 Acrylic Nylon Blend", "Shiny Soft Sheen", "Soft Hand Feel", "Smooth Knitting"],
+    "recommendedUses": [
+      "Shiny Soft Winter Wear",
+      "Designer Knitwear",
+      "Fashion Tops"
+    ],
+    "features": [
+      "82/18 Acrylic Nylon Blend",
+      "Shiny Soft Sheen",
+      "Soft Hand Feel",
+      "Smooth Knitting"
+    ],
     "sampleAvailable": true,
     "origin": "Ved Premium Selection",
     "popularFor": "Shiny Designer Winter Wear",
@@ -38,8 +57,17 @@
     "categoryLabel": "Fancy Yarn",
     "countOrDenier": "2/28 NM & 2/36 NM",
     "description": "The Blend of Viscose/Nylon 75/25. Available counts: 2/28 NM & 2/36 NM.",
-    "recommendedUses": ["Soft Cardigans", "Summer & Winter Knits", "Luxury Fashion Tops"],
-    "features": ["75/25 Viscose Nylon", "Silky Touch", "Featherlight Comfort", "High Color Depth"],
+    "recommendedUses": [
+      "Soft Cardigans",
+      "Summer & Winter Knits",
+      "Luxury Fashion Tops"
+    ],
+    "features": [
+      "75/25 Viscose Nylon",
+      "Silky Touch",
+      "Featherlight Comfort",
+      "High Color Depth"
+    ],
     "sampleAvailable": true,
     "origin": "Ved Premium Selection",
     "popularFor": "Luxury Viscose Cardigans",
@@ -54,8 +82,17 @@
     "categoryLabel": "Fancy Yarn",
     "countOrDenier": "Slub Effect Fine Count",
     "description": "Acrylic/Cotton Slub Effect with cotton Slub for textured fashion knitwear.",
-    "recommendedUses": ["Slub Winter Wear", "Textured Fashion Knits", "Casual Wear"],
-    "features": ["Acrylic/Cotton Slub", "Distinct Textured Surface", "Soft Touch", "Durable Structure"],
+    "recommendedUses": [
+      "Slub Winter Wear",
+      "Textured Fashion Knits",
+      "Casual Wear"
+    ],
+    "features": [
+      "Acrylic/Cotton Slub",
+      "Distinct Textured Surface",
+      "Soft Touch",
+      "Durable Structure"
+    ],
     "sampleAvailable": true,
     "origin": "Ved Exclusive Fancy",
     "popularFor": "Textured Slub Knitwear",
@@ -70,8 +107,17 @@
     "categoryLabel": "China / Imported Yarn",
     "countOrDenier": "2/48 Nm",
     "description": "The Blend of Viscose/PBT/Nylon. Ultra-fine imported China Vislon yarn featuring a silky sheen and smooth drape.",
-    "recommendedUses": ["Fine Winter Wear", "Flat Knitting 12GG/14GG", "High-end Tops"],
-    "features": ["Viscose/PBT/Nylon Blend", "Silky Sheen", "Pilling Resistant", "Uniform Twist"],
+    "recommendedUses": [
+      "Fine Winter Wear",
+      "Flat Knitting 12GG/14GG",
+      "High-end Tops"
+    ],
+    "features": [
+      "Viscose/PBT/Nylon Blend",
+      "Silky Sheen",
+      "Pilling Resistant",
+      "Uniform Twist"
+    ],
     "sampleAvailable": true,
     "origin": "Direct China Import",
     "popularFor": "12GG & 14GG Winter Wear Production",
@@ -86,8 +132,18 @@
     "categoryLabel": "Fancy Yarn",
     "countOrDenier": "550 Denier Heavy Count",
     "description": "100% Polyester heavy textured yarn designed for structured winterwear, thick knits, and jacket fabrics.",
-    "recommendedUses": ["Heavy Winter Wear", "Jacket Fabrics", "Outerwear", "Furnishing Fabrics"],
-    "features": ["100% Polyester", "High Bulk", "Rich Texture", "Pilling Resistant"],
+    "recommendedUses": [
+      "Heavy Winter Wear",
+      "Jacket Fabrics",
+      "Outerwear",
+      "Furnishing Fabrics"
+    ],
+    "features": [
+      "100% Polyester",
+      "High Bulk",
+      "Rich Texture",
+      "Pilling Resistant"
+    ],
     "sampleAvailable": true,
     "origin": "Specialty Textured",
     "popularFor": "Heavy Winter Garments",
@@ -102,8 +158,18 @@
     "categoryLabel": "China / Imported Yarn",
     "countOrDenier": "0.9 Swad / 0.7 Crystal / 1.3cm",
     "description": "100% Nylon Yarn (China). Eyelash fur hair yarn providing fluffy luxurious textures for trendy winter coats & winter wear.",
-    "recommendedUses": ["Fuzzy Winter Wear", "Plush Jackets", "Kids Winterwear", "Accessories"],
-    "features": ["100% Nylon Hair", "Ultra Soft Fur Touch", "Non-Shedding", "High Visual Appeal"],
+    "recommendedUses": [
+      "Fuzzy Winter Wear",
+      "Plush Jackets",
+      "Kids Winterwear",
+      "Accessories"
+    ],
+    "features": [
+      "100% Nylon Hair",
+      "Ultra Soft Fur Touch",
+      "Non-Shedding",
+      "High Visual Appeal"
+    ],
     "sampleAvailable": true,
     "origin": "Direct China Import",
     "popularFor": "Fuzzy Fashion Winter Wear & Jackets",
@@ -118,8 +184,18 @@
     "categoryLabel": "Fancy Yarn",
     "countOrDenier": "50/85 Fine Count",
     "description": "High-lustre metallic shimmer Lurex yarn engineered for high-end garment borders, luxury knitwear, sarees, shawls, and decorative embroidery.",
-    "recommendedUses": ["Knitwear Borders", "Shawls & Sarees", "Fancy Winter Wear", "Embroidery"],
-    "features": ["Metallic Shine", "Tarnish Resistant", "Smooth Runnability", "Soft Hand Feel"],
+    "recommendedUses": [
+      "Knitwear Borders",
+      "Shawls & Sarees",
+      "Fancy Winter Wear",
+      "Embroidery"
+    ],
+    "features": [
+      "Metallic Shine",
+      "Tarnish Resistant",
+      "Smooth Runnability",
+      "Soft Hand Feel"
+    ],
     "sampleAvailable": true,
     "origin": "Ved Exclusive Fancy",
     "popularFor": "Festive & Premium Fashion Apparel",
@@ -132,8 +208,18 @@
     "categoryLabel": "Fancy Yarn",
     "countOrDenier": "Finest Gauge Counts",
     "description": "Premium gold and silver fancy zari thread in ultra-fine gauges for luxury embroidery, bridalwear, border embellishments, and lace.",
-    "recommendedUses": ["Bridalwear", "Zardozi Embroidery", "Laces & Trims", "Royal Borders"],
-    "features": ["Ultra-Fine Gauge", "High Lustre Gold/Silver", "Non-Oxidizing", "High Speed Running"],
+    "recommendedUses": [
+      "Bridalwear",
+      "Zardozi Embroidery",
+      "Laces & Trims",
+      "Royal Borders"
+    ],
+    "features": [
+      "Ultra-Fine Gauge",
+      "High Lustre Gold/Silver",
+      "Non-Oxidizing",
+      "High Speed Running"
+    ],
     "sampleAvailable": true,
     "origin": "Ved Fancy Collection",
     "popularFor": "Embroidery & Zari Work",
@@ -146,8 +232,18 @@
     "categoryLabel": "China / Imported Yarn",
     "countOrDenier": "2/48 Nm + Lurex Metallic",
     "description": "Combination of fine 2/48 Vislon yarn with embedded metallic Lurex sparkle. Delivers subtle shimmer for partywear winter wear and festive apparel.",
-    "recommendedUses": ["Partywear Winter Wear", "Glitter Knitwear", "Designer Tops", "Fashion Trims"],
-    "features": ["Shimmer Effect", "No Skin Irritation", "High Tensile Strength", "Vivid Shades"],
+    "recommendedUses": [
+      "Partywear Winter Wear",
+      "Glitter Knitwear",
+      "Designer Tops",
+      "Fashion Trims"
+    ],
+    "features": [
+      "Shimmer Effect",
+      "No Skin Irritation",
+      "High Tensile Strength",
+      "Vivid Shades"
+    ],
     "sampleAvailable": true,
     "origin": "Direct China Import",
     "popularFor": "Shimmer Winter Wear & Cardigans"
@@ -159,8 +255,18 @@
     "categoryLabel": "China / Imported Yarn",
     "countOrDenier": "0.9 NM Suede",
     "description": "Peach-skin velvety suede yarn offering a matte, smooth leather-touch finish for high-end knitwear, hoodies, and luxury home textiles.",
-    "recommendedUses": ["Velvet Hoodies", "Premium Winter Wear", "Cushion Covers", "Blankets"],
-    "features": ["Velvety Peach Finish", "Matte Sheen", "Pilling Resistance", "Dense Soft Pile"],
+    "recommendedUses": [
+      "Velvet Hoodies",
+      "Premium Winter Wear",
+      "Cushion Covers",
+      "Blankets"
+    ],
+    "features": [
+      "Velvety Peach Finish",
+      "Matte Sheen",
+      "Pilling Resistance",
+      "Dense Soft Pile"
+    ],
     "sampleAvailable": true,
     "origin": "Direct China Import",
     "popularFor": "Velvety Smooth Knitwear"
@@ -172,8 +278,18 @@
     "categoryLabel": "China / Imported Yarn",
     "countOrDenier": "0.7 NM Suede",
     "description": "Fine gauge suede yarn delivering ultra-dense plush pile with smooth touch for fine luxury garments and plush accessories.",
-    "recommendedUses": ["Fine Suede Tops", "Kids Plush Wear", "Soft Gloves & Beanies", "Crafts"],
-    "features": ["Dense Fine Pile", "Super Soft Suede", "Color Consistency", "Anti-Static"],
+    "recommendedUses": [
+      "Fine Suede Tops",
+      "Kids Plush Wear",
+      "Soft Gloves & Beanies",
+      "Crafts"
+    ],
+    "features": [
+      "Dense Fine Pile",
+      "Super Soft Suede",
+      "Color Consistency",
+      "Anti-Static"
+    ],
     "sampleAvailable": true,
     "origin": "Direct China Import",
     "popularFor": "Fine Suede Apparels"
@@ -185,8 +301,18 @@
     "categoryLabel": "China / Imported Yarn",
     "countOrDenier": "18 NM",
     "description": "Fine velvet chenille yarn delivering smooth texture and light weight for standard winter wear gauge production and fashion apparel.",
-    "recommendedUses": ["Standard Winter Wear", "Ladies Tops", "Baby Blankets", "Fashion Scarves"],
-    "features": ["Fine Velvet Feel", "Lightweight Comfort", "Vibrant Color Range", "Uniform Core"],
+    "recommendedUses": [
+      "Standard Winter Wear",
+      "Ladies Tops",
+      "Baby Blankets",
+      "Fashion Scarves"
+    ],
+    "features": [
+      "Fine Velvet Feel",
+      "Lightweight Comfort",
+      "Vibrant Color Range",
+      "Uniform Core"
+    ],
     "sampleAvailable": true,
     "origin": "Direct China Import",
     "popularFor": "Lightweight Velvet Winter Wear"
@@ -198,8 +324,18 @@
     "categoryLabel": "China / Imported Yarn",
     "countOrDenier": "Various Spun Counts",
     "description": "High tensile strength ring spun yarn for heavy-duty weaving, circular knitting, warp threads, and industrial garment production.",
-    "recommendedUses": ["Circular Knitting", "Warp Weaving", "Industrial Garments", "Heavy Canvas"],
-    "features": ["High Tensile Strength", "Low Hairiness", "Even Twist", "Abrasion Resistant"],
+    "recommendedUses": [
+      "Circular Knitting",
+      "Warp Weaving",
+      "Industrial Garments",
+      "Heavy Canvas"
+    ],
+    "features": [
+      "High Tensile Strength",
+      "Low Hairiness",
+      "Even Twist",
+      "Abrasion Resistant"
+    ],
     "sampleAvailable": true,
     "origin": "Direct China Import",
     "popularFor": "High Strength Weaving & Knitting"
@@ -211,15 +347,30 @@
     "categoryLabel": "Winter Wear",
     "countOrDenier": "7GG Fine Knit (2/18 Wooly Yarn)",
     "description": "Wholesale premium men's crewneck winter wear manufactured from imported 2/18 high-bulk Wooly yarn. Warm, featherlight, soft hand feel for bulk distribution across India.",
-    "recommendedUses": ["Men Winterwear", "Corporate Apparel", "Wholesale Garment Supply", "Retail Outlets"],
-    "features": ["7GG Flat Knit", "High Bulk Warmth", "Pilling Resistant", "Direct Ludhiana Dispatch"],
+    "recommendedUses": [
+      "Men Winterwear",
+      "Corporate Apparel",
+      "Wholesale Garment Supply",
+      "Retail Outlets"
+    ],
+    "features": [
+      "7GG Flat Knit",
+      "High Bulk Warmth",
+      "Pilling Resistant",
+      "Direct Ludhiana Dispatch"
+    ],
     "sampleAvailable": true,
     "origin": "Ved Garment Collection (Ludhiana)",
     "popularFor": "Men Winter Wear Collections",
     "badge": "Garment Collection",
     "gauge": "7GG",
     "yarnUsed": "2/18 Wooly Yarn",
-    "availableSizes": ["M", "L", "XL", "XXL"],
+    "availableSizes": [
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
     "garmentStyle": "Men Winter Wear"
   },
   {
@@ -229,15 +380,29 @@
     "categoryLabel": "Winter Wear",
     "countOrDenier": "12GG Fine Gauge (2/48 Vislon Yarn)",
     "description": "Elegant ladies buttoned cardigan winter wear crafted from fine 2/48 Vislon yarn. Silky drape, vivid color fastness, and cashmere-soft touch.",
-    "recommendedUses": ["Ladies Winterwear", "Boutique Winter Wear Collections", "Wholesale Apparel"],
-    "features": ["12GG Fine Gauge", "Silky Sheen", "Ribbed Cuffs & Hem", "Bulk Bale Packing"],
+    "recommendedUses": [
+      "Ladies Winterwear",
+      "Boutique Winter Wear Collections",
+      "Wholesale Apparel"
+    ],
+    "features": [
+      "12GG Fine Gauge",
+      "Silky Sheen",
+      "Ribbed Cuffs & Hem",
+      "Bulk Bale Packing"
+    ],
     "sampleAvailable": true,
     "origin": "Ved Garment Collection (Ludhiana)",
     "popularFor": "Ladies Boutique Cardigans",
     "badge": "Garment Collection",
     "gauge": "12GG",
     "yarnUsed": "2/48 Vislon Yarn",
-    "availableSizes": ["S", "M", "L", "XL"],
+    "availableSizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
     "garmentStyle": "Ladies Cardigan"
   }
 ]

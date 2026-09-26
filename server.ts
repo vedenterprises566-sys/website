@@ -293,22 +293,85 @@ Address: # 66/2, Near Shingar Cinema, Dharampura, Ludhiana - 141008
     }
   });
 
+  // Helpers for persistent deleted products tracking
+  const getDeletedKeys = (): string[] => {
+    try {
+      const delPath = path.join(process.cwd(), 'public', 'deleted-products.json');
+      if (fs.existsSync(delPath)) {
+        const raw = fs.readFileSync(delPath, 'utf8');
+        const list = JSON.parse(raw);
+        if (Array.isArray(list)) return list;
+      }
+    } catch (e) {}
+    return [];
+  };
+
+  const saveDeletedKeys = (keys: string[]) => {
+    try {
+      const delPath = path.join(process.cwd(), 'public', 'deleted-products.json');
+      fs.writeFileSync(delPath, JSON.stringify(Array.from(new Set(keys)), null, 2), 'utf8');
+    } catch (e) {}
+  };
+
+  const addDeletedKey = (id?: string, name?: string) => {
+    const list = getDeletedKeys();
+    const set = new Set(list.map((k) => String(k).toLowerCase().trim()));
+    if (id) {
+      set.add(String(id).toLowerCase().trim());
+    }
+    if (name) {
+      const clean = String(name).toLowerCase().trim();
+      set.add(clean);
+      const withoutYarn = clean.replace(/\s+yarn$/i, '').trim();
+      if (withoutYarn) set.add(withoutYarn);
+      const withYarn = withoutYarn + ' yarn';
+      set.add(withYarn);
+    }
+    saveDeletedKeys(Array.from(set));
+  };
+
+  const removeDeletedKey = (id?: string, name?: string) => {
+    const list = getDeletedKeys();
+    const set = new Set(list.map((k) => String(k).toLowerCase().trim()));
+    if (id) set.delete(String(id).toLowerCase().trim());
+    if (name) {
+      const clean = String(name).toLowerCase().trim();
+      set.delete(clean);
+      set.delete(clean.replace(/\s+yarn$/i, '').trim());
+      set.delete(clean.replace(/\s+yarn$/i, '').trim() + ' yarn');
+    }
+    saveDeletedKeys(Array.from(set));
+  };
+
   // API Route: Delete Product directly from local public/catalog.json
   app.post('/api/admin/delete-product', async (req, res) => {
     try {
       const { id, name } = req.body;
       const catalogPath = path.join(process.cwd(), 'public', 'catalog.json');
       let deleted = false;
+
+      // Add to persistent deleted-products.json
+      addDeletedKey(id, name);
+
       if (fs.existsSync(catalogPath)) {
         const raw = fs.readFileSync(catalogPath, 'utf8');
         let catalog = JSON.parse(raw);
         if (Array.isArray(catalog)) {
           const initialLength = catalog.length;
+          const targetId = id ? String(id).trim().toLowerCase() : '';
+          const targetName = name ? String(name).trim().toLowerCase() : '';
+          const targetWithoutYarn = targetName.replace(/\s+yarn$/i, '').trim();
+
           catalog = catalog.filter((p: any) => {
-            const matchId = id && String(p.id).trim().toLowerCase() === String(id).trim().toLowerCase();
-            const matchName = name && String(p.name).trim().toLowerCase() === String(name).trim().toLowerCase();
+            const pId = String(p.id || '').trim().toLowerCase();
+            const pName = String(p.name || '').trim().toLowerCase();
+            const pNameClean = pName.replace(/\s+yarn$/i, '').trim();
+
+            const matchId = targetId && (pId === targetId || pId.includes(targetId) || targetId.includes(pId));
+            const matchName = targetName && (pName === targetName || pNameClean === targetWithoutYarn);
             return !matchId && !matchName;
           });
+
           if (catalog.length < initialLength) {
             deleted = true;
           }
@@ -316,7 +379,22 @@ Address: # 66/2, Near Shingar Cinema, Dharampura, Ludhiana - 141008
           console.log(`[CATALOG DELETE] Product "${name || id}" removed from public/catalog.json (${initialLength} -> ${catalog.length})`);
         }
       }
-      return res.json({ success: true, deleted, message: `Product ${name || id} deleted from catalog.json` });
+
+      // Forward to Google Apps Script asynchronously via Node.js in background
+      const appsScriptUrl = process.env.VITE_APPS_SCRIPT_URL || process.env.APPS_SCRIPT_URL;
+      if (appsScriptUrl) {
+        fetch(appsScriptUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain' },
+          body: JSON.stringify({ action: 'delete', id, name }),
+        }).catch((err: any) => console.warn('[APPS SCRIPT DELETE NOTICE]', err.message));
+      }
+
+      return res.json({
+        success: true,
+        deleted: true,
+        message: `Product "${name || id}" deleted successfully from catalog.`
+      });
     } catch (err: any) {
       console.error('[CATALOG DELETE ERROR]', err.message);
       return res.status(500).json({ success: false, error: err.message });
@@ -326,35 +404,94 @@ Address: # 66/2, Near Shingar Cinema, Dharampura, Ludhiana - 141008
   // API Route: Save / Update Product directly in local public/catalog.json
   app.post('/api/admin/save-product', async (req, res) => {
     try {
-      const product = req.body;
+      const rawProduct = req.body;
       const catalogPath = path.join(process.cwd(), 'public', 'catalog.json');
       let catalog: any[] = [];
       if (fs.existsSync(catalogPath)) {
-        const raw = fs.readFileSync(catalogPath, 'utf8');
-        catalog = JSON.parse(raw);
-        if (!Array.isArray(catalog)) catalog = [];
+        try {
+          const raw = fs.readFileSync(catalogPath, 'utf8');
+          catalog = JSON.parse(raw);
+          if (!Array.isArray(catalog)) catalog = [];
+        } catch (e) {
+          catalog = [];
+        }
       }
+
+      // Generate robust ID if missing
+      const cleanName = (rawProduct.name || 'Yarn Product').trim();
+      const slugId = cleanName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+      const assignedId = rawProduct.id || rawProduct.originalId || `prod-${slugId || Date.now()}`;
+
+      // Format arrays properly
+      const formatArray = (val: any, defaultArr: string[] = []) => {
+        if (Array.isArray(val)) return val.map((s: any) => String(s).trim()).filter(Boolean);
+        if (typeof val === 'string' && val.trim()) {
+          return val.split(',').map((s: string) => s.trim()).filter(Boolean);
+        }
+        return defaultArr;
+      };
+
+      const product = {
+        id: assignedId,
+        name: cleanName,
+        category: rawProduct.category || 'fancy',
+        categoryLabel: rawProduct.categoryLabel || (rawProduct.category === 'garments' ? 'Winter Wear' : 'Fancy Yarn'),
+        countOrDenier: rawProduct.countOrDenier || 'Standard Count',
+        description: rawProduct.description || `${cleanName} - Wholesale supply from Ved Enterprises Ludhiana.`,
+        recommendedUses: formatArray(rawProduct.recommendedUses, ['Winter Wear', 'Knitwear']),
+        features: formatArray(rawProduct.features, ['High Quality', 'Direct Mill Wholesale']),
+        sampleAvailable: rawProduct.sampleAvailable !== false,
+        origin: rawProduct.origin || 'Ved Enterprises',
+        popularFor: rawProduct.popularFor || 'Wholesale Supply',
+        imageUrl: rawProduct.imageUrl || rawProduct.image || '',
+        shadeCardUrl: rawProduct.shadeCardUrl || rawProduct.shadeUrl || '',
+        badge: rawProduct.badge || 'New Item',
+      };
+
+      // Unmark from deleted list
+      removeDeletedKey(product.id, product.name);
 
       const existingIdx = catalog.findIndex((p: any) =>
         (product.id && String(p.id).trim().toLowerCase() === String(product.id).trim().toLowerCase()) ||
-        (product.originalId && String(p.id).trim().toLowerCase() === String(product.originalId).trim().toLowerCase()) ||
+        (rawProduct.originalId && String(p.id).trim().toLowerCase() === String(rawProduct.originalId).trim().toLowerCase()) ||
         (product.name && String(p.name).trim().toLowerCase() === String(product.name).trim().toLowerCase())
       );
 
       if (existingIdx >= 0) {
         catalog[existingIdx] = { ...catalog[existingIdx], ...product };
-        console.log(`[CATALOG UPDATE] Updated "${product.name}" in public/catalog.json`);
+        console.log(`[CATALOG UPDATE] Updated "${product.name}" (ID: ${product.id}) in public/catalog.json`);
       } else {
-        catalog.push(product);
-        console.log(`[CATALOG ADD] Added "${product.name}" to public/catalog.json`);
+        catalog.unshift(product);
+        console.log(`[CATALOG ADD] Added "${product.name}" (ID: ${product.id}) to public/catalog.json`);
       }
 
       fs.writeFileSync(catalogPath, JSON.stringify(catalog, null, 2), 'utf8');
-      return res.json({ success: true, message: `Product ${product.name} saved to catalog.json` });
+
+      // Forward to Google Apps Script asynchronously via Node.js in background (no browser CORS block)
+      const appsScriptUrl = process.env.VITE_APPS_SCRIPT_URL || process.env.APPS_SCRIPT_URL;
+      if (appsScriptUrl) {
+        fetch(appsScriptUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain' },
+          body: JSON.stringify({ action: 'add', ...product }),
+        }).catch((err: any) => console.warn('[APPS SCRIPT FORWARD NOTICE]', err.message));
+      }
+
+      return res.json({
+        success: true,
+        message: `Product "${product.name}" saved to catalog.json successfully!`,
+        productId: product.id,
+        product,
+      });
     } catch (err: any) {
       console.error('[CATALOG SAVE ERROR]', err.message);
       return res.status(500).json({ success: false, error: err.message });
     }
+  });
+
+  // API Route: Get Persistent Deleted Products List
+  app.get('/api/admin/deleted-products', (req, res) => {
+    res.json(getDeletedKeys());
   });
 
   // API Route: AI Assistant Endpoint

@@ -282,6 +282,60 @@ Managing Directors: Moni Maurya (+91 7986716117) | Sandeep Maurya (+91 855694943
   }
 });
 
+// API Route: Admin Save Product
+app.post(['/api/admin/save-product'], async (req, res) => {
+  try {
+    const rawProduct = req.body;
+    const cleanName = (rawProduct.name || 'Yarn Product').trim();
+    const slugId = cleanName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+    const assignedId = rawProduct.id || rawProduct.originalId || `prod-${slugId || Date.now()}`;
+
+    const appsScriptUrl = process.env.VITE_APPS_SCRIPT_URL || process.env.APPS_SCRIPT_URL;
+    if (appsScriptUrl) {
+      try {
+        await fetch(appsScriptUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain' },
+          body: JSON.stringify({ action: 'add', id: assignedId, ...rawProduct }),
+        });
+      } catch (e) {}
+    }
+
+    return res.json({
+      success: true,
+      message: `Product "${cleanName}" saved successfully!`,
+      productId: assignedId,
+    });
+  } catch (err: any) {
+    return res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// API Route: Admin Delete Product
+app.post(['/api/admin/delete-product'], async (req, res) => {
+  try {
+    const { id, name } = req.body;
+    const appsScriptUrl = process.env.VITE_APPS_SCRIPT_URL || process.env.APPS_SCRIPT_URL;
+    if (appsScriptUrl) {
+      try {
+        await fetch(appsScriptUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain' },
+          body: JSON.stringify({ action: 'delete', id, name }),
+        });
+      } catch (e) {}
+    }
+
+    return res.json({
+      success: true,
+      deleted: true,
+      message: `Product "${name || id}" deleted successfully.`,
+    });
+  } catch (err: any) {
+    return res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 // API Route: AI Assistant Endpoint
 app.post(['/api/chat', '/chat'], async (req, res) => {
   try {

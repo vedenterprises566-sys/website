@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Search, Sparkles, ArrowRight, X, Plus, Palette, Calculator, Package, Check } from 'lucide-react';
+import { Search, Sparkles, ArrowRight, X, Plus, Package, Check } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { LogoGraphic } from './LogoGraphic';
 import { Product } from '../types';
@@ -70,15 +70,6 @@ export const Hero: React.FC<HeroProps> = ({
     }
   };
 
-  const scrollToStudio = (tab?: 'studio' | 'calculator') => {
-    const studioElem = document.getElementById('yarn-studio-section');
-    if (studioElem) {
-      studioElem.scrollIntoView({ behavior: 'smooth' });
-      if (tab) {
-        window.dispatchEvent(new CustomEvent('switch-yarn-studio-tab', { detail: { tab } }));
-      }
-    }
-  };
 
   return (
     <div className="relative overflow-hidden bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 py-8 sm:py-12 md:py-16 border border-slate-200 dark:border-slate-800 m-2.5 sm:m-6 md:m-[2.5rem] rounded-2xl sm:rounded-3xl shadow-xs">
@@ -264,53 +255,6 @@ export const Hero: React.FC<HeroProps> = ({
               </AnimatePresence>
             </div>
 
-            {/* Quick Interactive Tool Pills */}
-            <div className="flex items-center gap-1.5 pt-1 text-xs text-slate-600 dark:text-slate-400 overflow-x-auto scrollbar-none -mx-4 px-4 sm:mx-0 sm:px-0">
-              <span className="font-semibold py-1 text-slate-400 whitespace-nowrap text-[0.6875rem]">Tools & Popular:</span>
-
-              {/* Interactive 3D Studio Quick Link */}
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => scrollToStudio('studio')}
-                className="bg-gradient-to-r from-red-600 to-amber-600 text-white font-bold px-3 py-1 rounded-lg text-[0.6875rem] sm:text-xs whitespace-nowrap shadow-xs hover:shadow-red-500/20 transition-all flex items-center gap-1 cursor-pointer"
-              >
-                <Palette className="w-3 h-3 text-amber-300" />
-                <span>3D Yarn Studio</span>
-              </motion.button>
-
-              {/* Count & Yield Estimator Quick Link */}
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => scrollToStudio('calculator')}
-                className="bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 px-2.5 py-1 rounded-lg text-[0.6875rem] sm:text-xs font-semibold whitespace-nowrap transition-colors flex items-center gap-1 cursor-pointer"
-              >
-                <Calculator className="w-3 h-3 text-red-500" />
-                <span>Count Calculator</span>
-              </motion.button>
-
-              {[
-                { label: '👕 Winter Wear', cat: 'garments' },
-                { label: 'Fancy Yarns', cat: 'fancy' },
-                { label: 'China Vislon & Wooly', cat: 'china' },
-                { label: 'Chenille & Hair', cat: 'china' },
-                { label: 'Acrylic Blends', cat: 'acrylic-blends' },
-              ].map((item, idx) => (
-                <motion.button
-                  key={idx}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => {
-                    onSelectCategory(item.cat);
-                    onExploreCatalog();
-                  }}
-                  className="bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 px-2.5 py-1 rounded-lg text-[0.6875rem] sm:text-xs font-medium whitespace-nowrap transition-colors cursor-pointer"
-                >
-                  {item.label}
-                </motion.button>
-              ))}
-            </div>
 
             {/* CTA Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-3 pt-3">

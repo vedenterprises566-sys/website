@@ -408,7 +408,13 @@ export const AdminPanel: React.FC = () => {
 
     if (isSuccess) {
       showToast(`🗑️ "${productToDelete.name}" deleted and website updated.`);
-      setProducts((prev) => prev.filter((p) => p.id !== productToDelete.id));
+      setProducts((prev) =>
+        prev.filter(
+          (p) =>
+            p.id !== productToDelete.id &&
+            p.name.toLowerCase().trim() !== productToDelete.name.toLowerCase().trim()
+        )
+      );
       setProductToDelete(null);
     } else {
       showToast(res.message, 'error');
