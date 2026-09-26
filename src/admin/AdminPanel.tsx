@@ -30,6 +30,8 @@ import {
   ArrowUpDown,
   FolderTree,
   List,
+  LogOut,
+  Key,
 } from 'lucide-react';
 import { Product, YarnCategory } from '../types';
 import { AdminService } from './adminService';
@@ -39,8 +41,13 @@ import {
   compressImageFile,
   readShadeCardFile,
 } from './adminUtils';
+import { AuthService } from './authService';
+import { AdminLogin } from './AdminLogin';
 
 export const AdminPanel: React.FC = () => {
+  // Authentication state
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => AuthService.isAuthenticated());
+
   // State for products & filtering
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -51,6 +58,8 @@ export const AdminPanel: React.FC = () => {
   // Apps Script configuration state
   const [scriptUrl, setScriptUrl] = useState<string>('');
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
+  const [newPasswordInput, setNewPasswordInput] = useState<string>('');
+  const [passwordChangeSuccess, setPasswordChangeSuccess] = useState<string>('');
   const [connectionStatus, setConnectionStatus] = useState<{
     tested: boolean;
     success: boolean;
@@ -545,6 +554,11 @@ export const AdminPanel: React.FC = () => {
     fabrics: products.filter((p) => p.category === 'fabrics').length,
   };
 
+  // Render Login page if not authenticated
+  if (!isAuthenticated) {
+    return <AdminLogin onLoginSuccess={() => setIsAuthenticated(true)} />;
+  }
+
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans antialiased selection:bg-red-500 selection:text-white">
       {/* ============================================================== */}
@@ -638,6 +652,19 @@ export const AdminPanel: React.FC = () => {
               <ArrowLeft className="w-3.5 h-3.5" />
               <span className="hidden lg:inline">Live Store</span>
             </a>
+
+            {/* Logout Button */}
+            <button
+              onClick={() => {
+                AuthService.logout();
+                setIsAuthenticated(false);
+              }}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 hover:border-red-200 text-slate-600 hover:text-red-600 hover:bg-red-50 text-xs font-bold transition-all cursor-pointer"
+              title="Sign out of Admin Console"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Logout</span>
+            </button>
           </div>
         </div>
       </header>
@@ -1752,6 +1779,47 @@ export const AdminPanel: React.FC = () => {
                     )}
                     <span>{connectionStatus.message}</span>
                   </div>
+                )}
+              </div>
+
+              {/* Admin Security & Password Change */}
+              <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 text-xs space-y-2">
+                <div className="font-bold text-slate-800 flex items-center justify-between">
+                  <span className="flex items-center gap-1.5">
+                    <Key className="w-3.5 h-3.5 text-amber-600" />
+                    <span>Change Admin Password</span>
+                  </span>
+                  <span className="text-[10px] font-mono text-slate-400">Current active</span>
+                </div>
+                <div className="flex gap-2">
+                  <input
+                    type="password"
+                    value={newPasswordInput}
+                    onChange={(e) => setNewPasswordInput(e.target.value)}
+                    placeholder="Enter new admin password"
+                    className="flex-1 px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (newPasswordInput.trim().length >= 4) {
+                        AuthService.setCustomPassword(newPasswordInput.trim());
+                        setPasswordChangeSuccess('Password updated successfully!');
+                        setNewPasswordInput('');
+                        setTimeout(() => setPasswordChangeSuccess(''), 3000);
+                      } else {
+                        showToast('Password must be at least 4 characters long.', 'error');
+                      }
+                    }}
+                    className="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition-colors cursor-pointer"
+                  >
+                    Save
+                  </button>
+                </div>
+                {passwordChangeSuccess && (
+                  <p className="text-[0.6875rem] font-bold text-emerald-600 flex items-center gap-1">
+                    <CheckCircle2 className="w-3 h-3" /> {passwordChangeSuccess}
+                  </p>
                 )}
               </div>
 
