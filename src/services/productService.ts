@@ -3,7 +3,8 @@ import { PRODUCTS_CATALOG } from '../data/products';
 
 let cachedCatalog: Product[] | null = null;
 let lastFetchTime = 0;
-const CACHE_DURATION_MS = 60 * 1000; // 1 minute in-memory cache
+// 15s cache — short enough so cross-device changes (desktop ↔ mobile) appear quickly
+const CACHE_DURATION_MS = 15 * 1000;
 
 const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/13dYmzJoPkpLGCDt7gZ7znKJARPSknghUzcEmG2PKtFM/export?format=csv';
 
@@ -206,10 +207,14 @@ export class ProductService {
       return cachedCatalog;
     }
 
-    // 1. Gather deleted keys from localStorage and server
-    const deletedKeys = getDeletedKeysFromStorage();
+    // ── 1. Build deleted keys: SERVER first (shared across ALL devices), localStorage as supplement ──
+    // Server's deleted-products.json is the authoritative cross-device source of truth
+    const deletedKeys = new Set<string>();
+
     try {
-      const delRes = await fetch('/api/admin/deleted-products');
+      const delRes = await fetch('/api/admin/deleted-products', {
+        headers: { 'Cache-Control': 'no-cache' },
+      });
       if (delRes.ok) {
         const serverDeleted = await delRes.json();
         if (Array.isArray(serverDeleted)) {
@@ -222,6 +227,12 @@ export class ProductService {
           });
         }
       }
+    } catch (e) {}
+
+    // Also add current device's localStorage deleted keys as same-session supplement
+    try {
+      const localDeleted = getDeletedKeysFromStorage();
+      localDeleted.forEach(k => deletedKeys.add(k));
     } catch (e) {}
 
     // 2. Load disk/static catalog.json as primary baseline
@@ -305,27 +316,9 @@ export class ProductService {
       console.warn('[ProductService] Live Google Sheet fetch notice:', sheetErr);
     }
 
-    // 4. Merge persistent custom products from localStorage (persists on live site)
-    const customProducts = getCustomProductsFromStorage();
-    if (customProducts.length > 0) {
-      customProducts.forEach((customP) => {
-        const cleanName = (customP.name || '').toLowerCase().trim();
-        const cleanId = String(customP.id || '').toLowerCase().trim();
-        const existingIdx = baseProducts.findIndex((p) => {
-          const pId = String(p.id || '').toLowerCase().trim();
-          const pName = (p.name || '').toLowerCase().trim();
-          return (cleanId && pId === cleanId) || (cleanName && pName === cleanName);
-        });
-
-        if (existingIdx >= 0) {
-          baseProducts[existingIdx] = { ...baseProducts[existingIdx], ...customP };
-        } else {
-          baseProducts.unshift(customP);
-        }
-      });
-    }
-
-    // 5. Filter all products against deletedKeys
+    // ── 4. Filter all products against deletedKeys (server + device) ──
+    // catalog.json is already the source of truth — no localStorage custom products merge needed.
+    // Products added via admin API are written to catalog.json (shared across all devices).
     const filteredProducts = baseProducts.filter((p) => !isProductDeleted(p, deletedKeys));
 
     cachedCatalog = filteredProducts;

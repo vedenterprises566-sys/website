@@ -32,10 +32,11 @@ export function useProducts(): UseProductsResult {
   useEffect(() => {
     fetchProducts();
 
-    // Auto-poll Google Sheet for new products every 30 seconds silently
+    // Auto-poll for new/deleted products every 15 seconds (matches cache duration)
+    // This ensures cross-device changes (desktop ↔ mobile) appear within 15 seconds
     const interval = setInterval(() => {
       fetchProducts(true, true);
-    }, 30000);
+    }, 15000);
 
     // Sync when user re-focuses tab or catalog updates
     const handleSync = () => {
