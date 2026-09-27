@@ -3,6 +3,49 @@ import { GoogleGenAI } from '@google/genai';
 
 const app = express();
 
+// ── In-memory catalog store for Vercel serverless runtime ──
+// Products added/deleted persist per-instance. Google Apps Script is the
+// cross-deploy persistence layer (survives redeploys).
+let inMemoryCatalog: any[] = [];
+let inMemoryDeleted: Set<string> = new Set();
+let catalogInitialized = false;
+
+const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/13dYmzJoPkpLGCDt7gZ7znKJARPSknghUzcEmG2PKtFM/export?format=csv';
+
+function addDeletedKey(id?: string, name?: string) {
+  if (id) inMemoryDeleted.add(String(id).toLowerCase().trim());
+  if (name) {
+    const clean = String(name).toLowerCase().trim();
+    inMemoryDeleted.add(clean);
+    inMemoryDeleted.add(clean.replace(/\s+yarn$/i, '').trim());
+    inMemoryDeleted.add(clean.replace(/\s+yarn$/i, '').trim() + ' yarn');
+  }
+}
+
+function removeDeletedKey(id?: string, name?: string) {
+  if (id) inMemoryDeleted.delete(String(id).toLowerCase().trim());
+  if (name) {
+    const clean = String(name).toLowerCase().trim();
+    inMemoryDeleted.delete(clean);
+    inMemoryDeleted.delete(clean.replace(/\s+yarn$/i, '').trim());
+    inMemoryDeleted.delete(clean.replace(/\s+yarn$/i, '').trim() + ' yarn');
+  }
+}
+
+function isDeleted(p: any): boolean {
+  const id = String(p.id || '').toLowerCase().trim();
+  const name = String(p.name || '').toLowerCase().trim();
+  const nameClean = name.replace(/\s+yarn$/i, '').trim();
+  if (id && inMemoryDeleted.has(id)) return true;
+  if (name && inMemoryDeleted.has(name)) return true;
+  if (nameClean && inMemoryDeleted.has(nameClean)) return true;
+  if (nameClean && inMemoryDeleted.has(nameClean + ' yarn')) return true;
+  for (const k of inMemoryDeleted) {
+    if (k && id && (id === k || id.includes(k) || k.includes(id))) return true;
+  }
+  return false;
+}
+
 // CORS Headers Middleware
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Credentials', 'true');
@@ -212,7 +255,23 @@ app.get(['/api/health', '/health', '/api'], (req, res) => {
     status: 'ok',
     company: 'Ved Enterprises - Ludhiana',
     service: 'Yarn & Fabric AI Assistance',
+    catalogSize: inMemoryCatalog.length,
+    deletedCount: inMemoryDeleted.size,
   });
+});
+
+// API Route: Serve catalog (in-memory store, shared across this serverless instance)
+app.get(['/api/admin/catalog', '/catalog.json'], async (req, res) => {
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  const visible = inMemoryCatalog.filter(p => !isDeleted(p));
+  return res.json(visible);
+});
+
+// API Route: Get deleted product IDs
+app.get('/api/admin/deleted-products', (req, res) => {
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
+  return res.json(Array.from(inMemoryDeleted));
 });
 
 // API Route: Submit Inquiry
@@ -290,69 +349,68 @@ app.post(['/api/admin/save-product'], async (req, res) => {
     const slugId = cleanName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
     const assignedId = rawProduct.id || rawProduct.originalId || `prod-${slugId || Date.now()}`;
 
+    const product = {
+      id: assignedId,
+      name: cleanName,
+      category: rawProduct.category || 'fancy',
+      categoryLabel: rawProduct.categoryLabel || (rawProduct.category === 'garments' ? 'Winter Wear' : 'Fancy Yarn'),
+      countOrDenier: rawProduct.countOrDenier || 'Standard Count',
+      description: rawProduct.description || `${cleanName} - Wholesale from Ved Enterprises Ludhiana.`,
+      recommendedUses: Array.isArray(rawProduct.recommendedUses) ? rawProduct.recommendedUses : ['Knitwear', 'Winter Wear'],
+      features: Array.isArray(rawProduct.features) ? rawProduct.features : ['High Quality'],
+      sampleAvailable: rawProduct.sampleAvailable !== false,
+      origin: rawProduct.origin || 'Ved Enterprises',
+      popularFor: rawProduct.popularFor || 'Wholesale Supply',
+      imageUrl: rawProduct.imageUrl || rawProduct.image || '',
+      shadeCardUrl: rawProduct.shadeCardUrl || rawProduct.shadeUrl || '',
+      badge: rawProduct.badge || 'New Item',
+    };
+
+    // Save to in-memory catalog (available instantly to all requests on this instance)
+    removeDeletedKey(product.id, product.name);
+    const existingIdx = inMemoryCatalog.findIndex(p =>
+      String(p.id).toLowerCase() === String(product.id).toLowerCase() ||
+      String(p.name).toLowerCase() === String(product.name).toLowerCase()
+    );
+    if (existingIdx >= 0) {
+      inMemoryCatalog[existingIdx] = { ...inMemoryCatalog[existingIdx], ...product };
+    } else {
+      inMemoryCatalog.unshift(product);
+    }
+
+    // Forward to Google Apps Script for cross-deploy persistence
     const appsScriptUrl = process.env.VITE_APPS_SCRIPT_URL || process.env.APPS_SCRIPT_URL;
     if (appsScriptUrl) {
       try {
         await fetch(appsScriptUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'text/plain' },
-          body: JSON.stringify({ action: 'add', id: assignedId, ...rawProduct }),
+          body: JSON.stringify({ action: 'add', ...product }),
         });
       } catch (e) {}
     }
 
-    // Forward pushed product data to Web3Forms
+    // Forward to Web3Forms for email notification
     const web3FormsKey = process.env.WEB3FORMS_ACCESS_KEY || '2d09f16a-31b3-45bd-85f7-48ed312ff640';
     if (web3FormsKey) {
       try {
-        const uses = Array.isArray(rawProduct.recommendedUses)
-          ? rawProduct.recommendedUses.join(', ')
-          : (rawProduct.recommendedUses || 'N/A');
-        const feats = Array.isArray(rawProduct.features)
-          ? rawProduct.features.join(', ')
-          : (rawProduct.features || 'N/A');
         const timestamp = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
-
-        const messageBody = `VED ENTERPRISES - CATALOG PRODUCT PUSH\n\n` +
-          `Action: Product Added / Updated\n` +
-          `Product ID: ${assignedId}\n` +
-          `Product Name: ${cleanName}\n` +
-          `Category: ${rawProduct.categoryLabel || rawProduct.category || 'N/A'}\n` +
-          `Count / Denier: ${rawProduct.countOrDenier || 'Standard'}\n` +
-          `Badge: ${rawProduct.badge || 'N/A'}\n` +
-          `Origin: ${rawProduct.origin || 'Ved Enterprises Ludhiana'}\n` +
-          `Popular For: ${rawProduct.popularFor || 'Wholesale Supply'}\n` +
-          `Recommended Uses: ${uses}\n` +
-          `Key Features: ${feats}\n` +
-          `Image URL: ${rawProduct.imageUrl || rawProduct.image || 'None'}\n` +
-          `Shade Card URL: ${rawProduct.shadeCardUrl || 'None'}\n` +
-          `Description: ${rawProduct.description || 'N/A'}\n\n` +
-          `Timestamp: ${timestamp}`;
-
-        const web3Payload: Record<string, any> = {
-          access_key: web3FormsKey,
-          subject: `[CATALOG PUSH] Product Saved: ${cleanName}`,
-          from_name: 'Ved Enterprises Admin Portal',
-          name: 'Ved Enterprises Admin',
-          email: 'vedenterprises566@gmail.com',
-          'Catalog Action': 'SAVE',
-          'Product ID': assignedId,
-          'Product Name': cleanName,
-          'Category': rawProduct.categoryLabel || rawProduct.category || 'N/A',
-          'Count or Denier': rawProduct.countOrDenier || 'N/A',
-          'Uses': uses,
-          'Features': feats,
-          'Timestamp': timestamp,
-          message: messageBody,
-        };
-
-        if (rawProduct.imageUrl || rawProduct.image) web3Payload['Image URL'] = rawProduct.imageUrl || rawProduct.image;
-        if (rawProduct.shadeCardUrl) web3Payload['Shade Card URL'] = rawProduct.shadeCardUrl;
-
         await fetch('https://api.web3forms.com/submit', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(web3Payload),
+          body: JSON.stringify({
+            access_key: web3FormsKey,
+            subject: `[CATALOG PUSH] Product Saved: ${cleanName}`,
+            from_name: 'Ved Enterprises Admin Portal',
+            name: 'Ved Enterprises Admin',
+            email: 'vedenterprises566@gmail.com',
+            'Catalog Action': existingIdx >= 0 ? 'UPDATE' : 'ADD',
+            'Product ID': product.id,
+            'Product Name': product.name,
+            'Category': product.categoryLabel,
+            'Timestamp': timestamp,
+            message: `Product "${product.name}" was ${existingIdx >= 0 ? 'updated' : 'added'} via admin panel on ${timestamp}`,
+          }),
         });
       } catch (w3err: any) {
         console.warn('[API WEB3FORMS PUSH NOTICE]', w3err.message);
@@ -361,8 +419,9 @@ app.post(['/api/admin/save-product'], async (req, res) => {
 
     return res.json({
       success: true,
-      message: `Product "${cleanName}" saved and pushed to Web3Forms successfully!`,
+      message: `Product "${cleanName}" saved successfully!`,
       productId: assignedId,
+      product,
     });
   } catch (err: any) {
     return res.status(500).json({ success: false, error: err.message });
@@ -373,6 +432,20 @@ app.post(['/api/admin/save-product'], async (req, res) => {
 app.post(['/api/admin/delete-product'], async (req, res) => {
   try {
     const { id, name } = req.body;
+
+    // Remove from in-memory catalog and mark as deleted
+    addDeletedKey(id, name);
+    const targetId = String(id || '').toLowerCase().trim();
+    const targetName = String(name || '').toLowerCase().trim();
+    inMemoryCatalog = inMemoryCatalog.filter(p => {
+      const pId = String(p.id || '').toLowerCase().trim();
+      const pName = String(p.name || '').toLowerCase().trim();
+      const matchId = targetId && (pId === targetId || pId.includes(targetId) || targetId.includes(pId));
+      const matchName = targetName && pName === targetName;
+      return !matchId && !matchName;
+    });
+
+    // Forward to Google Apps Script for persistence
     const appsScriptUrl = process.env.VITE_APPS_SCRIPT_URL || process.env.APPS_SCRIPT_URL;
     if (appsScriptUrl) {
       try {
@@ -384,7 +457,7 @@ app.post(['/api/admin/delete-product'], async (req, res) => {
       } catch (e) {}
     }
 
-    // Forward deletion to Web3Forms
+    // Notify via Web3Forms
     const web3FormsKey = process.env.WEB3FORMS_ACCESS_KEY || '2d09f16a-31b3-45bd-85f7-48ed312ff640';
     if (web3FormsKey) {
       try {
