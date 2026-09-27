@@ -404,5 +404,197 @@
       "XL"
     ],
     "garmentStyle": "Ladies Cardigan"
+  },
+  {
+    "id": "garment-pullover-cable-daffodil",
+    "name": "Men's Heavy Cable-Knit Winter Pullover",
+    "category": "garments",
+    "categoryLabel": "Winter Wear",
+    "countOrDenier": "5GG Chunky Knit (2/28 Daffodil Acrylic)",
+    "description": "Thick, textured cable-knit sweater made with high-bulk 2/28 Daffodil yarn. Engineered for sub-zero winter warmth with excellent elasticity and shape retention.",
+    "recommendedUses": [
+      "Heavy Winterwear",
+      "Retail Fashion Stores",
+      "Northern India Winter Distribution"
+    ],
+    "features": [
+      "5GG Chunky Knit",
+      "Intricate Cable Pattern",
+      "Shrink Resistant",
+      "Premium Yarn Core"
+    ],
+    "sampleAvailable": true,
+    "origin": "Ved Garment Collection (Ludhiana)",
+    "popularFor": "Chunky Winter Cable Sweaters",
+    "badge": "Live Collection",
+    "gauge": "5GG",
+    "yarnUsed": "2/28 Daffodil High-Bulk",
+    "availableSizes": [
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
+    "garmentStyle": "Men's Pullover"
+  },
+  {
+    "id": "garment-turtleneck-unisex-wooly",
+    "name": "Unisex Thermal Ribbed High-Neck Turtleneck",
+    "category": "garments",
+    "categoryLabel": "Winter Wear",
+    "countOrDenier": "9GG Thermal Rib (2/18 Wooly & Viscose)",
+    "description": "Snug-fit thermal turtleneck sweater designed for layering under winter coats or styling solo. Featherlight warmth with zero skin itching.",
+    "recommendedUses": [
+      "Thermal Base Layer",
+      "Winter Uniforms",
+      "Casual Winterwear"
+    ],
+    "features": [
+      "9GG Ribbed Knit",
+      "Skin-Friendly Comfort",
+      "Stretch Recovery",
+      "Color Fastness"
+    ],
+    "sampleAvailable": true,
+    "origin": "Ved Garment Collection (Ludhiana)",
+    "popularFor": "High-Neck Ribbed Turtlenecks",
+    "badge": "Live Collection",
+    "gauge": "9GG",
+    "yarnUsed": "2/18 Wooly + Viscose",
+    "availableSizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "garmentStyle": "Unisex Turtleneck"
+  },
+  {
+    "id": "garment-cardigan-ladies-pearl",
+    "name": "Ladies Pearl-Buttoned Soft Luxury Knit Cardigan",
+    "category": "garments",
+    "categoryLabel": "Winter Wear",
+    "countOrDenier": "12GG Micro-Knit (Vislon & Feather Blend)",
+    "description": "Boutique-ready ladies sweater cardigan adorned with pearl button accents. Crafted from Chinese Vislon and plush feather fiber for a cloud-soft touch.",
+    "recommendedUses": [
+      "Boutique Fashion",
+      "Party & Evening Winterwear",
+      "Export Apparel"
+    ],
+    "features": [
+      "12GG Micro-Knit",
+      "Pearl Button Detailing",
+      "Ultra-Plush Feel",
+      "Anti-Static"
+    ],
+    "sampleAvailable": true,
+    "origin": "Ved Garment Collection (Ludhiana)",
+    "popularFor": "Designer Luxury Cardigans",
+    "badge": "Live Collection",
+    "gauge": "12GG",
+    "yarnUsed": "Vislon / Feather Plush",
+    "availableSizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "garmentStyle": "Ladies Luxury Knit"
+  },
+  {
+    "id": "garment-muffler-beanie-set",
+    "name": "Winter Jacquard Knitted Thermal Muffler & Cap Set",
+    "category": "garments",
+    "categoryLabel": "Winter Wear",
+    "countOrDenier": "10GG Jacquard Knit (Rainbow High-Bulk)",
+    "description": "Complete winter accessory set featuring an extra-long jacquard knit muffler and matched thermal beanie. High-bulk acrylic ensures all-day neck warmth.",
+    "recommendedUses": [
+      "Winter Accessories",
+      "Corporate Gifting",
+      "Wholesale Winter Kits"
+    ],
+    "features": [
+      "10GG Jacquard",
+      "Matching 2-Piece Set",
+      "Vibrant Variegated Colors",
+      "High Wind Block"
+    ],
+    "sampleAvailable": true,
+    "origin": "Ved Garment Collection (Ludhiana)",
+    "popularFor": "Winter Cap & Muffler Sets",
+    "badge": "Live Collection",
+    "gauge": "10GG",
+    "yarnUsed": "Rainbow High-Bulk Acrylic",
+    "availableSizes": [
+      "Free Size (Elasticated)"
+    ],
+    "garmentStyle": "Muffler & Cap Set"
+  },
+  {
+    "id": "garment-vest-corporate-acrylic",
+    "name": "Corporate & School Uniform V-Neck Knitted Vest",
+    "category": "garments",
+    "categoryLabel": "Winter Wear",
+    "countOrDenier": "10GG Fine Gauge (Daffodil 100% Acrylic)",
+    "description": "Sleeveless V-neck sweater vest built specifically for school uniforms, college staff, and corporate workwear. Resists daily pill wear and frequent machine washes.",
+    "recommendedUses": [
+      "School Uniforms",
+      "Corporate Uniforms",
+      "Staff Knitwear"
+    ],
+    "features": [
+      "10GG Flat Knit",
+      "Reinforced Rib Neck & Arms",
+      "100% Pill Resistant",
+      "Deep Fast Dyes"
+    ],
+    "sampleAvailable": true,
+    "origin": "Ved Garment Collection (Ludhiana)",
+    "popularFor": "School Uniform Vests",
+    "badge": "Live Collection",
+    "gauge": "10GG",
+    "yarnUsed": "Daffodil 100% Acrylic",
+    "availableSizes": [
+      "28",
+      "30",
+      "32",
+      "34",
+      "36",
+      "38",
+      "40",
+      "42"
+    ],
+    "garmentStyle": "Uniform V-Neck Vest"
+  },
+  {
+    "id": "garment-oversized-chenille-coat",
+    "name": "Oversized Velvet Plush Winter Coat Cardigan",
+    "category": "garments",
+    "categoryLabel": "Winter Wear",
+    "countOrDenier": "Heavy Gauge Knit (18 NM Chenille & Wooly)",
+    "description": "Longline open-front coatigan featuring deep patch pockets and wide turn-down collar. Knitted from velvety 18 NM Chenille and Wooly backing for intense winter shielding.",
+    "recommendedUses": [
+      "Heavy Winter Coats",
+      "Luxury Loungewear",
+      "Boutique Outerwear"
+    ],
+    "features": [
+      "Heavy Gauge Knit",
+      "Deep Front Pockets",
+      "Velvety Shimmer Drape",
+      "Thermal Core"
+    ],
+    "sampleAvailable": true,
+    "origin": "Ved Garment Collection (Ludhiana)",
+    "popularFor": "Plush Winter Long Coats",
+    "badge": "Live Collection",
+    "gauge": "Heavy Gauge",
+    "yarnUsed": "18 NM Chenille + Wooly",
+    "availableSizes": [
+      "M",
+      "L",
+      "XL"
+    ],
+    "garmentStyle": "Coatigan / Long Coat"
   }
 ]
