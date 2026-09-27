@@ -258,7 +258,7 @@ app.get(['/api/health', '/health', '/api'], (req, res) => {
 });
 
 // API Route: Serve catalog (in-memory store, shared across this serverless instance)
-app.get(['/api/admin/catalog', '/catalog.json'], async (req, res) => {
+app.get(['/api/admin/catalog', '/admin/catalog', '/catalog.json'], async (req, res) => {
   res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
   res.setHeader('Pragma', 'no-cache');
   const visible = inMemoryCatalog.filter(p => !isDeleted(p));
@@ -266,7 +266,7 @@ app.get(['/api/admin/catalog', '/catalog.json'], async (req, res) => {
 });
 
 // API Route: Get deleted product IDs
-app.get('/api/admin/deleted-products', (req, res) => {
+app.get(['/api/admin/deleted-products', '/admin/deleted-products'], (req, res) => {
   res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
   return res.json(Array.from(inMemoryDeleted));
 });
@@ -339,7 +339,7 @@ Managing Directors: Moni Maurya (+91 7986716117) | Sandeep Maurya (+91 855694943
 });
 
 // API Route: Admin Save Product
-app.post(['/api/admin/save-product'], async (req, res) => {
+app.post(['/api/admin/save-product', '/admin/save-product'], async (req, res) => {
   try {
     const rawProduct = req.body;
     const cleanName = (rawProduct.name || 'Yarn Product').trim();
@@ -438,7 +438,7 @@ app.post(['/api/admin/save-product'], async (req, res) => {
 });
 
 // API Route: Admin Delete Product
-app.post(['/api/admin/delete-product'], async (req, res) => {
+app.post(['/api/admin/delete-product', '/admin/delete-product'], async (req, res) => {
   try {
     const { id, name } = req.body;
 

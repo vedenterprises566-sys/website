@@ -32,6 +32,11 @@ import {
   List,
   LogOut,
   Key,
+  Smartphone,
+  Laptop,
+  Copy,
+  Download,
+  Upload,
 } from 'lucide-react';
 import { Product, YarnCategory } from '../types';
 import { AdminService } from './adminService';
@@ -110,6 +115,64 @@ export const AdminPanel: React.FC = () => {
 
   // Sync state
   const [isSyncing, setIsSyncing] = useState<boolean>(false);
+
+  // Cross-device sync state (Mobile <-> Desktop)
+  const [isDeviceSyncOpen, setIsDeviceSyncOpen] = useState<boolean>(false);
+  const [deviceSyncCodeInput, setDeviceSyncCodeInput] = useState<string>('');
+  const [syncCodeCopied, setSyncCodeCopied] = useState<boolean>(false);
+
+  const handleExportSyncCode = () => {
+    try {
+      const customProds = AdminService.getCustomProducts();
+      if (!customProds || customProds.length === 0) {
+        showToast('No custom products found on this device to export.', 'info');
+        return;
+      }
+      const jsonStr = JSON.stringify(customProds);
+      const encoded = btoa(unescape(encodeURIComponent(jsonStr)));
+      navigator.clipboard.writeText(encoded);
+      setSyncCodeCopied(true);
+      showToast(`📋 Copied sync code for ${customProds.length} custom product(s)! Paste on desktop.`, 'success');
+      setTimeout(() => setSyncCodeCopied(false), 4000);
+    } catch (e: any) {
+      showToast('Failed to copy code: ' + e.message, 'error');
+    }
+  };
+
+  const handleImportSyncCode = async () => {
+    if (!deviceSyncCodeInput.trim()) {
+      showToast('Please paste the sync code from your mobile first', 'error');
+      return;
+    }
+    try {
+      const decodedJson = decodeURIComponent(escape(atob(deviceSyncCodeInput.trim())));
+      const importedProducts = JSON.parse(decodedJson);
+      if (!Array.isArray(importedProducts) || importedProducts.length === 0) {
+        showToast('Invalid sync code format. Please try copying again from mobile.', 'error');
+        return;
+      }
+
+      for (const prod of importedProducts) {
+        AdminService.saveCustomProduct(prod);
+        // Also save to local Express catalog.json on disk if running desktop server
+        try {
+          fetch('/api/admin/save-product', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(prod),
+          }).catch(() => {});
+        } catch (_) {}
+      }
+
+      ProductService.clearCache();
+      showToast(`🎉 Synced ${importedProducts.length} product(s) to this device!`, 'success');
+      setDeviceSyncCodeInput('');
+      setIsDeviceSyncOpen(false);
+      loadProducts();
+    } catch (err: any) {
+      showToast('Invalid sync code: ' + (err?.message || 'Check code and try again'), 'error');
+    }
+  };
 
   // Toast notifications
   const [toast, setToast] = useState<{
@@ -907,6 +970,18 @@ export const AdminPanel: React.FC = () => {
             >
               <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin text-red-600' : 'text-slate-500'}`} />
               <span className="hidden sm:inline">{isSyncing ? 'Syncing...' : 'Sync'}</span>
+            </motion.button>
+
+            {/* Sync Devices (Mobile <-> Desktop) Button */}
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              onClick={() => setIsDeviceSyncOpen(true)}
+              className="inline-flex items-center justify-center gap-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 px-2.5 sm:px-3 py-2 rounded-xl text-xs font-bold border border-blue-200 shadow-xs transition-colors min-h-[38px]"
+              title="Sync products between Mobile and Desktop"
+            >
+              <Smartphone className="w-3.5 h-3.5 text-blue-600" />
+              <span className="hidden sm:inline">Sync Devices</span>
             </motion.button>
 
             {/* Add Product Button */}
@@ -1850,6 +1925,145 @@ export const AdminPanel: React.FC = () => {
                 >
                   {isSyncing ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : null}
                   <span>Test & Save</span>
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* ============================================================== */}
+      {/* 6.5. CROSS-DEVICE SYNC MODAL (MOBILE <-> DESKTOP) */}
+      {/* ============================================================== */}
+      <AnimatePresence>
+        {isDeviceSyncOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm overflow-y-auto">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              className="bg-white rounded-3xl max-w-lg w-full p-5 sm:p-6 shadow-2xl border border-slate-100 my-8 space-y-5"
+            >
+              {/* Header */}
+              <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-10 h-10 rounded-2xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600">
+                    <Smartphone className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-extrabold text-base text-slate-900">
+                      Sync Mobile & Desktop
+                    </h3>
+                    <p className="text-[0.6875rem] text-slate-500">
+                      Transfer custom products between your phone and desktop
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsDeviceSyncOpen(false)}
+                  className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Explanatory callout */}
+              <div className="bg-amber-50/70 border border-amber-200/80 rounded-2xl p-3 text-xs text-amber-900 space-y-1">
+                <p className="font-bold flex items-center gap-1.5 text-amber-800">
+                  <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+                  Why wasn't the mobile product showing on desktop?
+                </p>
+                <p className="text-[0.6875rem] leading-relaxed text-amber-700">
+                  Products added from a phone are stored in that phone's browser cache until synced. Use the 2 simple steps below to copy your products over to desktop in 5 seconds!
+                </p>
+              </div>
+
+              {/* Step 1: On Mobile */}
+              <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-4 space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-extrabold text-slate-900 flex items-center gap-1.5">
+                    <span className="w-5 h-5 rounded-full bg-blue-600 text-white text-[10px] font-black flex items-center justify-center">1</span>
+                    On Your Mobile Phone (Export)
+                  </span>
+                  <span className="text-[10px] font-bold text-slate-500">
+                    {AdminService.getCustomProducts().length} custom item(s) on this device
+                  </span>
+                </div>
+                <p className="text-[0.6875rem] text-slate-500">
+                  Tap below to copy your mobile products' sync code, then send it to yourself via WhatsApp or email.
+                </p>
+                <div className="flex items-center gap-2 pt-1">
+                  <button
+                    type="button"
+                    onClick={handleExportSyncCode}
+                    className="flex-1 inline-flex items-center justify-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs py-2.5 px-3 rounded-xl transition-colors shadow-xs cursor-pointer"
+                  >
+                    {syncCodeCopied ? <Check className="w-4 h-4 text-emerald-300" /> : <Copy className="w-4 h-4" />}
+                    <span>{syncCodeCopied ? 'Code Copied! (Send to PC)' : 'Copy Mobile Sync Code'}</span>
+                  </button>
+                  {AdminService.getCustomProducts().length > 0 && (
+                    <a
+                      href={`https://wa.me/?text=${encodeURIComponent(
+                        'VED ENTERPRISES PRODUCT SYNC CODE:\n' +
+                          btoa(unescape(encodeURIComponent(JSON.stringify(AdminService.getCustomProducts()))))
+                      )}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center gap-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs py-2.5 px-3 rounded-xl transition-colors shadow-xs"
+                      title="Share code via WhatsApp to open on Desktop WhatsApp Web"
+                    >
+                      <span>WhatsApp</span>
+                    </a>
+                  )}
+                </div>
+              </div>
+
+              {/* Step 2: On Desktop */}
+              <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-4 space-y-2.5">
+                <span className="text-xs font-extrabold text-slate-900 flex items-center gap-1.5">
+                  <span className="w-5 h-5 rounded-full bg-emerald-600 text-white text-[10px] font-black flex items-center justify-center">2</span>
+                  On Your Desktop Computer (Import)
+                </span>
+                <p className="text-[0.6875rem] text-slate-500">
+                  Paste the sync code you copied from your phone into the box below and click import.
+                </p>
+                <textarea
+                  rows={2}
+                  value={deviceSyncCodeInput}
+                  onChange={(e) => setDeviceSyncCodeInput(e.target.value)}
+                  placeholder="Paste sync code here on your desktop..."
+                  className="w-full text-xs font-mono bg-white border border-slate-200 rounded-xl p-2.5 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 resize-none"
+                />
+                <button
+                  type="button"
+                  onClick={handleImportSyncCode}
+                  className="w-full inline-flex items-center justify-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs py-2.5 px-3 rounded-xl transition-colors shadow-xs cursor-pointer"
+                >
+                  <Download className="w-4 h-4" />
+                  <span>Import & Save to Desktop</span>
+                </button>
+              </div>
+
+              {/* Real-time WiFi tip */}
+              <div className="p-3 bg-blue-50/60 border border-blue-200/70 rounded-2xl text-[0.6875rem] text-blue-900 space-y-1">
+                <p className="font-bold flex items-center gap-1.5 text-blue-800">
+                  <Laptop className="w-3.5 h-3.5 text-blue-600" />
+                  Real-Time WiFi Sync (Zero Copying):
+                </p>
+                <p className="text-blue-700 leading-relaxed">
+                  While running <code>npm run dev</code> on your desktop, open <code>http://&lt;your-pc-ip&gt;:3001/admin</code> in your phone's browser on the same Wi-Fi. Products added from your phone will immediately write straight to your computer's disk!
+                </p>
+              </div>
+
+              {/* Footer Close */}
+              <div className="flex justify-end pt-1">
+                <button
+                  type="button"
+                  onClick={() => setIsDeviceSyncOpen(false)}
+                  className="px-5 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer"
+                >
+                  Done
                 </button>
               </div>
             </motion.div>
