@@ -381,7 +381,7 @@ app.post(['/api/admin/save-product', '/admin/save-product'], async (req, res) =>
       sampleAvailable: rawProduct.sampleAvailable !== false,
       origin: rawProduct.origin || 'Ved Enterprises',
       popularFor: rawProduct.popularFor || 'Wholesale Supply',
-      imageUrl: rawProduct.imageUrl || rawProduct.image || '',
+      imageUrl: rawProduct.imageUrl || rawProduct.image || rawProduct.pictureUrl || '',
       shadeCardUrl: rawProduct.shadeCardUrl || rawProduct.shadeUrl || '',
       badge: rawProduct.badge || 'New Item',
     };
@@ -420,8 +420,8 @@ app.post(['/api/admin/save-product', '/admin/save-product'], async (req, res) =>
         const formattedName = `${cleanName}_${dateTag}_${timeTag}`;
         const timestampStr = now.toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
 
-        const shadeUrl = product.shadeCardUrl || product.shadeUrl || '';
-        const pictureUrl = product.imageUrl || product.pictureUrl || '';
+        const shadeUrl = product.shadeCardUrl || '';
+        const pictureUrl = product.imageUrl || '';
 
         await fetch('https://api.web3forms.com/submit', {
           method: 'POST',
