@@ -40,9 +40,6 @@ function isDeleted(p: any): boolean {
   if (name && inMemoryDeleted.has(name)) return true;
   if (nameClean && inMemoryDeleted.has(nameClean)) return true;
   if (nameClean && inMemoryDeleted.has(nameClean + ' yarn')) return true;
-  for (const k of inMemoryDeleted) {
-    if (k && id && (id === k || id.includes(k) || k.includes(id))) return true;
-  }
   return false;
 }
 

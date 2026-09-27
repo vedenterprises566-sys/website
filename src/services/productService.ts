@@ -51,9 +51,6 @@ function isProductDeleted(p: { id?: string; name?: string }, deletedKeys: Set<st
   if (nameWithoutYarn && deletedKeys.has(nameWithoutYarn)) return true;
   if (nameWithoutYarn && deletedKeys.has(nameWithoutYarn + ' yarn')) return true;
 
-  for (const k of deletedKeys) {
-    if (k && id && (id === k || id.includes(k) || k.includes(id))) return true;
-  }
   return false;
 }
 
@@ -333,6 +330,10 @@ export class ProductService {
     // catalog.json is already the source of truth — no localStorage custom products merge needed.
     // Products added via admin API are written to catalog.json (shared across all devices).
     const filteredProducts = baseProducts.filter((p) => !isProductDeleted(p, deletedKeys));
+
+    if (cachedCatalog && cachedCatalog.length > 0 && filteredProducts.length < cachedCatalog.length && !forceRefresh) {
+      return cachedCatalog;
+    }
 
     cachedCatalog = filteredProducts;
     lastFetchTime = now;

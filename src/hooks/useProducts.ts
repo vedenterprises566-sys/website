@@ -20,10 +20,15 @@ export function useProducts(): UseProductsResult {
     setError(null);
     try {
       const data = await ProductService.getCatalog(force);
-      setProducts(data);
+      setProducts((prev) => {
+        if (silent && (!data || data.length === 0)) {
+          return prev;
+        }
+        return data;
+      });
     } catch (err: any) {
       console.error('[useProducts] Error loading products:', err);
-      setError(err?.message || 'Failed to load product catalog.');
+      if (!silent) setError(err?.message || 'Failed to load product catalog.');
     } finally {
       if (!silent) setLoading(false);
     }
