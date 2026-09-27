@@ -301,7 +301,7 @@ app.post(['/api/inquiry', '/inquiry'], async (req, res) => {
     const referenceId = 'VED-' + Math.floor(100000 + Math.random() * 900000);
     const targetEmail = process.env.ADMIN_EMAIL || 'vedenterprises566@gmail.com';
 
-    const web3FormsKey = process.env.WEB3FORMS_ACCESS_KEY || '2d09f16a-31b3-45bd-85f7-48ed312ff640';
+    const web3FormsKey = process.env.WEB3FORMS_ACCESS_KEY || '60b1da23-19c5-4576-b47c-7fa27d972f52';
     if (web3FormsKey) {
       try {
         const formattedItemsText = inquiryData.items && inquiryData.items.length > 0
@@ -411,7 +411,7 @@ app.post(['/api/admin/save-product', '/admin/save-product'], async (req, res) =>
     }
 
     // Forward to Web3Forms for Google Sheet logging & email notification
-    const web3FormsKey = process.env.WEB3FORMS_ACCESS_KEY || '2d09f16a-31b3-45bd-85f7-48ed312ff640';
+    const web3FormsKey = process.env.WEB3FORMS_ACCESS_KEY || '60b1da23-19c5-4576-b47c-7fa27d972f52';
     if (web3FormsKey) {
       try {
         const now = new Date();
@@ -435,8 +435,8 @@ app.post(['/api/admin/save-product', '/admin/save-product'], async (req, res) =>
             email: 'vedenterprises566@gmail.com',
             Description: product.description || `${cleanName} - Wholesale supply from Ved Enterprises Ludhiana.`,
             message: product.description || `${cleanName} - Wholesale supply from Ved Enterprises Ludhiana.`,
-            'Shade URL': shadeUrl,
-            'Picture URL': pictureUrl,
+            'Shade URL': shadeUrl.startsWith('data:') ? 'Local File Attached' : shadeUrl,
+            'Picture URL': pictureUrl.startsWith('data:') ? 'Local File Attached' : pictureUrl,
             'Catalog Action': existingIdx >= 0 ? 'UPDATE' : 'ADD',
             'Product ID': product.id,
             'Product Name': product.name,
@@ -490,7 +490,7 @@ app.post(['/api/admin/delete-product', '/admin/delete-product'], async (req, res
     }
 
     // Notify via Web3Forms
-    const web3FormsKey = process.env.WEB3FORMS_ACCESS_KEY || '2d09f16a-31b3-45bd-85f7-48ed312ff640';
+    const web3FormsKey = process.env.WEB3FORMS_ACCESS_KEY || '60b1da23-19c5-4576-b47c-7fa27d972f52';
     if (web3FormsKey) {
       try {
         await fetch('https://api.web3forms.com/submit', {

@@ -223,10 +223,10 @@ export const InquiryPage: React.FC<InquiryPortalProps> = ({
         items: savedBasket,
       });
 
-      // Direct Web3Forms Email Submission (Access Key: 2d09f16a-31b3-45bd-85f7-48ed312ff640)
+      // Direct Web3Forms Email Submission (Access Key: 60b1da23-19c5-4576-b47c-7fa27d972f52)
       try {
         const web3FormData = new FormData();
-        web3FormData.append('access_key', '2d09f16a-31b3-45bd-85f7-48ed312ff640');
+        web3FormData.append('access_key', '60b1da23-19c5-4576-b47c-7fa27d972f52');
         web3FormData.append('name', formData.fullName || 'Customer');
         web3FormData.append('email', formData.email || 'vedenterprises566@gmail.com');
         web3FormData.append('phone', formData.phone || '');

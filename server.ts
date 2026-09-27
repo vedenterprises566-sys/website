@@ -151,7 +151,7 @@ async function startServer() {
       let emailSent = false;
       let emailStatusMessage = `Inquiry recorded & notification queued for ${targetEmail}`;
 
-      const web3FormsKey = process.env.WEB3FORMS_ACCESS_KEY || '2d09f16a-31b3-45bd-85f7-48ed312ff640';
+      const web3FormsKey = process.env.WEB3FORMS_ACCESS_KEY || '60b1da23-19c5-4576-b47c-7fa27d972f52';
       if (web3FormsKey) {
         try {
           const formattedItemsText = inquiryData.items && inquiryData.items.length > 0
@@ -391,7 +391,7 @@ Address: # 66/2, Near Shingar Cinema, Dharampura, Ludhiana - 141008
       }
 
       // Forward deletion to Web3Forms
-      const web3FormsKey = process.env.WEB3FORMS_ACCESS_KEY || '2d09f16a-31b3-45bd-85f7-48ed312ff640';
+      const web3FormsKey = process.env.WEB3FORMS_ACCESS_KEY || '60b1da23-19c5-4576-b47c-7fa27d972f52';
       if (web3FormsKey) {
         fetch('https://api.web3forms.com/submit', {
           method: 'POST',
@@ -500,7 +500,7 @@ Address: # 66/2, Near Shingar Cinema, Dharampura, Ludhiana - 141008
       }
 
       // Forward pushed product data to Web3Forms
-      const web3FormsKey = process.env.WEB3FORMS_ACCESS_KEY || '2d09f16a-31b3-45bd-85f7-48ed312ff640';
+      const web3FormsKey = process.env.WEB3FORMS_ACCESS_KEY || '60b1da23-19c5-4576-b47c-7fa27d972f52';
       if (web3FormsKey) {
         const isUpdate = existingIdx >= 0;
         const actionLabel = isUpdate ? 'Updated' : 'Added';
@@ -538,8 +538,8 @@ Address: # 66/2, Near Shingar Cinema, Dharampura, Ludhiana - 141008
           email: 'vedenterprises566@gmail.com',
           Description: product.description || `${cleanName} - Wholesale supply from Ved Enterprises Ludhiana.`,
           message: product.description || `${cleanName} - Wholesale supply from Ved Enterprises Ludhiana.`,
-          'Shade URL': product.shadeCardUrl || product.shadeUrl || '',
-          'Picture URL': product.imageUrl || product.pictureUrl || '',
+          'Shade URL': product.shadeCardUrl?.startsWith('data:') ? 'Local File Attached' : (product.shadeCardUrl || product.shadeUrl || ''),
+          'Picture URL': product.imageUrl?.startsWith('data:') ? 'Local File Attached' : (product.imageUrl || product.pictureUrl || ''),
           'Catalog Action': isUpdate ? 'UPDATE' : 'ADD',
           'Product ID': product.id,
           'Product Name': product.name,

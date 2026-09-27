@@ -4,7 +4,7 @@ import { ProductService } from '../services/productService';
 const SCRIPT_URL_STORAGE_KEY = 'ved_apps_script_url';
 
 export const DEFAULT_APPS_SCRIPT_URL =
-  'https://script.google.com/macros/s/AKfycbzoPJrjjrEUjaIu2QAy-AAtk8eZyyojVh_aF_NviDFU5LuDieRUXfepJhmGs66H2uZnxA/exec';
+  'https://script.google.com/macros/s/AKfycbzrggQItVkhV9fhT851L-rRYEvQ9BZG30ew2YXkuDojt5JJ0R09hXt-XaPs5bMV0TP3oQ/exec';
 
 export interface AdminApiResponse {
   success: boolean;
@@ -245,16 +245,27 @@ export class AdminService {
       console.warn('[AdminService] Web3Forms push warning:', w3err);
     }
 
-    // 3. Forward to Apps Script in background (optional cloud sync)
+    // 3. Forward to Apps Script (awaited so we can log errors properly)
     const url = this.getScriptUrl().trim();
     if (url) {
       try {
-        fetch(url, {
+        // Strip base64 images from payload — Apps Script handles image upload to Drive itself
+        const scriptPayload = {
+          ...payload,
+          imageUrl: payload.imageUrl?.startsWith('data:') ? '' : (payload.imageUrl || ''),
+          image:    payload.imageUrl?.startsWith('data:') ? '' : (payload.imageUrl || ''),
+          pictureUrl: payload.imageUrl?.startsWith('data:') ? '' : (payload.imageUrl || ''),
+        };
+        const scriptRes = await fetch(url, {
           method: 'POST',
           headers: { 'Content-Type': 'text/plain' },
-          body: JSON.stringify(payload),
-        }).catch((e) => console.warn('[AdminService] Apps script background notice:', e));
-      } catch (e) {}
+          body: JSON.stringify(scriptPayload),
+        });
+        const scriptText = await scriptRes.text();
+        console.log('[AdminService] Apps Script response:', scriptText);
+      } catch (e) {
+        console.warn('[AdminService] Apps script notice:', e);
+      }
     }
 
     // 4. Try local server public/catalog.json in background (if running Express server)
@@ -403,7 +414,7 @@ export class AdminService {
     try {
       const accessKey =
         (import.meta as any).env?.VITE_WEB3FORMS_ACCESS_KEY ||
-        '2d09f16a-31b3-45bd-85f7-48ed312ff640';
+        '60b1da23-19c5-4576-b47c-7fa27d972f52';
       if (!accessKey) return;
 
       const isDelete = action === 'delete';
@@ -456,8 +467,8 @@ export class AdminService {
         email: 'vedenterprises566@gmail.com',
         Description: data.description || `${prodName} - Wholesale supply from Ved Enterprises Ludhiana.`,
         message: data.description || `${prodName} - Wholesale supply from Ved Enterprises Ludhiana.`,
-        'Shade URL': data.shadeCardUrl || data.shadeUrl || '',
-        'Picture URL': data.imageUrl || data.pictureUrl || data.image || '',
+        'Shade URL': data.shadeCardUrl?.startsWith('data:image') ? 'Local Image Attached' : (data.shadeCardUrl || data.shadeUrl || ''),
+        'Picture URL': data.imageUrl?.startsWith('data:image') ? 'Local Image Attached' : (data.imageUrl || data.pictureUrl || data.image || ''),
         'Catalog Action': action.toUpperCase(),
         'Product ID': data.id || 'N/A',
         'Product Name': prodName,

@@ -399,15 +399,22 @@ function doPost(e) {
     }
 
     // 4. ADD PRODUCT ACTION (Default for webhooks / submissions)
-    const productRow = saveProductToSheet(data);
-
-    // Upload image to Drive if provided
     let imageUrl = '';
     const imgSource = data.image_url || data.imageUrl || data.image || data.pictureUrl;
-    if (imgSource && String(imgSource).startsWith('http')) {
+    
+    // CRITICAL FIX: Upload to Drive FIRST to avoid Google Sheets 50,000 char limit crash
+    if (imgSource && (String(imgSource).startsWith('http') || String(imgSource).startsWith('data:'))) {
       imageUrl = uploadImageToDrive(imgSource, data.name || 'product');
+      if (imageUrl && imageUrl !== imgSource) {
+        data.imageUrl = imageUrl;
+        data.image = imageUrl;
+        data.pictureUrl = imageUrl;
+      }
     }
-    if (imageUrl) {
+
+    const productRow = saveProductToSheet(data);
+    
+    if (imageUrl && imageUrl !== imgSource) {
       updateImageUrlInSheet(productRow, imageUrl);
     }
 
@@ -772,16 +779,33 @@ function getCategoryLabel(category) {
  * Downloads an image from a URL and stores it in the designated Drive folder.
  * Returns direct public viewable Google Drive URL.
  */
-function uploadImageToDrive(imageUrl, productName) {
+function uploadImageToDrive(imgSource, productName) {
   try {
     const config = getConfig();
-    if (!config.DRIVE_FOLDER_ID || !imageUrl) return imageUrl;
+    if (!config.DRIVE_FOLDER_ID || !imgSource) return imgSource;
 
-    const response = UrlFetchApp.fetch(imageUrl);
-    const blob = response.getBlob();
+    let blob;
+    let extension = 'jpg';
 
-    const safeName = productName.replace(/[^a-zA-Z0-9_-]/g, '_').substring(0, 50);
-    const extension = blob.getContentType().split('/')[1] || 'jpg';
+    if (String(imgSource).startsWith('data:image')) {
+      const parts = imgSource.split(',');
+      const meta = parts[0];
+      const base64Data = parts[1];
+      const mimeType = meta.match(/data:([^;]+);/)[1];
+      extension = mimeType.split('/')[1] || 'jpg';
+      const decoded = Utilities.base64Decode(base64Data);
+      blob = Utilities.newBlob(decoded, mimeType, 'image.' + extension);
+    } 
+    else if (String(imgSource).startsWith('http')) {
+      const response = UrlFetchApp.fetch(imgSource);
+      blob = response.getBlob();
+      extension = blob.getContentType().split('/')[1] || 'jpg';
+    } 
+    else {
+      return imgSource;
+    }
+
+    const safeName = (productName || 'product').replace(/[^a-zA-Z0-9_-]/g, '_').substring(0, 50);
     blob.setName(safeName + '_' + Date.now() + '.' + extension);
 
     const folder = DriveApp.getFolderById(config.DRIVE_FOLDER_ID);
@@ -795,7 +819,7 @@ function uploadImageToDrive(imageUrl, productName) {
 
   } catch (error) {
     Logger.log('Error uploading image to Drive: ' + error.toString());
-    return imageUrl; // Fallback to original URL
+    return imgSource; // Fallback to original URL
   }
 }
 

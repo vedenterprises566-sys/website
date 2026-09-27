@@ -3,10 +3,11 @@ import { PRODUCTS_CATALOG } from '../data/products';
 
 let cachedCatalog: Product[] | null = null;
 let lastFetchTime = 0;
-// 15s cache — short enough so cross-device changes (desktop ↔ mobile) appear quickly
 const CACHE_DURATION_MS = 15 * 1000;
 
-const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/13dYmzJoPkpLGCDt7gZ7znKJARPSknghUzcEmG2PKtFM/export?format=csv';
+// New catalog spreadsheet — exported as CSV so the website can read it without auth
+const GOOGLE_SHEET_CSV_URL = (import.meta as any)?.env?.VITE_CATALOG_SHEET_CSV_URL ||
+  'https://docs.google.com/spreadsheets/d/13dYmzJoPkpLGCDt7gZ7znKJARPSknghUzcEmG2PKtFM/export?format=csv';
 
 export function getDeletedKeysFromStorage(): Set<string> {
   const set = new Set<string>();
@@ -75,13 +76,9 @@ function parseCSV(text: string): string[][] {
       row.push(cell.trim());
       cell = '';
     } else if ((char === '\r' || char === '\n') && !inQuotes) {
-      if (char === '\r' && nextChar === '\n') {
-        i++;
-      }
+      if (char === '\r' && nextChar === '\n') i++;
       row.push(cell.trim());
-      if (row.some(c => c.length > 0)) {
-        lines.push(row);
-      }
+      if (row.some(c => c.length > 0)) lines.push(row);
       row = [];
       cell = '';
     } else {
@@ -90,17 +87,81 @@ function parseCSV(text: string): string[][] {
   }
   if (cell || row.length > 0) {
     row.push(cell.trim());
-    if (row.some(c => c.length > 0)) {
-      lines.push(row);
-    }
+    if (row.some(c => c.length > 0)) lines.push(row);
   }
   return lines;
 }
 
+/**
+ * Parses CSV from the NEW catalog spreadsheet.
+ * Expected columns (row 1 = headers):
+ * id | name | category | categoryLabel | countOrDenier | description |
+ * recommendedUses | features | sampleAvailable | origin | popularFor |
+ * imageUrl | shadeCardUrl | badge
+ */
 export function parseLiveGoogleSheetProducts(csvText: string): Product[] {
   const lines = parseCSV(csvText);
   if (lines.length <= 1) return [];
 
+  // Detect if this is the NEW structured sheet (first column = 'id') or legacy Web3Forms sheet
+  const headerRow = lines[0].map(h => h.toLowerCase().trim());
+  const isNewStructuredSheet = headerRow[0] === 'id' || headerRow.includes('categoryLabel'.toLowerCase()) || headerRow.includes('countordenier');
+
+  if (isNewStructuredSheet) {
+    // --- NEW CATALOG SHEET: columns match Apps Script schema ---
+    const idIdx            = headerRow.indexOf('id');
+    const nameIdx          = headerRow.indexOf('name');
+    const categoryIdx      = headerRow.indexOf('category');
+    const categoryLabelIdx = headerRow.findIndex(h => h === 'categorylabel');
+    const countIdx         = headerRow.findIndex(h => h === 'countordenier' || h === 'count');
+    const descIdx          = headerRow.indexOf('description');
+    const usesIdx          = headerRow.findIndex(h => h === 'recommendeduses');
+    const featsIdx         = headerRow.indexOf('features');
+    const sampleIdx        = headerRow.findIndex(h => h === 'sampleavailable');
+    const originIdx        = headerRow.indexOf('origin');
+    const popIdx           = headerRow.findIndex(h => h === 'popularfor');
+    const imageIdx         = headerRow.findIndex(h => h === 'imageurl' || h === 'image');
+    const shadeIdx         = headerRow.findIndex(h => h === 'shadecardurl' || h === 'shadeurl');
+    const badgeIdx         = headerRow.indexOf('badge');
+
+    const products: Product[] = [];
+    lines.slice(1).forEach((row, idx) => {
+      const name = nameIdx >= 0 ? row[nameIdx] : '';
+      if (!name || name.trim() === '') return;
+
+      let cat = (categoryIdx >= 0 ? row[categoryIdx] : 'fancy') as YarnCategory;
+      if (['winter-wear','sweaters','sweater'].includes(cat as string)) cat = 'garments';
+
+      const catLabel = (categoryLabelIdx >= 0 && row[categoryLabelIdx]) ? row[categoryLabelIdx] :
+        (cat === 'garments' ? 'Winter Wear' :
+         cat === 'china' ? 'China / Imported Yarn' :
+         cat === 'acrylic-blends' ? 'Acrylic & Blends' :
+         cat === 'fabrics' ? 'Fabrics & Textile Rolls' : 'Fancy Yarn');
+
+      const rawUses  = usesIdx  >= 0 ? row[usesIdx]  : '';
+      const rawFeats = featsIdx >= 0 ? row[featsIdx]  : '';
+
+      products.push({
+        id:             idIdx >= 0 && row[idIdx] ? row[idIdx] : `sheet-${idx + 1}`,
+        name:           name.trim(),
+        category:       cat,
+        categoryLabel:  catLabel,
+        countOrDenier:  countIdx  >= 0 ? row[countIdx]  : '',
+        description:    descIdx   >= 0 ? row[descIdx]   : '',
+        recommendedUses: rawUses  ? rawUses.split(',').map(s => s.trim()).filter(Boolean)  : [],
+        features:        rawFeats ? rawFeats.split(',').map(s => s.trim()).filter(Boolean) : [],
+        sampleAvailable: sampleIdx >= 0 ? String(row[sampleIdx]).toUpperCase() === 'TRUE' : true,
+        origin:         originIdx >= 0 ? row[originIdx] : 'Ved Enterprises',
+        popularFor:     popIdx    >= 0 ? row[popIdx]    : '',
+        imageUrl:       imageIdx  >= 0 ? row[imageIdx]  : '',
+        shadeCardUrl:   shadeIdx  >= 0 ? row[shadeIdx]  : '',
+        badge:          badgeIdx  >= 0 ? row[badgeIdx]  : '',
+      });
+    });
+    return products;
+  }
+
+  // --- LEGACY Web3Forms sheet fallback (old format: Timestamp | Name | Description | ShadeURL | PictureURL) ---
   const dataRows = lines.slice(1);
   const products: Product[] = [];
 
@@ -114,77 +175,44 @@ export function parseLiveGoogleSheetProducts(csvText: string): Product[] {
 
     const lowerDesc = (rawName + ' ' + description).toLowerCase();
     const isGarment =
-      lowerDesc.includes('garment') ||
-      lowerDesc.includes('sweater') ||
-      lowerDesc.includes('cardigan') ||
-      lowerDesc.includes('winter wear') ||
-      lowerDesc.includes('winterwear') ||
-      lowerDesc.includes('pullover') ||
-      lowerDesc.includes('muffler') ||
-      lowerDesc.includes('vest') ||
-      lowerDesc.includes('knitwear') ||
-      lowerDesc.includes('coat');
+      lowerDesc.includes('garment') || lowerDesc.includes('sweater') ||
+      lowerDesc.includes('cardigan') || lowerDesc.includes('winter wear') ||
+      lowerDesc.includes('pullover') || lowerDesc.includes('muffler') ||
+      lowerDesc.includes('vest') || lowerDesc.includes('coat');
 
     let cleanName = rawName.replace(/_\d{8}_\d{6}$/g, '').trim();
-    // Normalize count format like 2_18 to 2/18 and 2_48 to 2/48
     cleanName = cleanName.replace(/(\d+)_(\d+)/g, '$1/$2');
-    if (!isGarment && !cleanName.toLowerCase().includes('yarn')) {
-      cleanName += ' Yarn';
-    }
-
-    let countOrDenier = isGarment ? 'Standard Size' : 'Standard Count';
-    const countMatch = description.match(/(\d+\/\d+\s*NM|\d+\s*NM|\d+\s*Denier|\d+%\s*Acrylic|\d+\s*CM|\d+GG)/i);
-    if (countMatch) {
-      countOrDenier = countMatch[0];
-    } else if (cleanName.includes('2/18') || cleanName.includes('2/48')) {
-      countOrDenier = '2/18 & 2/48 Fine';
-    }
+    if (!isGarment && !cleanName.toLowerCase().includes('yarn')) cleanName += ' Yarn';
 
     let category: YarnCategory = 'fancy';
     let categoryLabel = 'Fancy Yarn';
-    if (isGarment) {
-      category = 'garments';
-      categoryLabel = 'Winter Wear';
-    } else if (lowerDesc.includes('china') || lowerDesc.includes('vislon') || lowerDesc.includes('woolly') || lowerDesc.includes('suede') || lowerDesc.includes('chenille') || lowerDesc.includes('nylon hair')) {
-      category = 'china';
-      categoryLabel = 'China / Imported Yarn';
+    if (isGarment) { category = 'garments'; categoryLabel = 'Winter Wear'; }
+    else if (lowerDesc.includes('china') || lowerDesc.includes('vislon') || lowerDesc.includes('suede') || lowerDesc.includes('chenille') || lowerDesc.includes('nylon hair')) {
+      category = 'china'; categoryLabel = 'China / Imported Yarn';
     } else if (lowerDesc.includes('acrylic') || lowerDesc.includes('daffodil') || lowerDesc.includes('rainbow')) {
-      category = 'acrylic-blends';
-      categoryLabel = 'Acrylic & Blends';
+      category = 'acrylic-blends'; categoryLabel = 'Acrylic & Blends';
     }
-
-    let localAssetPath = '';
-    const nameLower = cleanName.toLowerCase();
-    if (nameLower.includes('daffodil')) localAssetPath = '/products/daffodil.jpg';
-    else if (nameLower.includes('rainbow')) localAssetPath = '/products/rainbow.jpg';
-    else if (nameLower.includes('hazel')) localAssetPath = '/products/hazel.jpg';
-    else if (nameLower.includes('megamix')) localAssetPath = '/products/megamix.jpg';
-    else if (nameLower.includes('woolly')) localAssetPath = '/products/woolly.jpg';
-    else if (nameLower.includes('vislon')) localAssetPath = '/products/vislon.jpg';
-    else if (nameLower.includes('enigma')) localAssetPath = '/products/enigma.jpg';
-    else if (nameLower.includes('nylon hair') || nameLower.includes('hair yarn')) localAssetPath = '/products/nylonhair.jpg';
 
     products.push({
       id: `live-sheet-${idx + 1}-${cleanName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
       name: cleanName,
-      category,
-      categoryLabel,
-      countOrDenier,
-      description: description || (isGarment ? 'Premium finished winter wear manufactured by Ved Enterprises Ludhiana.' : 'High quality wholesale yarn from Ved Enterprises Ludhiana.'),
-      recommendedUses: ['Winter Wear', 'Knitwear', 'Weaving', 'Fashion Garments'],
-      features: ['Live Sheet Auto-Sync', 'Direct Mill Wholesale', 'Vibrant Dyes'],
+      category, categoryLabel,
+      countOrDenier: 'Standard Count',
+      description: description || 'High quality wholesale yarn from Ved Enterprises Ludhiana.',
+      recommendedUses: ['Winter Wear', 'Knitwear'],
+      features: ['High Quality', 'Direct Mill Supply'],
       sampleAvailable: true,
-      origin: category === 'china' ? 'Direct China Import' : 'Ved Premium Selection',
-      popularFor: 'Wholesale Knitwear & Winter Wear Production',
-      imageUrl: localAssetPath,
-      pictureUrl: pictureUrl,
-      shadeUrl: shadeUrl,
-      badge: 'Sheet Item'
+      origin: 'Ved Enterprises',
+      popularFor: 'Wholesale Supply',
+      imageUrl: pictureUrl,
+      shadeCardUrl: shadeUrl,
+      badge: '',
     });
   });
 
   return products;
 }
+
 
 export class ProductService {
   /**
