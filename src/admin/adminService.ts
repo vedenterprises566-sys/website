@@ -231,7 +231,7 @@ export class AdminService {
     // Unmark from deleted keys if previously deleted
     if (product.name) this.unmarkDeletedKey(generatedId, product.name);
 
-    // 0. Persist immediately to localStorage (guarantees pushed product is live across reloads on live website!)
+    // 0. Optimistic: save to localStorage immediately so UI updates instantly
     this.saveCustomProduct(payload as Product);
     ProductService.clearCache();
     if (typeof window !== 'undefined') {
@@ -239,9 +239,9 @@ export class AdminService {
     }
 
     let savedProductId = generatedId;
-    let localSaved = false;
+    let serverSaveError: string | null = null;
 
-    // 1. Save directly to local server public/catalog.json
+    // 1. Save to server public/catalog.json (REQUIRED — shared across all devices)
     try {
       const localRes = await fetch('/api/admin/save-product', {
         method: 'POST',
@@ -251,15 +251,34 @@ export class AdminService {
       if (localRes.ok) {
         const localData = await localRes.json();
         if (localData.success) {
-          localSaved = true;
           savedProductId = localData.productId || generatedId;
+        } else {
+          serverSaveError = localData.error || 'Server returned failure for save-product';
         }
+      } else {
+        const errText = await localRes.text().catch(() => localRes.statusText);
+        serverSaveError = `Server error ${localRes.status}: ${errText.slice(0, 200)}`;
       }
-    } catch (localErr) {
-      console.warn('[AdminService] Local disk save notice:', localErr);
+    } catch (localErr: any) {
+      serverSaveError = `Network error: ${localErr?.message || String(localErr)}`;
+      console.error('[AdminService] Save-product API error:', localErr);
     }
 
-    // 2. Also forward to Apps Script in background (optional cloud sync)
+    // If server save failed, remove from localStorage optimistic cache and report failure
+    if (serverSaveError) {
+      this.removeCustomProduct(generatedId, cleanName);
+      ProductService.clearCache();
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('catalog-updated', { detail: { action: 'revert', id: generatedId } }));
+      }
+      return {
+        success: false,
+        message: `Failed to save product to server: ${serverSaveError}`,
+        productId: generatedId,
+      };
+    }
+
+    // 2. Forward to Apps Script in background (optional cloud sync)
     const url = this.getScriptUrl().trim();
     if (url) {
       try {
@@ -274,10 +293,9 @@ export class AdminService {
     // 3. Dispatch pushed product data to Web3Forms
     this.sendToWeb3Forms('add', payload).catch(() => {});
 
-    // Always succeed if saved locally on the active server
     return {
       success: true,
-      message: `Product "${payload.name}" added and pushed to Web3Forms successfully!`,
+      message: `Product "${payload.name}" added successfully!`,
       productId: savedProductId,
     };
   }
@@ -314,22 +332,35 @@ export class AdminService {
     // Unmark from deleted keys
     if (product.name) this.unmarkDeletedKey(id, product.name);
 
-    // 0. Persist immediately to localStorage
+    // 0. Optimistic: save to localStorage immediately
     this.saveCustomProduct(payload as Product);
     ProductService.clearCache();
     if (typeof window !== 'undefined') {
       window.dispatchEvent(new CustomEvent('catalog-updated', { detail: { action: 'edit', product: payload } }));
     }
 
-    // 1. Save to local public/catalog.json on disk
+    // 1. Save to server public/catalog.json (REQUIRED — shared across all devices)
+    let updateError: string | null = null;
     try {
-      await fetch('/api/admin/save-product', {
+      const res = await fetch('/api/admin/save-product', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
-    } catch (localErr) {
-      console.warn('[AdminService] Local disk update notice:', localErr);
+      if (!res.ok) {
+        const errText = await res.text().catch(() => res.statusText);
+        updateError = `Server error ${res.status}: ${errText.slice(0, 200)}`;
+      } else {
+        const data = await res.json();
+        if (!data.success) updateError = data.error || 'Server returned failure for update';
+      }
+    } catch (localErr: any) {
+      updateError = `Network error: ${localErr?.message || String(localErr)}`;
+      console.error('[AdminService] Update-product API error:', localErr);
+    }
+
+    if (updateError) {
+      return { success: false, message: `Failed to update product on server: ${updateError}`, productId: id };
     }
 
     // 2. Forward to Apps Script in background
@@ -349,7 +380,7 @@ export class AdminService {
 
     return {
       success: true,
-      message: `Product "${payload.name}" updated and pushed to Web3Forms successfully!`,
+      message: `Product "${payload.name}" updated successfully!`,
       productId: id,
     };
   }
