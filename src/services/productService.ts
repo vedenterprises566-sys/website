@@ -326,9 +326,28 @@ export class ProductService {
       console.warn('[ProductService] Live Google Sheet fetch notice:', sheetErr);
     }
 
-    // ── 4. Filter all products against deletedKeys (server + device) ──
-    // catalog.json is already the source of truth — no localStorage custom products merge needed.
-    // Products added via admin API are written to catalog.json (shared across all devices).
+    // ── 4. Merge custom products added via Admin Panel (localStorage) ──
+    const customProducts = getCustomProductsFromStorage();
+    if (customProducts.length > 0) {
+      customProducts.forEach((cp) => {
+        const cpId = String(cp.id || '').toLowerCase().trim();
+        const cpClean = (cp.name || '').toLowerCase().trim().replace(/\s+yarn$/i, '');
+        if (!isProductDeleted(cp, deletedKeys)) {
+          const exIdx = baseProducts.findIndex(
+            (p) =>
+              (cpId && String(p.id || '').toLowerCase().trim() === cpId) ||
+              (cpClean && (p.name || '').toLowerCase().trim().replace(/\s+yarn$/i, '') === cpClean)
+          );
+          if (exIdx >= 0) {
+            baseProducts[exIdx] = { ...baseProducts[exIdx], ...cp };
+          } else {
+            baseProducts.unshift(cp);
+          }
+        }
+      });
+    }
+
+    // ── 5. Filter all products against deletedKeys (server + device) ──
     const filteredProducts = baseProducts.filter((p) => !isProductDeleted(p, deletedKeys));
 
     if (cachedCatalog && cachedCatalog.length > 0 && filteredProducts.length < cachedCatalog.length && !forceRefresh) {
