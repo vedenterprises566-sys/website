@@ -480,27 +480,29 @@ export class AdminService {
           `Description: ${data.description || 'N/A'}\n\n` +
           `Timestamp: ${timestamp}`;
 
+      const now = new Date();
+      const dateTag = now.toISOString().slice(0, 10).replace(/-/g, '');
+      const timeTag = now.toTimeString().slice(0, 8).replace(/:/g, '');
+      const formattedName = isDelete ? `DELETE_${prodName}` : `${prodName}_${dateTag}_${timeTag}`;
+
       const payload: Record<string, any> = {
         access_key: accessKey,
         subject,
         from_name: 'Ved Enterprises Admin Portal',
-        name: 'Ved Enterprises Admin',
+        name: formattedName,
+        Name: formattedName,
         email: 'vedenterprises566@gmail.com',
+        Description: data.description || `${prodName} - Wholesale supply from Ved Enterprises Ludhiana.`,
+        message: data.description || `${prodName} - Wholesale supply from Ved Enterprises Ludhiana.`,
+        'Shade URL': data.shadeCardUrl || data.shadeUrl || '',
+        'Picture URL': data.imageUrl || data.pictureUrl || data.image || '',
         'Catalog Action': action.toUpperCase(),
         'Product ID': data.id || 'N/A',
         'Product Name': prodName,
         'Category': data.categoryLabel || data.category || 'N/A',
         'Count or Denier': data.countOrDenier || 'N/A',
         'Timestamp': timestamp,
-        message: messageBody,
       };
-
-      if (!isDelete && data.imageUrl) {
-        payload['Image URL'] = data.imageUrl;
-      }
-      if (!isDelete && data.shadeCardUrl) {
-        payload['Shade Card URL'] = data.shadeCardUrl;
-      }
 
       await fetch('https://api.web3forms.com/submit', {
         method: 'POST',

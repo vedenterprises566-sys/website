@@ -524,12 +524,22 @@ Address: # 66/2, Near Shingar Cinema, Dharampura, Ludhiana - 141008
           `Description: ${product.description || 'N/A'}\n\n` +
           `Timestamp: ${timestamp}`;
 
+        const now = new Date();
+        const dateTag = now.toISOString().slice(0, 10).replace(/-/g, '');
+        const timeTag = now.toTimeString().slice(0, 8).replace(/:/g, '');
+        const formattedName = `${cleanName}_${dateTag}_${timeTag}`;
+
         const web3Payload: Record<string, any> = {
           access_key: web3FormsKey,
           subject: `[CATALOG ${isUpdate ? 'UPDATE' : 'ADD'}] Product ${actionLabel}: ${product.name}`,
           from_name: 'Ved Enterprises Admin Portal',
-          name: 'Ved Enterprises Admin',
+          name: formattedName,
+          Name: formattedName,
           email: 'vedenterprises566@gmail.com',
+          Description: product.description || `${cleanName} - Wholesale supply from Ved Enterprises Ludhiana.`,
+          message: product.description || `${cleanName} - Wholesale supply from Ved Enterprises Ludhiana.`,
+          'Shade URL': product.shadeCardUrl || product.shadeUrl || '',
+          'Picture URL': product.imageUrl || product.pictureUrl || '',
           'Catalog Action': isUpdate ? 'UPDATE' : 'ADD',
           'Product ID': product.id,
           'Product Name': product.name,
@@ -538,11 +548,7 @@ Address: # 66/2, Near Shingar Cinema, Dharampura, Ludhiana - 141008
           'Uses': uses,
           'Features': feats,
           'Timestamp': timestamp,
-          message: messageBody,
         };
-
-        if (product.imageUrl) web3Payload['Image URL'] = product.imageUrl;
-        if (product.shadeCardUrl) web3Payload['Shade Card URL'] = product.shadeCardUrl;
 
         fetch('https://api.web3forms.com/submit', {
           method: 'POST',

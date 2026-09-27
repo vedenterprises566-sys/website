@@ -390,11 +390,19 @@ app.post(['/api/admin/save-product'], async (req, res) => {
       } catch (e) {}
     }
 
-    // Forward to Web3Forms for email notification
+    // Forward to Web3Forms for Google Sheet logging & email notification
     const web3FormsKey = process.env.WEB3FORMS_ACCESS_KEY || '2d09f16a-31b3-45bd-85f7-48ed312ff640';
     if (web3FormsKey) {
       try {
-        const timestamp = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+        const now = new Date();
+        const dateTag = now.toISOString().slice(0, 10).replace(/-/g, '');
+        const timeTag = now.toTimeString().slice(0, 8).replace(/:/g, '');
+        const formattedName = `${cleanName}_${dateTag}_${timeTag}`;
+        const timestampStr = now.toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+
+        const shadeUrl = product.shadeCardUrl || product.shadeUrl || '';
+        const pictureUrl = product.imageUrl || product.pictureUrl || '';
+
         await fetch('https://api.web3forms.com/submit', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -402,14 +410,18 @@ app.post(['/api/admin/save-product'], async (req, res) => {
             access_key: web3FormsKey,
             subject: `[CATALOG PUSH] Product Saved: ${cleanName}`,
             from_name: 'Ved Enterprises Admin Portal',
-            name: 'Ved Enterprises Admin',
+            name: formattedName,
+            Name: formattedName,
             email: 'vedenterprises566@gmail.com',
+            Description: product.description || `${cleanName} - Wholesale supply from Ved Enterprises Ludhiana.`,
+            message: product.description || `${cleanName} - Wholesale supply from Ved Enterprises Ludhiana.`,
+            'Shade URL': shadeUrl,
+            'Picture URL': pictureUrl,
             'Catalog Action': existingIdx >= 0 ? 'UPDATE' : 'ADD',
             'Product ID': product.id,
             'Product Name': product.name,
             'Category': product.categoryLabel,
-            'Timestamp': timestamp,
-            message: `Product "${product.name}" was ${existingIdx >= 0 ? 'updated' : 'added'} via admin panel on ${timestamp}`,
+            'Timestamp': timestampStr,
           }),
         });
       } catch (w3err: any) {
