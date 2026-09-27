@@ -1,5 +1,7 @@
 import express from 'express';
 import { GoogleGenAI } from '@google/genai';
+import fs from 'fs';
+import path from 'path';
 
 const app = express();
 
@@ -9,6 +11,24 @@ const app = express();
 let inMemoryCatalog: any[] = [];
 let inMemoryDeleted: Set<string> = new Set();
 let catalogInitialized = false;
+
+function loadBaselineCatalog(): any[] {
+  try {
+    const candidatePaths = [
+      path.join(process.cwd(), 'public', 'catalog.json'),
+      path.join(process.cwd(), 'dist', 'catalog.json'),
+      path.join(__dirname, '..', 'public', 'catalog.json'),
+    ];
+    for (const p of candidatePaths) {
+      if (fs.existsSync(p)) {
+        const raw = fs.readFileSync(p, 'utf8');
+        const list = JSON.parse(raw);
+        if (Array.isArray(list) && list.length > 0) return list;
+      }
+    }
+  } catch (e) {}
+  return [];
+}
 
 const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/13dYmzJoPkpLGCDt7gZ7znKJARPSknghUzcEmG2PKtFM/export?format=csv';
 
@@ -258,9 +278,12 @@ app.get(['/api/health', '/health', '/api'], (req, res) => {
 });
 
 // API Route: Serve catalog (in-memory store, shared across this serverless instance)
-app.get(['/api/admin/catalog', '/admin/catalog', '/catalog.json'], async (req, res) => {
+app.get(['/api/admin/catalog', '/admin/catalog'], async (req, res) => {
   res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
   res.setHeader('Pragma', 'no-cache');
+  if (inMemoryCatalog.length === 0) {
+    inMemoryCatalog = loadBaselineCatalog();
+  }
   const visible = inMemoryCatalog.filter(p => !isDeleted(p));
   return res.json(visible);
 });

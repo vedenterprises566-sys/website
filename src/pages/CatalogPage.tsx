@@ -98,7 +98,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
           { name: 'Yarns', path: '/catalog/yarns/' },
         ],
         h1Title: 'Yarns Catalog',
-        category: 'all' as const,
+        category: 'fancy' as const,
       };
     }
 
@@ -135,15 +135,15 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
 
     // Default /catalog
     return {
-      title: 'Catalog | VED Enterprises',
-      description: 'Explore the complete wholesale Yarn and Garments product catalog from VED Enterprises, B2B yarn supplier in Ludhiana, India.',
+      title: 'Complete Catalog | VED Enterprises',
+      description: 'Explore the complete wholesale Yarn and Winter Wear Garments product catalog from VED Enterprises, B2B yarn supplier in Ludhiana, India.',
       canonicalUrl: 'https://www.ved.enterprises/catalog/',
       breadcrumbs: [
         { name: 'Home', path: '/' },
         { name: 'Catalog', path: '/catalog/' },
       ],
-      h1Title: 'Yarn & Garment Catalog',
-      category: selectedCategory,
+      h1Title: 'Complete Wholesale Catalog (Yarns & Winter Wear)',
+      category: 'all' as const,
     };
   }, [currentPath, selectedCategory]);
 

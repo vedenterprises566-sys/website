@@ -126,6 +126,8 @@ export function parseLiveGoogleSheetProducts(csvText: string): Product[] {
       lowerDesc.includes('coat');
 
     let cleanName = rawName.replace(/_\d{8}_\d{6}$/g, '').trim();
+    // Normalize count format like 2_18 to 2/18 and 2_48 to 2/48
+    cleanName = cleanName.replace(/(\d+)_(\d+)/g, '$1/$2');
     if (!isGarment && !cleanName.toLowerCase().includes('yarn')) {
       cleanName += ' Yarn';
     }
@@ -134,7 +136,7 @@ export function parseLiveGoogleSheetProducts(csvText: string): Product[] {
     const countMatch = description.match(/(\d+\/\d+\s*NM|\d+\s*NM|\d+\s*Denier|\d+%\s*Acrylic|\d+\s*CM|\d+GG)/i);
     if (countMatch) {
       countOrDenier = countMatch[0];
-    } else if (cleanName.includes('2_18') || cleanName.includes('2_48')) {
+    } else if (cleanName.includes('2/18') || cleanName.includes('2/48')) {
       countOrDenier = '2/18 & 2/48 Fine';
     }
 
@@ -308,16 +310,21 @@ export class ProductService {
         const liveSheetProducts = parseLiveGoogleSheetProducts(csvText);
 
         if (liveSheetProducts.length > 0) {
-          const existingNames = new Set(
-            baseProducts.map((p) => p.name.toLowerCase().trim().replace(/\s+yarn$/i, ''))
-          );
-
-          // Add any new products from Google Sheet that aren't already in catalog.json
-          liveSheetProducts.forEach((p) => {
-            const clean = p.name.toLowerCase().trim().replace(/\s+yarn$/i, '');
-            if (!existingNames.has(clean) && !isProductDeleted(p, deletedKeys)) {
-              baseProducts.push(p);
-              existingNames.add(clean);
+          // Add any new products or enrich existing products with Drive URLs from sheet
+          liveSheetProducts.forEach((sp) => {
+            const clean = sp.name.toLowerCase().trim().replace(/[^a-z0-9]/g, '');
+            const existingIdx = baseProducts.findIndex(
+              (p) => p.name.toLowerCase().trim().replace(/[^a-z0-9]/g, '') === clean
+            );
+            if (existingIdx >= 0) {
+              if (!baseProducts[existingIdx].pictureUrl && sp.pictureUrl) {
+                baseProducts[existingIdx].pictureUrl = sp.pictureUrl;
+              }
+              if (!baseProducts[existingIdx].shadeUrl && sp.shadeUrl) {
+                baseProducts[existingIdx].shadeUrl = sp.shadeUrl;
+              }
+            } else if (!isProductDeleted(sp, deletedKeys)) {
+              baseProducts.push(sp);
             }
           });
         }

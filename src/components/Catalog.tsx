@@ -67,8 +67,12 @@ export const Catalog: React.FC<CatalogProps> = ({
     return Array.from(set).slice(0, 10);
   }, [products]);
 
-  // Main top-level section: Yarns vs Garments
-  const mainSection = selectedCategory === 'garments' ? 'garments' : 'yarns';
+  // Main top-level section: 'all' | 'yarns' | 'garments'
+  const mainSection = useMemo(() => {
+    if (selectedCategory === 'garments') return 'garments';
+    if (selectedCategory === 'all') return 'all';
+    return 'yarns';
+  }, [selectedCategory]);
 
   // Filter products
   const filteredProducts = useMemo(() => {
@@ -95,17 +99,21 @@ export const Catalog: React.FC<CatalogProps> = ({
         name.includes('vest') ||
         name.includes('coat');
 
-      // Top-level section filtering
+      // Top-level section filtering:
       if (mainSection === 'yarns' && isGarment) {
         return false;
       }
       if (mainSection === 'garments' && !isGarment) {
         return false;
       }
+      // When mainSection === 'all', show ALL products (yarns and garments together)!
 
       // Sub-category filter
-      if (selectedCategory !== 'all' && selectedCategory !== 'garments' && p.category !== selectedCategory) {
-        return false;
+      if (selectedCategory !== 'all' && selectedCategory !== 'garments') {
+        const pCat = (p.category || '').toLowerCase();
+        if (pCat !== selectedCategory) {
+          return false;
+        }
       }
 
       // Tag filter
@@ -119,8 +127,9 @@ export const Catalog: React.FC<CatalogProps> = ({
         const matchesName = (p.name || '').toLowerCase().includes(q);
         const matchesCount = (p.countOrDenier || '').toLowerCase().includes(q);
         const matchesDesc = (p.description || '').toLowerCase().includes(q);
+        const matchesCat = (p.categoryLabel || '').toLowerCase().includes(q);
         const matchesUses = Array.isArray(p.recommendedUses) && p.recommendedUses.some((u) => u.toLowerCase().includes(q));
-        if (!matchesName && !matchesCount && !matchesDesc && !matchesUses) {
+        if (!matchesName && !matchesCount && !matchesDesc && !matchesUses && !matchesCat) {
           return false;
         }
       }
@@ -164,24 +173,42 @@ export const Catalog: React.FC<CatalogProps> = ({
           </motion.div>
         </div>
 
-        {/* Level 1: Main Section Selector Switcher (YARNS vs GARMENTS) */}
-        <div className="bg-slate-200/80 dark:bg-slate-800/80 p-1.5 rounded-2xl border border-slate-300 dark:border-slate-700 max-w-xl mx-auto grid grid-cols-2 gap-2 shadow-inner">
+        {/* Level 1: Main Section Selector Switcher (ALL vs YARNS vs GARMENTS) */}
+        <div className="bg-slate-200/80 dark:bg-slate-800/80 p-1.5 rounded-2xl border border-slate-300 dark:border-slate-700 max-w-2xl mx-auto grid grid-cols-3 gap-1.5 sm:gap-2 shadow-inner">
           <motion.button
             whileHover={{ scale: 1.01 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => {
               onCategoryChange('all');
+              navigate('/catalog');
+            }}
+            id="section-tab-all"
+            className={`py-2.5 sm:py-3 px-2 sm:px-4 rounded-xl text-[0.6875rem] sm:text-xs font-extrabold uppercase tracking-wider flex items-center justify-center gap-1.5 sm:gap-2 transition-all cursor-pointer ${
+              mainSection === 'all'
+                ? 'bg-slate-900 text-white dark:bg-red-600 shadow-md'
+                : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700/60'
+            }`}
+          >
+            <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-400" />
+            <span>ALL PRODUCTS</span>
+          </motion.button>
+
+          <motion.button
+            whileHover={{ scale: 1.01 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => {
+              onCategoryChange('fancy');
               navigate('/catalog/yarns');
             }}
             id="section-tab-yarns"
-            className={`py-3 px-4 rounded-xl text-xs sm:text-sm font-extrabold uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer ${
+            className={`py-2.5 sm:py-3 px-2 sm:px-4 rounded-xl text-[0.6875rem] sm:text-xs font-extrabold uppercase tracking-wider flex items-center justify-center gap-1.5 sm:gap-2 transition-all cursor-pointer ${
               mainSection === 'yarns'
                 ? 'bg-slate-900 text-white dark:bg-red-600 shadow-md'
                 : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700/60'
             }`}
           >
-            <Layers className="w-4 h-4 text-red-500 dark:text-amber-300" />
-            <span>1. YARNS SECTION</span>
+            <Layers className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-red-500 dark:text-amber-300" />
+            <span>YARNS SECTION</span>
           </motion.button>
 
           <motion.button
@@ -192,63 +219,56 @@ export const Catalog: React.FC<CatalogProps> = ({
               navigate('/catalog/garments');
             }}
             id="section-tab-garments"
-            className={`py-3 px-4 rounded-xl text-xs sm:text-sm font-extrabold uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer ${
+            className={`py-2.5 sm:py-3 px-2 sm:px-4 rounded-xl text-[0.6875rem] sm:text-xs font-extrabold uppercase tracking-wider flex items-center justify-center gap-1.5 sm:gap-2 transition-all cursor-pointer ${
               mainSection === 'garments'
                 ? 'bg-slate-900 text-white dark:bg-red-600 shadow-md'
                 : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700/60'
             }`}
           >
-            <Shirt className="w-4 h-4 text-amber-500 dark:text-amber-300" />
-            <span>2. GARMENTS SECTION</span>
+            <Shirt className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-500 dark:text-amber-300" />
+            <span>WINTER WEAR</span>
           </motion.button>
         </div>
 
         {/* Level 2: Sub-Category Filter Bar */}
         <div className="flex overflow-x-auto gap-2 border-b border-slate-200 dark:border-slate-800 pb-3 scrollbar-none justify-center -mx-4 px-4 sm:mx-0 sm:px-0">
-          {mainSection === 'yarns' ? (
-            [
-              { id: 'all', label: 'ALL YARNS', route: '/catalog/yarns' },
-              { id: 'fancy', label: 'FANCY YARNS', route: '/catalog/yarns/fancy-yarns' },
-              { id: 'china', label: 'CHINA YARNS', route: '/catalog/yarns/china-yarns' },
-              { id: 'acrylic-blends', label: 'ACRYLIC & BLENDS', route: '/catalog/yarns/acrylic-blends' },
-            ].map((tab) => (
-              <motion.button
-                key={tab.id}
-                whileHover={{ scale: 1.04 }}
-                whileTap={{ scale: 0.96 }}
-                onClick={() => {
-                  onCategoryChange(tab.id as any);
-                  navigate(tab.route);
-                }}
-                id={`cat-tab-${tab.id}`}
-                className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider whitespace-nowrap transition-all ${
-                  selectedCategory === tab.id
-                    ? 'bg-red-600 text-white shadow-xs'
-                    : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800'
-                }`}
-              >
-                {tab.label}
-              </motion.button>
-            ))
-          ) : (
-            [
-              { id: 'garments', label: 'WINTER WEAR (FINISHED GARMENTS)', route: '/catalog/garments/winter-wear' },
-            ].map((tab) => (
-              <motion.button
-                key={tab.id}
-                whileHover={{ scale: 1.04 }}
-                whileTap={{ scale: 0.96 }}
-                onClick={() => {
-                  onCategoryChange(tab.id as any);
-                  navigate(tab.route);
-                }}
-                id={`cat-tab-${tab.id}`}
-                className={`px-5 py-2 rounded-xl text-xs font-black uppercase tracking-wider whitespace-nowrap transition-all bg-red-600 text-white shadow-xs`}
-              >
-                {tab.label}
-              </motion.button>
-            ))
-          )}
+          {(mainSection === 'all'
+            ? [
+                { id: 'all', label: '✨ ALL (EVERYTHING)', route: '/catalog' },
+                { id: 'garments', label: '🧥 WINTER WEAR', route: '/catalog/garments/winter-wear' },
+                { id: 'fancy', label: '✨ FANCY YARNS', route: '/catalog/yarns/fancy-yarns' },
+                { id: 'china', label: '🌏 CHINA YARNS', route: '/catalog/yarns/china-yarns' },
+                { id: 'acrylic-blends', label: '🧶 ACRYLIC & BLENDS', route: '/catalog/yarns/acrylic-blends' },
+              ]
+            : mainSection === 'yarns'
+            ? [
+                { id: 'all', label: 'ALL YARNS', route: '/catalog/yarns' },
+                { id: 'fancy', label: 'FANCY YARNS', route: '/catalog/yarns/fancy-yarns' },
+                { id: 'china', label: 'CHINA YARNS', route: '/catalog/yarns/china-yarns' },
+                { id: 'acrylic-blends', label: 'ACRYLIC & BLENDS', route: '/catalog/yarns/acrylic-blends' },
+              ]
+            : [
+                { id: 'garments', label: 'WINTER WEAR (FINISHED GARMENTS)', route: '/catalog/garments/winter-wear' },
+              ]
+          ).map((tab) => (
+            <motion.button
+              key={tab.id}
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.96 }}
+              onClick={() => {
+                onCategoryChange(tab.id as any);
+                navigate(tab.route);
+              }}
+              id={`cat-tab-${tab.id}`}
+              className={`px-3.5 sm:px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider whitespace-nowrap transition-all ${
+                selectedCategory === tab.id
+                  ? 'bg-red-600 text-white shadow-xs'
+                  : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800'
+              }`}
+            >
+              {tab.label}
+            </motion.button>
+          ))}
         </div>
 
         {/* Tag Filters & Search Bar */}
