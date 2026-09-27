@@ -242,55 +242,42 @@ export class ProductService {
       // Fall back to /catalog.json with cache-busting
       let response: Response | null = null;
       try {
-        const apiRes = await fetch('/api/admin/catalog', {
+        response = await fetch('/api/admin/catalog', {
           headers: { 'Accept': 'application/json', 'Cache-Control': 'no-cache' },
         });
-        if (apiRes.ok) {
-          const rawData = await apiRes.json();
-          if (Array.isArray(rawData) && rawData.length > 0) {
-            response = apiRes;
-            baseProducts = rawData;
-          }
-        }
+        if (!response.ok) response = null;
       } catch (_) {}
-
-      if (baseProducts.length === 0) {
-        try {
-          const catRes = await fetch(`/catalog.json?v=${now}`, {
-            headers: { 'Accept': 'application/json', 'Cache-Control': 'no-cache' },
-          });
-          if (catRes.ok) {
-            const rawData = await catRes.json();
-            if (Array.isArray(rawData) && rawData.length > 0) {
-              baseProducts = rawData;
-            }
-          }
-        } catch (_) {}
+      if (!response) {
+        response = await fetch(`/catalog.json?v=${now}`, {
+          headers: { 'Accept': 'application/json', 'Cache-Control': 'no-cache' },
+        });
       }
-
-      if (baseProducts.length > 0) {
-        baseProducts = baseProducts.map((item: any, index: number) => ({
-          ...item,
-          id: item.id ? String(item.id) : `prod-${index + 1}`,
-          name: item.name || 'Yarn Product',
-          category: (item.category || 'fancy') as YarnCategory,
-          categoryLabel: item.categoryLabel || this.getCategoryLabel(item.category),
-          countOrDenier: item.countOrDenier || item.count || 'Standard Count',
-          description: item.description || 'High quality wholesale yarn from Ved Enterprises Ludhiana.',
-          recommendedUses: Array.isArray(item.recommendedUses)
-            ? item.recommendedUses
-            : (typeof item.recommendedUses === 'string' && item.recommendedUses ? item.recommendedUses.split(',').map((s: string) => s.trim()) : ['Knitwear', 'Winter Wear']),
-          features: Array.isArray(item.features)
-            ? item.features
-            : (typeof item.features === 'string' && item.features ? item.features.split(',').map((s: string) => s.trim()) : ['High Quality', 'Soft Touch']),
-          sampleAvailable: item.sampleAvailable !== false,
-          origin: item.origin || 'Ved Enterprises Wholesale',
-          popularFor: item.popularFor || 'Wholesale Knitwear',
-          imageUrl: item.imageUrl || item.image || '',
-          shadeCardUrl: item.shadeCardUrl || item.shadeUrl || '',
-          pictureUrl: item.pictureUrl || item.imageUrl || item.image || '',
-          badge: item.badge || '',
-        }));
+      if (response.ok) {
+        const rawData = await response.json();
+        if (Array.isArray(rawData) && rawData.length > 0) {
+          baseProducts = rawData.map((item: any, index: number) => ({
+            ...item,
+            id: item.id ? String(item.id) : `prod-${index + 1}`,
+            name: item.name || 'Yarn Product',
+            category: (item.category || 'fancy') as YarnCategory,
+            categoryLabel: item.categoryLabel || this.getCategoryLabel(item.category),
+            countOrDenier: item.countOrDenier || item.count || 'Standard Count',
+            description: item.description || 'High quality wholesale yarn from Ved Enterprises Ludhiana.',
+            recommendedUses: Array.isArray(item.recommendedUses)
+              ? item.recommendedUses
+              : (typeof item.recommendedUses === 'string' && item.recommendedUses ? item.recommendedUses.split(',').map((s: string) => s.trim()) : ['Knitwear', 'Winter Wear']),
+            features: Array.isArray(item.features)
+              ? item.features
+              : (typeof item.features === 'string' && item.features ? item.features.split(',').map((s: string) => s.trim()) : ['High Quality', 'Soft Touch']),
+            sampleAvailable: item.sampleAvailable !== false,
+            origin: item.origin || 'Ved Enterprises Wholesale',
+            popularFor: item.popularFor || 'Wholesale Knitwear',
+            imageUrl: item.imageUrl || item.image || '',
+            shadeCardUrl: item.shadeCardUrl || item.shadeUrl || '',
+            pictureUrl: item.pictureUrl || item.imageUrl || item.image || '',
+            badge: item.badge || '',
+          }));
+        }
       }
     } catch (err) {
       console.warn('[ProductService] Warning loading /catalog.json:', err);
@@ -299,16 +286,16 @@ export class ProductService {
     if (baseProducts.length === 0) {
       baseProducts = [...PRODUCTS_CATALOG];
     } else {
-      // Ensure all baseline items from PRODUCTS_CATALOG (including all 8 garments) exist in baseProducts
-      const existingIds = new Set(baseProducts.map((p) => String(p.id).toLowerCase()));
-      const existingNames = new Set(baseProducts.map((p) => String(p.name).toLowerCase().trim()));
+      // Merge any default items from PRODUCTS_CATALOG that are missing from catalog.json
+      const existingIds = new Set(baseProducts.map((p) => String(p.id).toLowerCase().trim()));
+      const existingNames = new Set(baseProducts.map((p) => p.name.toLowerCase().trim().replace(/\s+yarn$/i, '')));
       PRODUCTS_CATALOG.forEach((p) => {
-        const pId = String(p.id).toLowerCase();
-        const pName = String(p.name).toLowerCase().trim();
-        if (!existingIds.has(pId) && !existingNames.has(pName)) {
+        const pId = String(p.id).toLowerCase().trim();
+        const cleanName = p.name.toLowerCase().trim().replace(/\s+yarn$/i, '');
+        if (!existingIds.has(pId) && !existingNames.has(cleanName) && !isProductDeleted(p, deletedKeys)) {
           baseProducts.push(p);
           existingIds.add(pId);
-          existingNames.add(pName);
+          existingNames.add(cleanName);
         }
       });
     }

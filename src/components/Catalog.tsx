@@ -73,11 +73,33 @@ export const Catalog: React.FC<CatalogProps> = ({
   // Filter products
   const filteredProducts = useMemo(() => {
     return products.filter((p) => {
+      const cat = (p.category || '').toLowerCase();
+      const catLabel = (p.categoryLabel || '').toLowerCase();
+      const style = (p.garmentStyle || '').toLowerCase();
+      const name = (p.name || '').toLowerCase();
+      const isGarment =
+        cat === 'garments' ||
+        cat === 'garment' ||
+        cat === 'winter-wear' ||
+        cat === 'finished-garment' ||
+        catLabel.includes('winter') ||
+        catLabel.includes('garment') ||
+        catLabel.includes('knitwear') ||
+        style.length > 0 ||
+        name.includes('sweater') ||
+        name.includes('cardigan') ||
+        name.includes('winter wear') ||
+        name.includes('pullover') ||
+        name.includes('turtleneck') ||
+        name.includes('muffler') ||
+        name.includes('vest') ||
+        name.includes('coat');
+
       // Top-level section filtering
-      if (mainSection === 'yarns' && p.category === 'garments') {
+      if (mainSection === 'yarns' && isGarment) {
         return false;
       }
-      if (mainSection === 'garments' && p.category !== 'garments') {
+      if (mainSection === 'garments' && !isGarment) {
         return false;
       }
 

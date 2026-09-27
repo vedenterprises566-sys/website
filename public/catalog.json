@@ -345,7 +345,7 @@
     "name": "Men's Classic Wooly Crewneck Winter Wear",
     "category": "garments",
     "categoryLabel": "Winter Wear",
-    "countOrDenier": "7GG Fine Knit (2/18 Wooly Yarn)",
+    "countOrDenier": "7GG Flat Knit (2/18 Wooly Yarn)",
     "description": "Wholesale premium men's crewneck winter wear manufactured from imported 2/18 high-bulk Wooly yarn. Warm, featherlight, soft hand feel for bulk distribution across India.",
     "recommendedUses": [
       "Men Winterwear",
@@ -362,7 +362,7 @@
     "sampleAvailable": true,
     "origin": "Ved Garment Collection (Ludhiana)",
     "popularFor": "Men Winter Wear Collections",
-    "badge": "Garment Collection",
+    "badge": "Live Collection",
     "gauge": "7GG",
     "yarnUsed": "2/18 Wooly Yarn",
     "availableSizes": [
@@ -371,7 +371,7 @@
       "XL",
       "XXL"
     ],
-    "garmentStyle": "Men Winter Wear"
+    "garmentStyle": "Men's Crewneck"
   },
   {
     "id": "garment-sweater-ladies-vislon",
@@ -394,7 +394,7 @@
     "sampleAvailable": true,
     "origin": "Ved Garment Collection (Ludhiana)",
     "popularFor": "Ladies Boutique Cardigans",
-    "badge": "Garment Collection",
+    "badge": "Live Collection",
     "gauge": "12GG",
     "yarnUsed": "2/48 Vislon Yarn",
     "availableSizes": [

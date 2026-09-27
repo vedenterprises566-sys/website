@@ -51,20 +51,42 @@ export const GarmentsPage: React.FC<GarmentsPageProps> = ({
   // Filter products belonging to garments / winter wear
   const garmentProducts = useMemo(() => {
     return products.filter((p) => {
-      const isGarment =
-        p.category === 'garments' ||
-        (p.categoryLabel && p.categoryLabel.toLowerCase().includes('winter')) ||
-        (p.name && (
-          p.name.toLowerCase().includes('sweater') ||
-          p.name.toLowerCase().includes('cardigan') ||
-          p.name.toLowerCase().includes('winter wear') ||
-          p.name.toLowerCase().includes('pullover') ||
-          p.name.toLowerCase().includes('turtleneck') ||
-          p.name.toLowerCase().includes('muffler') ||
-          p.name.toLowerCase().includes('vest') ||
-          p.name.toLowerCase().includes('coat')
-        ));
-      return isGarment;
+      const cat = (p.category || '').toLowerCase();
+      const catLabel = (p.categoryLabel || '').toLowerCase();
+      const style = (p.garmentStyle || '').toLowerCase();
+      const name = (p.name || '').toLowerCase();
+      const desc = (p.description || '').toLowerCase();
+
+      const isGarmentCategory =
+        cat === 'garments' ||
+        cat === 'garment' ||
+        cat === 'winter-wear' ||
+        cat === 'finished-garment' ||
+        catLabel.includes('winter') ||
+        catLabel.includes('garment') ||
+        catLabel.includes('knitwear') ||
+        style.length > 0;
+
+      const isGarmentText =
+        name.includes('sweater') ||
+        name.includes('cardigan') ||
+        name.includes('winter wear') ||
+        name.includes('winterwear') ||
+        name.includes('pullover') ||
+        name.includes('turtleneck') ||
+        name.includes('muffler') ||
+        name.includes('vest') ||
+        name.includes('coat') ||
+        name.includes('jacket') ||
+        name.includes('hoodie') ||
+        name.includes('knitwear') ||
+        name.includes('beanie') ||
+        desc.includes('winter wear') ||
+        desc.includes('sweater') ||
+        desc.includes('cardigan') ||
+        desc.includes('knitwear');
+
+      return isGarmentCategory || isGarmentText;
     });
   }, [products]);
 

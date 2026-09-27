@@ -264,20 +264,6 @@ app.get(['/api/health', '/health', '/api'], (req, res) => {
 app.get(['/api/admin/catalog', '/catalog.json'], async (req, res) => {
   res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
   res.setHeader('Pragma', 'no-cache');
-  if (inMemoryCatalog.length === 0) {
-    try {
-      const fs = await import('fs');
-      const path = await import('path');
-      const catalogPath = path.join(process.cwd(), 'public', 'catalog.json');
-      if (fs.existsSync(catalogPath)) {
-        const raw = fs.readFileSync(catalogPath, 'utf8');
-        const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          inMemoryCatalog = parsed;
-        }
-      }
-    } catch (e) {}
-  }
   const visible = inMemoryCatalog.filter(p => !isDeleted(p));
   return res.json(visible);
 });
