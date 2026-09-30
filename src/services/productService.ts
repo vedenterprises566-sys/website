@@ -362,20 +362,23 @@ export class ProductService {
     }
 
     // ── 4. Merge custom products added via Admin Panel (localStorage) ──
+    // IMPORTANT: localStorage custom products are ADDITIVE ONLY — they fill in products
+    // that don't exist in server catalog.json. If a product already exists on the server,
+    // the server version is authoritative (prevents mobile/PC desync where stale
+    // localStorage data on one device overrides edits made on another device).
     const customProducts = getCustomProductsFromStorage();
     if (customProducts.length > 0) {
       customProducts.forEach((cp) => {
         const cpId = String(cp.id || '').toLowerCase().trim();
         const cpClean = (cp.name || '').toLowerCase().trim().replace(/\s+yarn$/i, '');
         if (!isProductDeleted(cp, deletedKeys)) {
-          const exIdx = baseProducts.findIndex(
+          const existsInCatalog = baseProducts.some(
             (p) =>
               (cpId && String(p.id || '').toLowerCase().trim() === cpId) ||
               (cpClean && (p.name || '').toLowerCase().trim().replace(/\s+yarn$/i, '') === cpClean)
           );
-          if (exIdx >= 0) {
-            baseProducts[exIdx] = { ...baseProducts[exIdx], ...cp };
-          } else {
+          // Only add if this product doesn't already exist in server catalog
+          if (!existsInCatalog) {
             baseProducts.unshift(cp);
           }
         }

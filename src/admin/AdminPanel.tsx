@@ -40,6 +40,7 @@ import {
 } from 'lucide-react';
 import { Product, YarnCategory } from '../types';
 import { AdminService } from './adminService';
+import { ProductService } from '../services/productService';
 import {
   isAdminSubdomain,
   getMainWebsiteUrl,
@@ -198,6 +199,35 @@ export const AdminPanel: React.FC = () => {
   const loadProducts = async () => {
     setIsLoading(true);
     try {
+      // Clean up stale localStorage custom products that already exist on the server.
+      // This prevents device-local data from overriding server edits made on other devices.
+      try {
+        const serverRes = await fetch('/api/admin/catalog', {
+          headers: { 'Cache-Control': 'no-cache' },
+        });
+        if (serverRes.ok) {
+          const serverCatalog = await serverRes.json();
+          if (Array.isArray(serverCatalog) && serverCatalog.length > 0) {
+            const serverIds = new Set(serverCatalog.map((p: any) => String(p.id || '').toLowerCase().trim()));
+            const serverNames = new Set(serverCatalog.map((p: any) => String(p.name || '').toLowerCase().trim().replace(/\s+yarn$/i, '')));
+            const customProds = AdminService.getCustomProducts();
+            const staleIds = customProds.filter((cp) => {
+              const cpId = String(cp.id || '').toLowerCase().trim();
+              const cpName = String(cp.name || '').toLowerCase().trim().replace(/\s+yarn$/i, '');
+              return (cpId && serverIds.has(cpId)) || (cpName && serverNames.has(cpName));
+            });
+            // Remove custom products that the server already has
+            staleIds.forEach((cp) => AdminService.removeCustomProduct(cp.id, cp.name));
+            if (staleIds.length > 0) {
+              console.log(`[AdminPanel] Cleaned up ${staleIds.length} stale localStorage product(s) already on server`);
+            }
+          }
+        }
+      } catch (cleanupErr) {
+        // Non-critical — cleanup failure shouldn't block product loading
+        console.warn('[AdminPanel] localStorage cleanup notice:', cleanupErr);
+      }
+
       const { products: fetchedProducts, source } = await AdminService.getProducts();
       // Server's catalog.json is the single source of truth — shared across all devices.
       // Do NOT merge localStorage custom products here (device-specific = causes desync).
