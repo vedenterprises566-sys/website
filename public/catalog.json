@@ -21,8 +21,8 @@
     "sampleAvailable": true,
     "origin": "Ved Domestic Premium Mill",
     "popularFor": "Hosiery Winter Wear & School Uniforms",
-    "pictureUrl": "https://drive.google.com/file/d/105xFBP96hHxXid9H5sMwnbyF2hvwdwGu/view?usp=drivesdk",
-    "shadeUrl": "https://drive.google.com/file/d/1kE3ZUTNp_e5W5jiWraookdT-Z7CvJVpa/view?usp=drivesdk",
+    "imageUrl": "",
+    "shadeCardUrl": "",
     "badge": "Live Sheet Item"
   },
   {
@@ -46,8 +46,8 @@
     "sampleAvailable": true,
     "origin": "Ved Premium Selection",
     "popularFor": "Shiny Designer Winter Wear",
-    "pictureUrl": "https://drive.google.com/file/d/11anqCKDMGU6GIIA41DdsBxm0hEyrbj9E/view?usp=drivesdk",
-    "shadeUrl": "https://drive.google.com/file/d/1IukDyi5hAo-yjA9irRcGUqriTXsZKa1n/view?usp=drivesdk",
+    "imageUrl": "",
+    "shadeCardUrl": "",
     "badge": "Live Sheet Item"
   },
   {
@@ -71,8 +71,8 @@
     "sampleAvailable": true,
     "origin": "Ved Premium Selection",
     "popularFor": "Luxury Viscose Cardigans",
-    "pictureUrl": "https://drive.google.com/file/d/1DuvmcVCblRxuW75iPo_soJvM_E0u2sax/view?usp=drivesdk",
-    "shadeUrl": "https://drive.google.com/file/d/134SO7mr_mqw8mdxNKJVChzDNg8xiUnb8/view?usp=drivesdk",
+    "imageUrl": "",
+    "shadeCardUrl": "",
     "badge": "Live Sheet Item"
   },
   {
@@ -96,8 +96,8 @@
     "sampleAvailable": true,
     "origin": "Ved Exclusive Fancy",
     "popularFor": "Textured Slub Knitwear",
-    "pictureUrl": "https://drive.google.com/file/d/1vhIj1-GOFMQaweHv_c0c3sBsT8WVHv1Z/view?usp=drivesdk",
-    "shadeUrl": "https://drive.google.com/file/d/1ZfmZqQCSK6dDRb4NqOVYV19ohN4dArZn/view?usp=drivesdk",
+    "imageUrl": "",
+    "shadeCardUrl": "",
     "badge": "Live Sheet Item"
   },
   {
@@ -121,8 +121,8 @@
     "sampleAvailable": true,
     "origin": "Direct China Import",
     "popularFor": "12GG & 14GG Winter Wear Production",
-    "pictureUrl": "https://drive.google.com/file/d/1lP7-J8DnnKSWyv-BM_3lrJgoXLC_byC8/view?usp=drivesdk",
-    "shadeUrl": "https://drive.google.com/file/d/1SjCUksE2lg4kzjthW2z3uwWbQY9fIdX7/view?usp=drivesdk",
+    "imageUrl": "",
+    "shadeCardUrl": "",
     "badge": "Live Sheet Item"
   },
   {
@@ -147,8 +147,8 @@
     "sampleAvailable": true,
     "origin": "Specialty Textured",
     "popularFor": "Heavy Winter Garments",
-    "pictureUrl": "https://drive.google.com/file/d/161s9fGr99CdQidBqqxMe32la67SRu70D/view?usp=drivesdk",
-    "shadeUrl": "https://drive.google.com/file/d/1mAeTXu6kj6GZ7DpfXcz-OJxIg8B49MNG/view?usp=drivesdk",
+    "imageUrl": "",
+    "shadeCardUrl": "",
     "badge": "Live Sheet Item"
   },
   {
@@ -173,8 +173,8 @@
     "sampleAvailable": true,
     "origin": "Direct China Import",
     "popularFor": "Fuzzy Fashion Winter Wear & Jackets",
-    "pictureUrl": "https://drive.google.com/file/d/1nD0zc8CX0lZm8v20-i-gwkKxG-WYghvO/view?usp=drivesdk",
-    "shadeUrl": "https://drive.google.com/file/d/1C27i0vtHYUmLzoim58kWTV3WLVVaztUR/view?usp=drivesdk",
+    "imageUrl": "",
+    "shadeCardUrl": "",
     "badge": "Live Sheet Item"
   },
   {
@@ -199,6 +199,8 @@
     "sampleAvailable": true,
     "origin": "Ved Exclusive Fancy",
     "popularFor": "Festive & Premium Fashion Apparel",
+    "imageUrl": "",
+    "shadeCardUrl": "",
     "badge": "Popular Fancy"
   },
   {
@@ -223,6 +225,8 @@
     "sampleAvailable": true,
     "origin": "Ved Fancy Collection",
     "popularFor": "Embroidery & Zari Work",
+    "imageUrl": "",
+    "shadeCardUrl": "",
     "badge": "Finest Count"
   },
   {
@@ -246,7 +250,10 @@
     ],
     "sampleAvailable": true,
     "origin": "Direct China Import",
-    "popularFor": "Shimmer Winter Wear & Cardigans"
+    "popularFor": "Shimmer Winter Wear & Cardigans",
+    "imageUrl": "",
+    "shadeCardUrl": "",
+    "badge": ""
   },
   {
     "id": "cy-7",
@@ -269,7 +276,10 @@
     ],
     "sampleAvailable": true,
     "origin": "Direct China Import",
-    "popularFor": "Velvety Smooth Knitwear"
+    "popularFor": "Velvety Smooth Knitwear",
+    "imageUrl": "",
+    "shadeCardUrl": "",
+    "badge": ""
   },
   {
     "id": "cy-8",
@@ -292,7 +302,10 @@
     ],
     "sampleAvailable": true,
     "origin": "Direct China Import",
-    "popularFor": "Fine Suede Apparels"
+    "popularFor": "Fine Suede Apparels",
+    "imageUrl": "",
+    "shadeCardUrl": "",
+    "badge": ""
   },
   {
     "id": "cy-10",
@@ -315,7 +328,10 @@
     ],
     "sampleAvailable": true,
     "origin": "Direct China Import",
-    "popularFor": "Lightweight Velvet Winter Wear"
+    "popularFor": "Lightweight Velvet Winter Wear",
+    "imageUrl": "",
+    "shadeCardUrl": "",
+    "badge": ""
   },
   {
     "id": "cy-12",
@@ -338,7 +354,10 @@
     ],
     "sampleAvailable": true,
     "origin": "Direct China Import",
-    "popularFor": "High Strength Weaving & Knitting"
+    "popularFor": "High Strength Weaving & Knitting",
+    "imageUrl": "",
+    "shadeCardUrl": "",
+    "badge": ""
   },
   {
     "id": "garment-sweater-men-wooly",
@@ -362,239 +381,8 @@
     "sampleAvailable": true,
     "origin": "Ved Garment Collection (Ludhiana)",
     "popularFor": "Men Winter Wear Collections",
-    "badge": "Live Collection",
-    "gauge": "7GG",
-    "yarnUsed": "2/18 Wooly Yarn",
-    "availableSizes": [
-      "M",
-      "L",
-      "XL",
-      "XXL"
-    ],
-    "garmentStyle": "Men's Crewneck"
-  },
-  {
-    "id": "garment-sweater-ladies-vislon",
-    "name": "Ladies Cashmere-Feel Vislon Cardigan Winter Wear",
-    "category": "garments",
-    "categoryLabel": "Winter Wear",
-    "countOrDenier": "12GG Fine Gauge (2/48 Vislon Yarn)",
-    "description": "Elegant ladies buttoned cardigan winter wear crafted from fine 2/48 Vislon yarn. Silky drape, vivid color fastness, and cashmere-soft touch.",
-    "recommendedUses": [
-      "Ladies Winterwear",
-      "Boutique Winter Wear Collections",
-      "Wholesale Apparel"
-    ],
-    "features": [
-      "12GG Fine Gauge",
-      "Silky Sheen",
-      "Ribbed Cuffs & Hem",
-      "Bulk Bale Packing"
-    ],
-    "sampleAvailable": true,
-    "origin": "Ved Garment Collection (Ludhiana)",
-    "popularFor": "Ladies Boutique Cardigans",
-    "badge": "Live Collection",
-    "gauge": "12GG",
-    "yarnUsed": "2/48 Vislon Yarn",
-    "availableSizes": [
-      "S",
-      "M",
-      "L",
-      "XL"
-    ],
-    "garmentStyle": "Ladies Cardigan"
-  },
-  {
-    "id": "garment-pullover-cable-daffodil",
-    "name": "Men's Heavy Cable-Knit Winter Pullover",
-    "category": "garments",
-    "categoryLabel": "Winter Wear",
-    "countOrDenier": "5GG Chunky Knit (2/28 Daffodil Acrylic)",
-    "description": "Thick, textured cable-knit sweater made with high-bulk 2/28 Daffodil yarn. Engineered for sub-zero winter warmth with excellent elasticity and shape retention.",
-    "recommendedUses": [
-      "Heavy Winterwear",
-      "Retail Fashion Stores",
-      "Northern India Winter Distribution"
-    ],
-    "features": [
-      "5GG Chunky Knit",
-      "Intricate Cable Pattern",
-      "Shrink Resistant",
-      "Premium Yarn Core"
-    ],
-    "sampleAvailable": true,
-    "origin": "Ved Garment Collection (Ludhiana)",
-    "popularFor": "Chunky Winter Cable Sweaters",
-    "badge": "Live Collection",
-    "gauge": "5GG",
-    "yarnUsed": "2/28 Daffodil High-Bulk",
-    "availableSizes": [
-      "M",
-      "L",
-      "XL",
-      "XXL"
-    ],
-    "garmentStyle": "Men's Pullover"
-  },
-  {
-    "id": "garment-turtleneck-unisex-wooly",
-    "name": "Unisex Thermal Ribbed High-Neck Turtleneck",
-    "category": "garments",
-    "categoryLabel": "Winter Wear",
-    "countOrDenier": "9GG Thermal Rib (2/18 Wooly & Viscose)",
-    "description": "Snug-fit thermal turtleneck sweater designed for layering under winter coats or styling solo. Featherlight warmth with zero skin itching.",
-    "recommendedUses": [
-      "Thermal Base Layer",
-      "Winter Uniforms",
-      "Casual Winterwear"
-    ],
-    "features": [
-      "9GG Ribbed Knit",
-      "Skin-Friendly Comfort",
-      "Stretch Recovery",
-      "Color Fastness"
-    ],
-    "sampleAvailable": true,
-    "origin": "Ved Garment Collection (Ludhiana)",
-    "popularFor": "High-Neck Ribbed Turtlenecks",
-    "badge": "Live Collection",
-    "gauge": "9GG",
-    "yarnUsed": "2/18 Wooly + Viscose",
-    "availableSizes": [
-      "S",
-      "M",
-      "L",
-      "XL"
-    ],
-    "garmentStyle": "Unisex Turtleneck"
-  },
-  {
-    "id": "garment-cardigan-ladies-pearl",
-    "name": "Ladies Pearl-Buttoned Soft Luxury Knit Cardigan",
-    "category": "garments",
-    "categoryLabel": "Winter Wear",
-    "countOrDenier": "12GG Micro-Knit (Vislon & Feather Blend)",
-    "description": "Boutique-ready ladies sweater cardigan adorned with pearl button accents. Crafted from Chinese Vislon and plush feather fiber for a cloud-soft touch.",
-    "recommendedUses": [
-      "Boutique Fashion",
-      "Party & Evening Winterwear",
-      "Export Apparel"
-    ],
-    "features": [
-      "12GG Micro-Knit",
-      "Pearl Button Detailing",
-      "Ultra-Plush Feel",
-      "Anti-Static"
-    ],
-    "sampleAvailable": true,
-    "origin": "Ved Garment Collection (Ludhiana)",
-    "popularFor": "Designer Luxury Cardigans",
-    "badge": "Live Collection",
-    "gauge": "12GG",
-    "yarnUsed": "Vislon / Feather Plush",
-    "availableSizes": [
-      "S",
-      "M",
-      "L",
-      "XL"
-    ],
-    "garmentStyle": "Ladies Luxury Knit"
-  },
-  {
-    "id": "garment-muffler-beanie-set",
-    "name": "Winter Jacquard Knitted Thermal Muffler & Cap Set",
-    "category": "garments",
-    "categoryLabel": "Winter Wear",
-    "countOrDenier": "10GG Jacquard Knit (Rainbow High-Bulk)",
-    "description": "Complete winter accessory set featuring an extra-long jacquard knit muffler and matched thermal beanie. High-bulk acrylic ensures all-day neck warmth.",
-    "recommendedUses": [
-      "Winter Accessories",
-      "Corporate Gifting",
-      "Wholesale Winter Kits"
-    ],
-    "features": [
-      "10GG Jacquard",
-      "Matching 2-Piece Set",
-      "Vibrant Variegated Colors",
-      "High Wind Block"
-    ],
-    "sampleAvailable": true,
-    "origin": "Ved Garment Collection (Ludhiana)",
-    "popularFor": "Winter Cap & Muffler Sets",
-    "badge": "Live Collection",
-    "gauge": "10GG",
-    "yarnUsed": "Rainbow High-Bulk Acrylic",
-    "availableSizes": [
-      "Free Size (Elasticated)"
-    ],
-    "garmentStyle": "Muffler & Cap Set"
-  },
-  {
-    "id": "garment-vest-corporate-acrylic",
-    "name": "Corporate & School Uniform V-Neck Knitted Vest",
-    "category": "garments",
-    "categoryLabel": "Winter Wear",
-    "countOrDenier": "10GG Fine Gauge (Daffodil 100% Acrylic)",
-    "description": "Sleeveless V-neck sweater vest built specifically for school uniforms, college staff, and corporate workwear. Resists daily pill wear and frequent machine washes.",
-    "recommendedUses": [
-      "School Uniforms",
-      "Corporate Uniforms",
-      "Staff Knitwear"
-    ],
-    "features": [
-      "10GG Flat Knit",
-      "Reinforced Rib Neck & Arms",
-      "100% Pill Resistant",
-      "Deep Fast Dyes"
-    ],
-    "sampleAvailable": true,
-    "origin": "Ved Garment Collection (Ludhiana)",
-    "popularFor": "School Uniform Vests",
-    "badge": "Live Collection",
-    "gauge": "10GG",
-    "yarnUsed": "Daffodil 100% Acrylic",
-    "availableSizes": [
-      "28",
-      "30",
-      "32",
-      "34",
-      "36",
-      "38",
-      "40",
-      "42"
-    ],
-    "garmentStyle": "Uniform V-Neck Vest"
-  },
-  {
-    "id": "garment-oversized-chenille-coat",
-    "name": "Oversized Velvet Plush Winter Coat Cardigan",
-    "category": "garments",
-    "categoryLabel": "Winter Wear",
-    "countOrDenier": "Heavy Gauge Knit (18 NM Chenille & Wooly)",
-    "description": "Longline open-front coatigan featuring deep patch pockets and wide turn-down collar. Knitted from velvety 18 NM Chenille and Wooly backing for intense winter shielding.",
-    "recommendedUses": [
-      "Heavy Winter Coats",
-      "Luxury Loungewear",
-      "Boutique Outerwear"
-    ],
-    "features": [
-      "Heavy Gauge Knit",
-      "Deep Front Pockets",
-      "Velvety Shimmer Drape",
-      "Thermal Core"
-    ],
-    "sampleAvailable": true,
-    "origin": "Ved Garment Collection (Ludhiana)",
-    "popularFor": "Plush Winter Long Coats",
-    "badge": "Live Collection",
-    "gauge": "Heavy Gauge",
-    "yarnUsed": "18 NM Chenille + Wooly",
-    "availableSizes": [
-      "M",
-      "L",
-      "XL"
-    ],
-    "garmentStyle": "Coatigan / Long Coat"
+    "imageUrl": "",
+    "shadeCardUrl": "",
+    "badge": "Live Collection"
   }
 ]
