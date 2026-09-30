@@ -434,5 +434,30 @@
     "imageUrl": "",
     "shadeCardUrl": "",
     "badge": "Live Collection"
+  },
+  {
+    "id": "garment-turtleneck-unisex-wooly",
+    "name": "Unisex Thermal Ribbed High-Neck Turtleneck",
+    "category": "garments",
+    "categoryLabel": "Winter Wear",
+    "countOrDenier": "9GG Thermal Rib (2/18 Wooly & Viscose)",
+    "description": "Snug-fit thermal turtleneck sweater designed for layering under winter coats or styling solo. Featherlight warmth with zero skin itching.",
+    "recommendedUses": [
+      "Thermal Base Layer",
+      "Winter Uniforms",
+      "Casual Winterwear"
+    ],
+    "features": [
+      "9GG Ribbed Knit",
+      "Skin-Friendly Comfort",
+      "Stretch Recovery",
+      "Color Fastness"
+    ],
+    "sampleAvailable": true,
+    "origin": "Ved Garment Collection (Ludhiana)",
+    "popularFor": "High-Neck Ribbed Turtlenecks",
+    "imageUrl": "",
+    "shadeCardUrl": "",
+    "badge": "Live Collection"
   }
 ]
