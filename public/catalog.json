@@ -534,5 +534,30 @@
     "imageUrl": "",
     "shadeCardUrl": "",
     "badge": "Live Collection"
+  },
+  {
+    "id": "garment-oversized-chenille-coat",
+    "name": "Oversized Velvet Plush Winter Coat Cardigan",
+    "category": "garments",
+    "categoryLabel": "Winter Wear",
+    "countOrDenier": "Heavy Gauge Knit (18 NM Chenille & Wooly)",
+    "description": "Longline open-front coatigan featuring deep patch pockets and wide turn-down collar. Knitted from velvety 18 NM Chenille and Wooly backing for intense winter shielding.",
+    "recommendedUses": [
+      "Heavy Winter Coats",
+      "Luxury Loungewear",
+      "Boutique Outerwear"
+    ],
+    "features": [
+      "Heavy Gauge Knit",
+      "Deep Front Pockets",
+      "Velvety Shimmer Drape",
+      "Thermal Core"
+    ],
+    "sampleAvailable": true,
+    "origin": "Ved Garment Collection (Ludhiana)",
+    "popularFor": "Plush Winter Long Coats",
+    "imageUrl": "",
+    "shadeCardUrl": "",
+    "badge": "Live Collection"
   }
 ]
