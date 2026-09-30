@@ -384,5 +384,30 @@
     "imageUrl": "",
     "shadeCardUrl": "",
     "badge": "Live Collection"
+  },
+  {
+    "id": "garment-sweater-ladies-vislon",
+    "name": "Ladies Cashmere-Feel Vislon Cardigan Winter Wear",
+    "category": "garments",
+    "categoryLabel": "Winter Wear",
+    "countOrDenier": "12GG Fine Gauge (2/48 Vislon Yarn)",
+    "description": "Elegant ladies buttoned cardigan winter wear crafted from fine 2/48 Vislon yarn. Silky drape, vivid color fastness, and cashmere-soft touch.",
+    "recommendedUses": [
+      "Ladies Winterwear",
+      "Boutique Winter Wear Collections",
+      "Wholesale Apparel"
+    ],
+    "features": [
+      "12GG Fine Gauge",
+      "Silky Sheen",
+      "Ribbed Cuffs & Hem",
+      "Bulk Bale Packing"
+    ],
+    "sampleAvailable": true,
+    "origin": "Ved Garment Collection (Ludhiana)",
+    "popularFor": "Ladies Boutique Cardigans",
+    "imageUrl": "",
+    "shadeCardUrl": "",
+    "badge": "Live Collection"
   }
 ]
