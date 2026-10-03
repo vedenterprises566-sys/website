@@ -377,26 +377,26 @@
   },
   {
     "id": "prod-test",
-    "name": "Test",
-    "category": "fancy",
-    "categoryLabel": "Fancy Yarn",
-    "countOrDenier": "Standard Count",
-    "description": "Test - Premium quality wholesale textile item supplied by Ved Enterprises, Ludhiana.",
+    "name": "test",
+    "category": "garments",
+    "categoryLabel": "Winter Wear",
+    "countOrDenier": "Standard Size",
+    "description": "test - Premium quality wholesale textile item supplied by Ved Enterprises, Ludhiana.",
     "recommendedUses": [
-      "Knitting & Hosiery",
-      "Weaving",
-      "Winter Knitwear"
+      "Winter Wear",
+      "Finished Knitwear",
+      "Corporate & Retail Apparel"
     ],
     "features": [
-      "Consistent Count",
-      "Even Dyeing",
-      "High Tensile Strength"
+      "High Bulk Warmth",
+      "Pill Resistant",
+      "Soft Hand Feel"
     ],
     "sampleAvailable": true,
-    "origin": "Ved Enterprises Ludhiana",
-    "popularFor": "Bulk Wholesale Dispatch",
-    "imageUrl": "https://drive.google.com/uc?export=view&id=10TQvfRFmU00Xdm4pjhI2yRa2R7Unp3DZ",
-    "shadeCardUrl": "https://lh3.googleusercontent.com/d/1FSNSQqa_N62-QkO4BF2TMjeWtFrSaujd",
-    "badge": "In Stock"
+    "origin": "Ved Garment Collection (Ludhiana)",
+    "popularFor": "Winter Wear Collections",
+    "imageUrl": "https://lh3.googleusercontent.com/d/1mgfl4aC-lxMvqFbQYZm113_NgV9MxFQD",
+    "shadeCardUrl": "",
+    "badge": "Winter Collection"
   }
 ]
