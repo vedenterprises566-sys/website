@@ -559,5 +559,21 @@
     "imageUrl": "",
     "shadeCardUrl": "",
     "badge": "Live Collection"
+  },
+  {
+    "id": "prod-product-973641",
+    "name": "New Product",
+    "category": "fancy",
+    "categoryLabel": "Fancy Yarn",
+    "countOrDenier": "",
+    "description": "",
+    "recommendedUses": [],
+    "features": [],
+    "sampleAvailable": true,
+    "origin": "Ved Enterprises",
+    "popularFor": "",
+    "imageUrl": "",
+    "shadeCardUrl": "",
+    "badge": ""
   }
 ]
