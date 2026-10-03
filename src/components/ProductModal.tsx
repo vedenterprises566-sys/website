@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { X, CheckCircle, Package, Send, Sparkles, MapPin, Phone, Palette, FileText } from 'lucide-react';
 import { Product } from '../types';
 import { getGoogleDriveThumbnail } from './MediaPreviewModal';
+import { resolveProductImageUrl, handleProductImageError } from '../utils/imageUtils';
 
 interface ProductModalProps {
   product: Product | null;
@@ -25,6 +26,9 @@ export const ProductModal: React.FC<ProductModalProps> = ({
   const [added, setAdded] = React.useState<boolean>(false);
 
   if (!product) return null;
+
+  const rawPhoto = product.imageUrl || product.image || product.pictureUrl || '';
+  const resolvedPhoto = resolveProductImageUrl(rawPhoto);
 
   const rawShadeModal = product.shadeUrl || product.shadeCardUrl || product.shadePdfUrl || '';
   const resolvedShadeModal = rawShadeModal
@@ -81,6 +85,19 @@ export const ProductModal: React.FC<ProductModalProps> = ({
             {/* Content Body */}
             <div className="p-6 overflow-y-auto space-y-6 text-slate-800 dark:text-slate-200">
               
+              {/* Product Photo Showcase */}
+              {resolvedPhoto && (
+                <div className="relative h-48 sm:h-56 w-full rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-xs">
+                  <img
+                    src={resolvedPhoto}
+                    alt={product.name}
+                    className="w-full h-full object-cover"
+                    referrerPolicy="no-referrer"
+                    onError={(e) => handleProductImageError(e, rawPhoto)}
+                  />
+                </div>
+              )}
+
               {/* Spreadsheet Google Drive Resource Quick Links */}
               {(product.shadeUrl || product.pictureUrl) && (
                 <div className="bg-slate-100 dark:bg-slate-800/80 p-3.5 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-2">

@@ -257,9 +257,9 @@ export class AdminService {
       try {
         const scriptPayload = {
           ...payload,
-          imageUrl: payload.imageUrl?.startsWith('data:') ? '' : (payload.imageUrl || ''),
-          image:    payload.imageUrl?.startsWith('data:') ? '' : (payload.imageUrl || ''),
-          pictureUrl: payload.imageUrl?.startsWith('data:') ? '' : (payload.imageUrl || ''),
+          imageUrl: payload.imageUrl || '',
+          image:    payload.imageUrl || '',
+          pictureUrl: payload.imageUrl || '',
         };
         const scriptRes = await fetch(url, {
           method: 'POST',

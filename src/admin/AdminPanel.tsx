@@ -49,6 +49,7 @@ import {
 } from './adminUtils';
 import { AuthService } from './authService';
 import { AdminLogin } from './AdminLogin';
+import { resolveProductImageUrl, handleProductImageError } from '../utils/imageUtils';
 
 export const AdminPanel: React.FC = () => {
   // Authentication state
@@ -677,12 +678,11 @@ export const AdminPanel: React.FC = () => {
                   <div className="w-12 h-12 rounded-xl bg-slate-100 border border-slate-200 flex-shrink-0 overflow-hidden flex items-center justify-center relative">
                     {p.imageUrl || p.image || p.pictureUrl ? (
                       <img
-                        src={p.imageUrl || p.image || p.pictureUrl}
+                        src={resolveProductImageUrl(p.imageUrl || p.image || p.pictureUrl)}
                         alt={p.name}
                         className="w-full h-full object-cover"
-                        onError={(e) => {
-                          (e.target as HTMLElement).style.display = 'none';
-                        }}
+                        referrerPolicy="no-referrer"
+                        onError={(e) => handleProductImageError(e, p.imageUrl || p.image || p.pictureUrl)}
                       />
                     ) : (
                       <ImageIcon className="w-5 h-5 text-slate-300" />
@@ -799,12 +799,11 @@ export const AdminPanel: React.FC = () => {
                         <div className="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 flex-shrink-0 overflow-hidden flex items-center justify-center relative">
                           {p.imageUrl || p.image || p.pictureUrl ? (
                             <img
-                              src={p.imageUrl || p.image || p.pictureUrl}
+                              src={resolveProductImageUrl(p.imageUrl || p.image || p.pictureUrl)}
                               alt={p.name}
                               className="w-full h-full object-cover"
-                              onError={(e) => {
-                                (e.target as HTMLElement).style.display = 'none';
-                              }}
+                              referrerPolicy="no-referrer"
+                              onError={(e) => handleProductImageError(e, p.imageUrl || p.image || p.pictureUrl)}
                             />
                           ) : (
                             <ImageIcon className="w-4 h-4 text-slate-300" />

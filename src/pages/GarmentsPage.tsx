@@ -27,6 +27,7 @@ import { HangingYarnThreads } from '../components/HangingYarnThreads';
 import { SEOHead } from '../components/SEOHead';
 import { getProductHierarchicalPath } from '../utils/productUtils';
 import { getGoogleDriveThumbnail } from '../components/MediaPreviewModal';
+import { resolveProductImageUrl, handleProductImageError } from '../utils/imageUtils';
 
 interface GarmentsPageProps {
   onBackToHome: () => void;
@@ -286,9 +287,8 @@ export const GarmentsPage: React.FC<GarmentsPageProps> = ({
             {filteredGarments.map((prod) => {
               const isInBasket = inquiryItemIds.includes(prod.id);
               const isAdded = !!addedItemIds[prod.id];
-              const thumb = prod.pictureUrl
-                ? (getGoogleDriveThumbnail(prod.pictureUrl) || prod.pictureUrl)
-                : (prod.imageUrl || '');
+              const rawPhoto = prod.imageUrl || prod.image || prod.pictureUrl || '';
+              const thumb = resolveProductImageUrl(rawPhoto);
 
               const whatsappUrl = `https://wa.me/917986716117?text=${encodeURIComponent(
                 `Hello Ved Enterprises, I am inquiring about wholesale bulk supply of "${prod.name}" (${prod.countOrDenier || 'Winter Wear'}). Please share bulk lot rate and available colors.`
@@ -313,6 +313,7 @@ export const GarmentsPage: React.FC<GarmentsPageProps> = ({
                           alt={prod.name}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                           loading="lazy"
+                          onError={(e) => handleProductImageError(e, rawPhoto)}
                         />
                       ) : (
                         <div className="w-full h-full bg-gradient-to-br from-slate-900 via-slate-800 to-red-950 flex flex-col items-center justify-center p-6 text-center text-white">

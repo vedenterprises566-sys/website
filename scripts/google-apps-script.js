@@ -115,13 +115,24 @@ function doPost(e) {
     }
 
     // ADD / EDIT
-    // CRITICAL FIX: Upload image to Drive FIRST to avoid Google Sheets 50,000 char crash
+    // Upload image to Drive FIRST to avoid Google Sheets 50,000 char cell limits
     const imgSource = data.image_url || data.imageUrl || data.image || data.pictureUrl || '';
     if (imgSource && (imgSource.startsWith('http') || imgSource.startsWith('data:'))) {
       const driveUrl = uploadImageToDrive(imgSource, data.name || 'product');
       if (driveUrl && driveUrl !== imgSource) {
         data.imageUrl = driveUrl;
         data.image    = driveUrl;
+        data.pictureUrl = driveUrl;
+      }
+    }
+
+    // Also upload shade card file/image if sent as base64 data URL
+    const shadeSource = data.shade_url || data.shadeCardUrl || data.shadeUrl || data.shadePdfUrl || '';
+    if (shadeSource && shadeSource.startsWith('data:')) {
+      const shadeDriveUrl = uploadImageToDrive(shadeSource, (data.name || 'product') + '_shade');
+      if (shadeDriveUrl && shadeDriveUrl !== shadeSource) {
+        data.shadeCardUrl = shadeDriveUrl;
+        data.shadeUrl = shadeDriveUrl;
       }
     }
 
@@ -265,7 +276,8 @@ function uploadImageToDrive(imgSource, productName) {
     const file   = folder.createFile(blob);
     file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
 
-    const url = 'https://drive.google.com/uc?export=view&id=' + file.getId();
+    // Use official Google Edge CDN direct link for high-speed, CORS-friendly display
+    const url = 'https://lh3.googleusercontent.com/d/' + file.getId();
     Logger.log('Image uploaded to Drive: ' + url);
     return url;
   } catch (err) {

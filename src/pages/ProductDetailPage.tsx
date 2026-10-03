@@ -8,6 +8,7 @@ import { getProductBySlug, getProductSlug, getCanonicalProductUrl, getProductBre
 import { SEOHead } from '../components/SEOHead';
 import { generateProductSchema, generateBreadcrumbSchema, generateOrganizationSchema } from '../utils/seoUtils';
 import { MediaPreviewModal, getGoogleDriveThumbnail } from '../components/MediaPreviewModal';
+import { resolveProductImageUrl, handleProductImageError } from '../utils/imageUtils';
 import { ShadeCardModal } from '../components/ShadeCardModal';
 
 interface ProductDetailPageProps {
@@ -111,9 +112,8 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   const breadcrumbSchema = generateBreadcrumbSchema(breadcrumbs.map((b) => ({ name: b.name, url: b.path })));
   const orgSchema = generateOrganizationSchema();
 
-  const resolvedPhoto = product.pictureUrl
-    ? (getGoogleDriveThumbnail(product.pictureUrl) || product.pictureUrl)
-    : (product.imageUrl || product.image || '');
+  const rawPhoto = product.imageUrl || product.image || product.pictureUrl || '';
+  const resolvedPhoto = resolveProductImageUrl(rawPhoto);
 
   const rawShadeLink = product.shadeUrl || product.shadeCardUrl || product.shadePdfUrl || '';
   const resolvedShadePhoto = rawShadeLink
@@ -192,6 +192,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                   alt={`${product.name} - ${product.countOrDenier} supplied by VED Enterprises`}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   referrerPolicy="no-referrer"
+                  onError={(e) => handleProductImageError(e, rawPhoto)}
                 />
               ) : (
                 <div className="w-full h-full bg-gradient-to-br from-slate-900 to-slate-950 flex flex-col items-center justify-center p-6 text-center text-white">

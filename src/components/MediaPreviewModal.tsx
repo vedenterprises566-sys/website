@@ -13,15 +13,19 @@ interface MediaPreviewModalProps {
 }
 
 export function getGoogleDriveFileId(url: string): string | null {
-  if (!url) return null;
-  const match = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
+  if (!url || typeof url !== 'string') return null;
+  const match =
+    url.match(/\/(?:file\/)?d\/([a-zA-Z0-9_-]{15,})/) ||
+    url.match(/[?&]id=([a-zA-Z0-9_-]{15,})/) ||
+    url.match(/googleusercontent\.com\/d\/([a-zA-Z0-9_-]{15,})/);
   return match ? match[1] : null;
 }
 
 export function getGoogleDriveThumbnail(url: string, sz = 'w1000'): string | null {
   const fileId = getGoogleDriveFileId(url);
   if (fileId) {
-    return `https://drive.google.com/thumbnail?id=${fileId}&sz=${sz}`;
+    // Official Google edge CDN direct URL
+    return `https://lh3.googleusercontent.com/d/${fileId}`;
   }
   return null;
 }

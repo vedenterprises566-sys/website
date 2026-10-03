@@ -1,4 +1,5 @@
 import { Product, YarnCategory } from '../types';
+import { resolveProductImageUrl } from '../utils/imageUtils';
 
 let cachedCatalog: Product[] | null = null;
 let lastFetchTime = 0;
@@ -103,7 +104,7 @@ export function parseLiveGoogleSheetProducts(csvText: string): Product[] {
       sampleAvailable: sampleIdx >= 0 ? String(row[sampleIdx]).toUpperCase() === 'TRUE' : true,
       origin:         originIdx >= 0 ? row[originIdx] : 'Ved Enterprises',
       popularFor:     popIdx    >= 0 ? row[popIdx]    : '',
-      imageUrl:       imageIdx  >= 0 ? row[imageIdx]  : '',
+      imageUrl:       imageIdx  >= 0 ? resolveProductImageUrl(row[imageIdx]) : '',
       shadeCardUrl:   shadeIdx  >= 0 ? row[shadeIdx]  : '',
       badge:          badgeIdx  >= 0 ? row[badgeIdx]  : '',
     });
@@ -172,7 +173,7 @@ export class ProductService {
               sampleAvailable: item.sampleAvailable === true || String(item.sampleAvailable).toUpperCase() === 'TRUE',
               origin: item.origin || 'Ved Enterprises',
               popularFor: item.popularFor || '',
-              imageUrl: item.imageUrl || item.image || '',
+              imageUrl: resolveProductImageUrl(item.imageUrl || item.image || item.pictureUrl || ''),
               shadeCardUrl: item.shadeCardUrl || item.shadeUrl || '',
               badge: item.badge || '',
             }));

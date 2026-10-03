@@ -8,6 +8,7 @@ import { ProductModal } from './ProductModal';
 import { MediaPreviewModal, getGoogleDriveThumbnail } from './MediaPreviewModal';
 import { HangingYarnThreads } from './HangingYarnThreads';
 import { getProductSlug, getProductHierarchicalPath } from '../utils/productUtils';
+import { resolveProductImageUrl, handleProductImageError } from '../utils/imageUtils';
 
 interface CatalogProps {
   searchQuery: string;
@@ -400,11 +401,10 @@ export const Catalog: React.FC<CatalogProps> = ({
               <AnimatePresence mode="popLayout">
               {filteredProducts.map((product, idx) => {
                 const isInBasket = inquiryItemIds.includes(product.id);
-                const resolvedPhoto = product.pictureUrl
-                  ? (getGoogleDriveThumbnail(product.pictureUrl) || product.pictureUrl)
-                  : (product.imageUrl || product.image || '');
+                const rawPhoto = product.imageUrl || product.image || product.pictureUrl || '';
+                const resolvedPhoto = resolveProductImageUrl(rawPhoto);
                 const shadeTargetUrl = product.shadeUrl || product.shadeCardUrl || product.shadePdfUrl || '';
-                const pictureTargetUrl = product.pictureUrl || product.imageUrl || product.image || '';
+                const pictureTargetUrl = rawPhoto;
 
                 const whatsappMsg = `Hello Ved Enterprises, I am interested in inquiring about ${product.name} (${product.countOrDenier}). Please share available bulk lots and pricing.`;
                 const whatsappUrl = `https://wa.me/917986716117?text=${encodeURIComponent(whatsappMsg)}`;
@@ -432,9 +432,7 @@ export const Catalog: React.FC<CatalogProps> = ({
                           loading="lazy"
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                           referrerPolicy="no-referrer"
-                          onError={(e) => {
-                            e.currentTarget.style.display = 'none';
-                          }}
+                          onError={(e) => handleProductImageError(e, rawPhoto)}
                         />
                       ) : (
                         <div className="w-full h-full bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 flex flex-col items-center justify-center p-4 text-center">
