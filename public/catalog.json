@@ -575,5 +575,27 @@
     "imageUrl": "",
     "shadeCardUrl": "",
     "badge": ""
+  },
+  {
+    "id": "prod-test-connectivity-yarn-044977",
+    "name": "Test Connectivity Yarn",
+    "category": "fancy",
+    "categoryLabel": "Fancy Yarn",
+    "countOrDenier": "2/32",
+    "description": "Test product to verify direct Admin -> Sheet connection",
+    "recommendedUses": [
+      "Weaving",
+      "Knitting"
+    ],
+    "features": [
+      "High Bulk",
+      "Soft"
+    ],
+    "sampleAvailable": true,
+    "origin": "Ludhiana",
+    "popularFor": "Verification",
+    "imageUrl": "",
+    "shadeCardUrl": "",
+    "badge": ""
   }
 ]
