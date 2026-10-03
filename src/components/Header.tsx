@@ -215,14 +215,25 @@ export const Header: React.FC<HeaderProps> = ({
       <div className="max-w-7xl mx-auto px-2.5 sm:px-6 lg:px-8 relative">
         <div className="flex items-center justify-between h-12 sm:h-14 lg:h-16">
 
-          {/* Company Brand Logo & Wordmark */}
+          {/* Company Brand Logo */}
           <button
             onClick={() => handleLinkClick('hero')}
-            className="flex items-center text-left focus:outline-none group min-w-0 transition-opacity hover:opacity-95"
+            className="flex items-center gap-1.5 sm:gap-3 text-left focus:outline-none group min-w-0"
             id="brand-logo-button"
-            aria-label="Ved Enterprises Home"
           >
-            <LogoGraphic variant="wordmark" size="sm" className="h-9 sm:h-11 lg:h-12 w-auto" />
+            <div className="shrink-0">
+              <LogoGraphic size="sm" showText={false} />
+            </div>
+            <div className="min-w-0">
+              <div className="flex items-baseline gap-1">
+                <span className="text-[0.8125rem] sm:text-lg md:text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white font-serif group-hover:text-red-600 transition-colors whitespace-nowrap">
+                  VED <span className="text-red-600 dark:text-red-500">ENTERPRISES</span>
+                </span>
+              </div>
+              <p className="text-[0.5rem] sm:text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide line-clamp-1">
+                Fancy & China Yarn • Ludhiana
+              </p>
+            </div>
           </button>
 
           {/* Desktop Horizontal Navigation Links (hidden on mobile) */}
@@ -409,8 +420,16 @@ export const Header: React.FC<HeaderProps> = ({
               <div>
                 {/* Menu Drawer Header */}
                 <div className="flex items-center justify-between pb-4 mb-4 border-b border-slate-100 dark:border-slate-800">
-                  <div className="flex items-center">
-                    <LogoGraphic variant="wordmark" size="sm" className="h-9 w-auto" />
+                  <div className="flex items-center gap-2.5">
+                    <LogoGraphic size="sm" showText={false} />
+                    <div>
+                      <h4 className="text-sm font-extrabold font-serif tracking-tight text-slate-900 dark:text-white uppercase leading-none">
+                        Ved Enterprises
+                      </h4>
+                      <p className="text-[0.625rem] text-red-600 dark:text-red-400 font-semibold tracking-wider uppercase mt-0.5">
+                        Textile Directory
+                      </p>
+                    </div>
                   </div>
                   <button
                     onClick={() => toggleMenu(false)}
