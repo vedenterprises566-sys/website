@@ -360,31 +360,6 @@
     "badge": ""
   },
   {
-    "id": "garment-pullover-cable-daffodil",
-    "name": "Men's Heavy Cable-Knit Winter Pullover",
-    "category": "garments",
-    "categoryLabel": "Winter Wear",
-    "countOrDenier": "5GG Chunky Knit (2/28 Daffodil Acrylic)",
-    "description": "Thick, textured cable-knit sweater made with high-bulk 2/28 Daffodil yarn. Engineered for sub-zero winter warmth with excellent elasticity and shape retention.",
-    "recommendedUses": [
-      "Heavy Winterwear",
-      "Retail Fashion Stores",
-      "Northern India Winter Distribution"
-    ],
-    "features": [
-      "5GG Chunky Knit",
-      "Intricate Cable Pattern",
-      "Shrink Resistant",
-      "Premium Yarn Core"
-    ],
-    "sampleAvailable": true,
-    "origin": "Ved Garment Collection (Ludhiana)",
-    "popularFor": "Chunky Winter Cable Sweaters",
-    "imageUrl": "",
-    "shadeCardUrl": "",
-    "badge": "Live Collection"
-  },
-  {
     "id": "garment-turtleneck-unisex-wooly",
     "name": "Unisex Thermal Ribbed High-Neck Turtleneck",
     "category": "garments",
