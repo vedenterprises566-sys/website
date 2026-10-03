@@ -4,6 +4,7 @@ import { X, FileText, Download, Eye, Trash2, Palette, Phone, ExternalLink } from
 import { Product } from '../types';
 import { useProducts } from '../hooks/useProducts';
 import { getGoogleDriveThumbnail } from './MediaPreviewModal';
+import { resolveProductImageUrl, resolveShadeCardUrl, isPdfShadeCard } from '../utils/imageUtils';
 
 interface UploadedShadeFile {
   id: string;
@@ -75,14 +76,10 @@ export const ShadeCardModal: React.FC<ShadeCardModalProps> = ({
   const currentProd = selectedProduct || (productsCatalog && productsCatalog.length > 0 ? productsCatalog[0] : null);
 
   const rawShadeLink = currentProd ? (currentProd.shadeUrl || currentProd.shadeCardUrl || currentProd.shadePdfUrl || '') : '';
-  const resolvedShadeImg = rawShadeLink
-    ? (getGoogleDriveThumbnail(rawShadeLink) || (rawShadeLink.startsWith('http') ? rawShadeLink : ''))
-    : '';
-  const resolvedProdImg = currentProd
-    ? (currentProd.pictureUrl
-      ? (getGoogleDriveThumbnail(currentProd.pictureUrl) || currentProd.pictureUrl)
-      : (currentProd.imageUrl || currentProd.image || ''))
-    : '';
+  const isShadePdf = isPdfShadeCard(rawShadeLink);
+  const resolvedShadeImg = rawShadeLink && !isShadePdf ? resolveShadeCardUrl(rawShadeLink) : '';
+  const rawProdImg = currentProd ? (currentProd.pictureUrl || currentProd.imageUrl || currentProd.image || '') : '';
+  const resolvedProdImg = resolveProductImageUrl(rawProdImg);
 
   // Filter uploaded shade files for this product or all
   const productUploadedFiles = currentProd

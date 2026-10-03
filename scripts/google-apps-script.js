@@ -1,26 +1,28 @@
 /**
  * ============================================================================
- * VED ENTERPRISES — GOOGLE APPS SCRIPT (CLEAN VERSION FOR NEW SPREADSHEET)
+ * VED ENTERPRISES — GOOGLE APPS SCRIPT (CLEAN VERSION FOR SPREADSHEET)
  * ============================================================================
  *
  * SETUP INSTRUCTIONS:
- * 1. Paste this entire script into your NEW Google Sheet's Apps Script editor
- *    (Extensions → Apps Script → Replace all code → Save)
+ * 1. Open your Google Sheet
+ * 2. Click Extensions → Apps Script
+ * 3. Replace ALL code in the editor with this file's code → Click Save (💾)
  *
- * 2. Add these Script Properties (⚙️ Project Settings → Script Properties):
+ * 4. Verify Script Properties (⚙️ Project Settings → Script Properties):
  *    - DRIVE_FOLDER_ID        → 1-FV8jaEi3C0zOEBHRUqTjBOw6mE6NBzl
- *    - GITHUB_TOKEN           → Your GitHub Personal Access Token (optional)
- *    - GITHUB_REPO_OWNER      → Your GitHub username (optional)
- *    - GITHUB_REPO_NAME       → Your GitHub repo name (e.g. "website") (optional)
- *    - GITHUB_FILE_PATH       → public/catalog.json (optional)
- *    - GITHUB_BRANCH          → main (optional)
- *    - VERCEL_DEPLOY_HOOK_URL → Your Vercel Deploy Hook URL (optional)
+ *    - GITHUB_TOKEN           → (Optional) GitHub Personal Access Token
+ *    - GITHUB_REPO_OWNER      → (Optional) GitHub username
+ *    - GITHUB_REPO_NAME       → (Optional) website
+ *    - GITHUB_FILE_PATH       → (Optional) public/catalog.json
+ *    - GITHUB_BRANCH          → (Optional) main
+ *    - VERCEL_DEPLOY_HOOK_URL → (Optional) Deploy hook
  *
- * 3. Deploy as Web App:
- *    - Click Deploy → New Deployment → Web App
- *    - Execute as: Me
- *    - Who has access: Anyone
- *    - Copy the /exec URL and paste it into your website's .env as VITE_APPS_SCRIPT_URL
+ * 5. Deploy as Web App:
+ *    - Click Deploy (top right) → Manage deployments
+ *    - Click the Pencil (Edit) icon
+ *    - Under Version: select "New version"
+ *    - Click Deploy
+ *    - Done! The live API now handles images AND shade cards (PDFs & images).
  * ============================================================================
  */
 
@@ -46,7 +48,8 @@ function onOpen() {
   SpreadsheetApp.getUi()
     .createMenu('🚀 Ved Enterprises')
     .addItem('🔄 Sync Catalog to Website', 'menuSyncCatalog')
-    .addItem('ℹ️ View Catalog Summary',    'menuShowCatalogSummary')
+    .addItem('🖼️ Convert Base64 Cells to Drive Links', 'menuFixBase64InSheet')
+    .addItem('ℹ️ View Catalog Summary', 'menuShowCatalogSummary')
     .addToUi();
 }
 
@@ -59,6 +62,16 @@ function menuSyncCatalog() {
     ui.alert('✅ Synced!', JSON.parse(catalog).length + ' products pushed to website.', ui.ButtonSet.OK);
   } catch (err) {
     ui.alert('Error', err.toString(), ui.ButtonSet.OK);
+  }
+}
+
+function menuFixBase64InSheet() {
+  const ui = SpreadsheetApp.getUi();
+  try {
+    const count = fixExistingBase64Cells();
+    ui.alert('✅ Done!', 'Converted ' + count + ' base64 cells to Google Drive files & updated catalog.', ui.ButtonSet.OK);
+  } catch (err) {
+    ui.alert('❌ Error', err.toString(), ui.ButtonSet.OK);
   }
 }
 
@@ -84,6 +97,10 @@ function doGet(e) {
       commitToGitHub(catalog);
       triggerVercelDeploy();
       return jsonOut({ success: true, message: 'Synced.', productCount: JSON.parse(catalog).length });
+    }
+    if (action === 'fix_base64' || action === 'convert_base64') {
+      const count = fixExistingBase64Cells();
+      return jsonOut({ success: true, message: 'Base64 migration complete.', convertedCount: count });
     }
     if (action === 'delete') {
       return jsonOut(deleteProduct({ id: e.parameter.id, name: e.parameter.name }));
@@ -114,11 +131,16 @@ function doPost(e) {
       return jsonOut({ success: true, message: 'Synced.', productCount: JSON.parse(catalog).length });
     }
 
+    if (action === 'fix_base64' || action === 'convert_base64') {
+      const count = fixExistingBase64Cells();
+      return jsonOut({ success: true, message: 'Base64 migration complete.', convertedCount: count });
+    }
+
     // ADD / EDIT
-    // Upload image to Drive FIRST to avoid Google Sheets 50,000 char cell limits
+    // 1. Upload product photo to Google Drive
     const imgSource = data.image_url || data.imageUrl || data.image || data.pictureUrl || '';
     if (imgSource && (imgSource.startsWith('http') || imgSource.startsWith('data:'))) {
-      const driveUrl = uploadImageToDrive(imgSource, data.name || 'product');
+      const driveUrl = uploadImageToDrive(imgSource, data.name || 'product', false);
       if (driveUrl && driveUrl !== imgSource) {
         data.imageUrl = driveUrl;
         data.image    = driveUrl;
@@ -126,7 +148,7 @@ function doPost(e) {
       }
     }
 
-    // Also upload shade card file / PDF / image if sent as base64 or URL
+    // 2. Upload shade card file / PDF / photo to Google Drive
     const shadeSource = data.shade_url || data.shadeCardUrl || data.shadeUrl || data.shadePdfUrl || '';
     if (shadeSource && (shadeSource.startsWith('http') || shadeSource.startsWith('data:'))) {
       const shadeDriveUrl = uploadImageToDrive(shadeSource, (data.name || 'product') + '_shade', true);
@@ -144,7 +166,13 @@ function doPost(e) {
     commitToGitHub(catalog);
     triggerVercelDeploy();
 
-    return jsonOut({ success: true, message: data.isEdit ? 'Product updated.' : 'Product added and synced.', productId: row.id });
+    return jsonOut({
+      success: true,
+      message: data.isEdit ? 'Product updated.' : 'Product added and synced.',
+      productId: row.id,
+      imageUrl: data.imageUrl || '',
+      shadeCardUrl: data.shadeCardUrl || '',
+    });
 
   } catch (err) {
     Logger.log('doPost error: ' + err.toString());
@@ -228,43 +256,62 @@ function deleteProduct(query) {
   const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
   const idIdx   = headers.indexOf('id');
   const nameIdx = headers.indexOf('name');
-  const allRows = sheet.getRange(2, 1, sheet.getLastRow() - 1, headers.length).getValues();
 
-  var targetRow = -1;
-  for (var i = 0; i < allRows.length; i++) {
-    const rowId   = idIdx   >= 0 ? String(allRows[i][idIdx]).trim().toLowerCase()   : '';
-    const rowName = nameIdx >= 0 ? String(allRows[i][nameIdx]).trim().toLowerCase()  : '';
-    if ((query.id   && rowId   === String(query.id).trim().toLowerCase()) ||
-        (query.name && rowName === String(query.name).trim().toLowerCase())) {
-      targetRow = i + 2; break;
+  const all = sheet.getRange(2, 1, sheet.getLastRow() - 1, headers.length).getValues();
+  let deleteRow = -1;
+
+  for (var i = 0; i < all.length; i++) {
+    const rowId   = idIdx   >= 0 ? String(all[i][idIdx]).trim()  : '';
+    const rowName = nameIdx >= 0 ? String(all[i][nameIdx]).trim() : '';
+    if (
+      (query.id   && rowId === String(query.id).trim()) ||
+      (query.name && rowName.toLowerCase() === String(query.name).toLowerCase().trim())
+    ) {
+      deleteRow = i + 2;
+      break;
     }
   }
 
-  if (targetRow === -1) return { success: false, message: 'Product not found.' };
-  sheet.deleteRow(targetRow);
-  const catalog = generateCatalogJson();
-  commitToGitHub(catalog);
-  triggerVercelDeploy();
-  return { success: true, message: 'Deleted and synced.', remainingProducts: JSON.parse(catalog).length };
+  if (deleteRow > 0) {
+    sheet.deleteRow(deleteRow);
+    const catalog = generateCatalogJson();
+    commitToGitHub(catalog);
+    triggerVercelDeploy();
+    return { success: true, message: 'Deleted and synced.', remainingProducts: JSON.parse(catalog).length };
+  }
+
+  return { success: false, message: 'Product not found.' };
 }
 
 function uploadImageToDrive(imgSource, productName, isShadeCard) {
   try {
-    const config = getConfig();
-    if (!config.DRIVE_FOLDER_ID || !imgSource) return imgSource;
+    if (!imgSource || typeof imgSource !== 'string') return imgSource;
+    imgSource = imgSource.trim();
 
-    // If already a Google Drive or UserContent URL, no need to re-upload
-    if (imgSource.indexOf('drive.google.com') !== -1 || imgSource.indexOf('googleusercontent.com') !== -1) {
+    // Already a Drive link or CDN link
+    if (
+      imgSource.indexOf('drive.google.com') !== -1 ||
+      imgSource.indexOf('googleusercontent.com') !== -1
+    ) {
+      return imgSource;
+    }
+
+    const config = getConfig();
+    const folderId = config.DRIVE_FOLDER_ID || '1-FV8jaEi3C0zOEBHRUqTjBOw6mE6NBzl';
+    if (!folderId) {
+      Logger.log('No DRIVE_FOLDER_ID configured.');
       return imgSource;
     }
 
     var blob, extension = 'jpg', isPdf = false;
 
     if (imgSource.startsWith('data:')) {
-      // Base64 from website upload (handles both images and application/pdf)
+      // Base64 from upload (handles images and application/pdf)
       const parts = imgSource.split(',');
+      if (parts.length < 2) return imgSource;
+
       const mimeMatch = parts[0].match(/data:([^;]+);/);
-      const mime  = mimeMatch ? mimeMatch[1].toLowerCase() : 'application/octet-stream';
+      const mime = mimeMatch ? mimeMatch[1].toLowerCase().trim() : 'application/octet-stream';
 
       if (mime.indexOf('pdf') !== -1) {
         extension = 'pdf';
@@ -273,15 +320,22 @@ function uploadImageToDrive(imgSource, productName, isShadeCard) {
         extension = 'png';
       } else if (mime.indexOf('webp') !== -1) {
         extension = 'webp';
+      } else if (mime.indexOf('gif') !== -1) {
+        extension = 'gif';
       } else {
         extension = 'jpg';
       }
 
-      blob = Utilities.newBlob(Utilities.base64Decode(parts[1]), mime, (isShadeCard ? 'shade_' : 'media_') + Date.now() + '.' + extension);
+      const cleanBase64 = parts[1].replace(/[\r\n\s]/g, '');
+      blob = Utilities.newBlob(
+        Utilities.base64Decode(cleanBase64),
+        mime,
+        (isShadeCard ? 'shade_' : 'media_') + Date.now() + '.' + extension
+      );
     } else if (imgSource.startsWith('http')) {
       // External URL
       const resp = UrlFetchApp.fetch(imgSource, { muteHttpExceptions: true });
-      blob       = resp.getBlob();
+      blob = resp.getBlob();
       const cType = (blob.getContentType() || '').toLowerCase();
       if (cType.indexOf('pdf') !== -1 || imgSource.toLowerCase().indexOf('.pdf') !== -1) {
         extension = 'pdf';
@@ -290,6 +344,8 @@ function uploadImageToDrive(imgSource, productName, isShadeCard) {
         extension = 'png';
       } else if (cType.indexOf('webp') !== -1) {
         extension = 'webp';
+      } else if (cType.indexOf('gif') !== -1) {
+        extension = 'gif';
       } else {
         extension = 'jpg';
       }
@@ -300,13 +356,13 @@ function uploadImageToDrive(imgSource, productName, isShadeCard) {
     const safeName = (productName || 'product').replace(/[^a-zA-Z0-9_-]/g, '_').substring(0, 50);
     blob.setName(safeName + '_' + Date.now() + '.' + extension);
 
-    const folder = DriveApp.getFolderById(config.DRIVE_FOLDER_ID);
+    const folder = DriveApp.getFolderById(folderId);
     const file   = folder.createFile(blob);
     file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
 
     const fileId = file.getId();
     if (isPdf) {
-      // For PDFs: Google Drive document view/preview link
+      // For PDFs: Google Drive document view link
       const url = 'https://drive.google.com/file/d/' + fileId + '/view?usp=sharing';
       Logger.log('PDF Shade Card uploaded to Drive: ' + url);
       return url;
@@ -320,6 +376,63 @@ function uploadImageToDrive(imgSource, productName, isShadeCard) {
     Logger.log('Drive upload notice: ' + err.toString());
     return imgSource;
   }
+}
+
+/**
+ * Scans all rows in the spreadsheet and converts any raw base64 data URLs in
+ * imageUrl or shadeCardUrl into permanent Google Drive files.
+ */
+function fixExistingBase64Cells() {
+  const sheet = getProductsSheet();
+  if (!sheet || sheet.getLastRow() < 2) return 0;
+
+  const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+  const imgIdx = headers.indexOf('imageUrl') !== -1 ? headers.indexOf('imageUrl') : headers.indexOf('image');
+  const shadeIdx = headers.indexOf('shadeCardUrl');
+  const nameIdx = headers.indexOf('name');
+
+  if (imgIdx === -1 && shadeIdx === -1) return 0;
+
+  const numRows = sheet.getLastRow() - 1;
+  const range = sheet.getRange(2, 1, numRows, headers.length);
+  const values = range.getValues();
+  let updatedCount = 0;
+
+  for (let i = 0; i < values.length; i++) {
+    const rowName = nameIdx >= 0 ? String(values[i][nameIdx]) : 'product';
+
+    if (imgIdx >= 0) {
+      const val = String(values[i][imgIdx] || '');
+      if (val.indexOf('data:') === 0) {
+        const driveUrl = uploadImageToDrive(val, rowName, false);
+        if (driveUrl && driveUrl !== val) {
+          sheet.getRange(i + 2, imgIdx + 1).setValue(driveUrl);
+          values[i][imgIdx] = driveUrl;
+          updatedCount++;
+        }
+      }
+    }
+
+    if (shadeIdx >= 0) {
+      const val = String(values[i][shadeIdx] || '');
+      if (val.indexOf('data:') === 0) {
+        const driveUrl = uploadImageToDrive(val, rowName + '_shade', true);
+        if (driveUrl && driveUrl !== val) {
+          sheet.getRange(i + 2, shadeIdx + 1).setValue(driveUrl);
+          values[i][shadeIdx] = driveUrl;
+          updatedCount++;
+        }
+      }
+    }
+  }
+
+  if (updatedCount > 0) {
+    const catalog = generateCatalogJson();
+    commitToGitHub(catalog);
+    triggerVercelDeploy();
+  }
+
+  return updatedCount;
 }
 
 function generateCatalogJson() {
@@ -405,7 +518,7 @@ function jsonOut(data) {
 function saveProductAndSync(data) {
   const imgSource = data.image_url || data.imageUrl || data.image || '';
   if (imgSource && (imgSource.startsWith('http') || imgSource.startsWith('data:'))) {
-    const driveUrl = uploadImageToDrive(imgSource, data.name || 'product');
+    const driveUrl = uploadImageToDrive(imgSource, data.name || 'product', false);
     if (driveUrl && driveUrl !== imgSource) { data.imageUrl = driveUrl; data.image = driveUrl; }
   }
   const row     = saveProduct(data);

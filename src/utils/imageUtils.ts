@@ -17,21 +17,27 @@ export function extractGoogleDriveFileId(url?: string | null): string | null {
   const trimmed = url.trim();
   if (!trimmed) return null;
 
+  // Never attempt to parse base64 data URLs or blob URLs as Google Drive file IDs
+  if (trimmed.startsWith('data:') || trimmed.startsWith('blob:')) return null;
+
+  // Must belong to Google domains
+  const isGoogleDomain =
+    trimmed.includes('google.com') ||
+    trimmed.includes('googleusercontent.com') ||
+    trimmed.includes('drive.google');
+  if (!isGoogleDomain) return null;
+
   // Match /file/d/{id} or /d/{id}
-  const dMatch = trimmed.match(/\/(?:file\/)?d\/([a-zA-Z0-9_-]{25,})/);
+  const dMatch = trimmed.match(/\/(?:file\/)?d\/([a-zA-Z0-9_-]{20,})/);
   if (dMatch) return dMatch[1];
 
   // Match id={id}
-  const idMatch = trimmed.match(/[?&]id=([a-zA-Z0-9_-]{25,})/);
+  const idMatch = trimmed.match(/[?&]id=([a-zA-Z0-9_-]{20,})/);
   if (idMatch) return idMatch[1];
 
   // Match googleusercontent.com/d/{id}
-  const userContentMatch = trimmed.match(/googleusercontent\.com\/d\/([a-zA-Z0-9_-]{25,})/);
+  const userContentMatch = trimmed.match(/googleusercontent\.com\/d\/([a-zA-Z0-9_-]{20,})/);
   if (userContentMatch) return userContentMatch[1];
-
-  // Shorter file IDs fallback (at least 20 chars)
-  const fallbackMatch = trimmed.match(/[?&]id=([a-zA-Z0-9_-]{15,})/) || trimmed.match(/\/d\/([a-zA-Z0-9_-]{15,})/);
-  if (fallbackMatch) return fallbackMatch[1];
 
   return null;
 }
@@ -101,7 +107,8 @@ export function isPdfShadeCard(url?: string | null): boolean {
   if (!url || typeof url !== 'string') return false;
   const lower = url.toLowerCase().trim();
   if (lower.startsWith('data:application/pdf') || lower.includes('.pdf')) return true;
-  if (lower.includes('/preview') || lower.includes('usp=sharing') || lower.includes('drive.google.com/file/d/')) {
+  // If explicitly flagged as a PDF view link or document
+  if (lower.includes('drive.google.com/file/d/') && (lower.includes('/view') || lower.includes('/preview'))) {
     if (!lower.includes('.jpg') && !lower.includes('.jpeg') && !lower.includes('.png') && !lower.includes('.webp') && !lower.includes('googleusercontent.com/d/')) {
       return true;
     }
@@ -111,6 +118,7 @@ export function isPdfShadeCard(url?: string | null): boolean {
 
 /**
  * Resolves shade card URL for viewing:
+ * - If data URL -> returns original data URL directly (both image & pdf base64)
  * - If PDF on Google Drive -> returns embeddable preview URL https://drive.google.com/file/d/{id}/preview
  * - If Image on Google Drive -> returns direct edge CDN URL https://lh3.googleusercontent.com/d/{id}
  * - Otherwise returns original URL
@@ -119,6 +127,10 @@ export function resolveShadeCardUrl(url?: string | null): string {
   if (!url || typeof url !== 'string') return '';
   const trimmed = url.trim();
   if (!trimmed) return '';
+
+  if (trimmed.startsWith('data:') || trimmed.startsWith('blob:')) {
+    return trimmed;
+  }
 
   const fileId = extractGoogleDriveFileId(trimmed);
   if (!fileId) return trimmed;

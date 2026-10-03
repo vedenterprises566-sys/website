@@ -8,7 +8,7 @@ import { getProductBySlug, getProductSlug, getCanonicalProductUrl, getProductBre
 import { SEOHead } from '../components/SEOHead';
 import { generateProductSchema, generateBreadcrumbSchema, generateOrganizationSchema } from '../utils/seoUtils';
 import { MediaPreviewModal, getGoogleDriveThumbnail } from '../components/MediaPreviewModal';
-import { resolveProductImageUrl, handleProductImageError } from '../utils/imageUtils';
+import { resolveProductImageUrl, handleProductImageError, resolveShadeCardUrl, isPdfShadeCard } from '../utils/imageUtils';
 import { ShadeCardModal } from '../components/ShadeCardModal';
 
 interface ProductDetailPageProps {
@@ -116,9 +116,8 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   const resolvedPhoto = resolveProductImageUrl(rawPhoto);
 
   const rawShadeLink = product.shadeUrl || product.shadeCardUrl || product.shadePdfUrl || '';
-  const resolvedShadePhoto = rawShadeLink
-    ? (getGoogleDriveThumbnail(rawShadeLink) || (rawShadeLink.startsWith('http') ? rawShadeLink : ''))
-    : '';
+  const isShadePdf = isPdfShadeCard(rawShadeLink);
+  const resolvedShadePhoto = rawShadeLink && !isShadePdf ? resolveShadeCardUrl(rawShadeLink) : '';
 
   const isInBasket = inquiryItemIds.includes(product.id);
   const whatsappMsg = `Hello Ved Enterprises, I would like to request a bulk price quote for ${product.name} (${product.countOrDenier}). Please share current wholesale rates and availability.`;
