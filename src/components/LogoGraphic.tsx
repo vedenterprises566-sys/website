@@ -16,7 +16,7 @@ export const LogoGraphic: React.FC<LogoGraphicProps> = ({
 }) => {
   const sizeClasses = {
     sm: 'w-11 h-11 sm:w-12 sm:h-12',
-    md: 'w-16 h-16',
+    md: 'w-16 h-16 sm:w-18 sm:h-18',
     lg: 'w-24 h-24 sm:w-28 sm:h-28',
     xl: 'w-36 h-36 sm:w-40 sm:h-40',
   }[size];
@@ -27,16 +27,15 @@ export const LogoGraphic: React.FC<LogoGraphicProps> = ({
     <div className="inline-flex items-center gap-3 shrink-0">
       {/* Clean Logo Frame with solid white background under the logo */}
       <div
-        className={`relative flex-shrink-0 bg-white rounded-2xl overflow-hidden shadow-md border border-amber-500/30 flex items-center justify-center p-1 ${sizeClasses} ${className}`}
+        className={`relative flex-shrink-0 bg-white rounded-2xl overflow-hidden shadow-md border border-amber-500/30 flex items-center justify-center p-0.5 ${sizeClasses} ${className}`}
         style={{ backgroundColor: '#ffffff' }}
       >
         <img
           src={logoSrc}
           alt="Ved Enterprises Logo"
-          className="w-full h-full object-contain bg-white transition-transform duration-300 transform-gpu"
+          className="w-full h-full object-contain bg-white scale-[1.08] transition-transform duration-300 transform-gpu"
           referrerPolicy="no-referrer"
           onError={(e) => {
-            // Fallback to SVG if image fails to load
             e.currentTarget.style.display = 'none';
           }}
         />
