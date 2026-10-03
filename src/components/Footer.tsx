@@ -21,16 +21,8 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onSelectCategory }) 
           
           {/* Brand Profile — 4 columns on desktop */}
           <div className="lg:col-span-4 space-y-5">
-            <div className="flex items-center gap-3">
-              <LogoGraphic size="md" showText={false} />
-              <div>
-                <span className="text-2xl font-black text-white font-serif tracking-tight">
-                  VED <span className="text-red-500">ENTERPRISES</span>
-                </span>
-                <p className="text-xs text-amber-400 font-bold tracking-wide">
-                  Wholesale Yarn & Textile Traders • Ludhiana
-                </p>
-              </div>
+            <div className="flex items-center">
+              <LogoGraphic variant="wordmark" size="md" theme="dark" className="h-14 sm:h-16 w-auto" />
             </div>
 
             <p className="text-xs text-slate-400 leading-relaxed max-w-sm">

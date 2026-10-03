@@ -1,81 +1,105 @@
 import React from 'react';
-import vedLogoImg from '../assets/images/ved_enterprises_logo.png';
+import vedLogoWordmark from '../assets/images/ved-logo-wordmark.svg';
+import vedLogoWordmarkDark from '../assets/images/ved-logo-wordmark-dark.svg';
+import vedLogoIcon from '../assets/images/ved-logo-icon.svg';
 
 interface LogoGraphicProps {
   className?: string;
-  size?: 'sm' | 'md' | 'lg' | 'xl';
+  size?: 'sm' | 'md' | 'lg' | 'xl' | 'custom';
   showText?: boolean;
+  variant?: 'wordmark' | 'icon' | 'auto';
+  theme?: 'light' | 'dark' | 'auto';
   customLogoUrl?: string;
+  alt?: string;
 }
 
 export const LogoGraphic: React.FC<LogoGraphicProps> = ({
   className = '',
   size = 'md',
   showText = false,
+  variant = 'auto',
+  theme = 'auto',
   customLogoUrl,
+  alt = 'Ved Enterprises Logo & Wordmark',
 }) => {
-  const sizeClasses = {
-    sm: 'w-11 h-11 sm:w-12 sm:h-12',
-    md: 'w-16 h-16',
-    lg: 'w-24 h-24 sm:w-28 sm:h-28',
-    xl: 'w-36 h-36 sm:w-40 sm:h-40',
+  // If showText is explicitly requested or variant is 'wordmark', use full logo wordmark
+  const isWordmark = variant === 'wordmark' || showText;
+
+  if (isWordmark) {
+    const heightClasses = {
+      sm: 'h-9 sm:h-11',
+      md: 'h-12 sm:h-14',
+      lg: 'h-16 sm:h-20',
+      xl: 'h-24 sm:h-28',
+      custom: '',
+    }[size];
+
+    if (customLogoUrl) {
+      return (
+        <img
+          src={customLogoUrl}
+          alt={alt}
+          className={`w-auto object-contain ${heightClasses} ${className}`}
+        />
+      );
+    }
+
+    if (theme === 'dark') {
+      return (
+        <img
+          src={vedLogoWordmarkDark}
+          alt={alt}
+          className={`w-auto object-contain ${heightClasses} ${className}`}
+        />
+      );
+    }
+
+    if (theme === 'light') {
+      return (
+        <img
+          src={vedLogoWordmark}
+          alt={alt}
+          className={`w-auto object-contain ${heightClasses} ${className}`}
+        />
+      );
+    }
+
+    // Default: auto theme via Tailwind dark mode class
+    return (
+      <div className={`inline-flex items-center shrink-0 ${className}`}>
+        <img
+          src={vedLogoWordmark}
+          alt={alt}
+          className={`w-auto object-contain dark:hidden ${heightClasses}`}
+        />
+        <img
+          src={vedLogoWordmarkDark}
+          alt={alt}
+          className={`w-auto object-contain hidden dark:block ${heightClasses}`}
+        />
+      </div>
+    );
+  }
+
+  // Otherwise icon-only variant
+  const iconSizeClasses = {
+    sm: 'w-10 h-10 sm:w-11 sm:h-11',
+    md: 'w-14 h-14 sm:w-16 sm:h-16',
+    lg: 'w-20 h-20 sm:w-24 sm:h-24',
+    xl: 'w-32 h-32 sm:w-36 sm:h-36',
+    custom: '',
   }[size];
 
-  const logoSrc = customLogoUrl || vedLogoImg;
+  const iconSrc = customLogoUrl || vedLogoIcon;
 
   return (
-    <div className="inline-flex items-center gap-3 shrink-0">
-      {/* Single Clean Logo Frame without outer double card */}
-      <div className={`relative flex-shrink-0 bg-white rounded-2xl overflow-hidden shadow-md border border-amber-500/30 flex items-center justify-center ${sizeClasses} ${className}`}>
-        {logoSrc ? (
-          <img
-            src={logoSrc}
-            alt="Ved Enterprises Logo"
-            className="w-full h-full object-cover scale-[1.38] transition-transform duration-300 transform-gpu"
-            referrerPolicy="no-referrer"
-            onError={(e) => {
-              // Fallback to SVG if image fails to load
-              e.currentTarget.style.display = 'none';
-            }}
-          />
-        ) : (
-          <svg
-            viewBox="0 0 200 280"
-            className="w-full h-full drop-shadow-sm"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <circle cx="100" cy="90" r="55" fill="url(#goldAura)" opacity="0.25" />
-            <path
-              d="M100 260 C98 210, 96 160, 100 20"
-              stroke="#1e293b"
-              strokeWidth="3.5"
-              strokeLinecap="round"
-            />
-            <path
-              d="M100 20 C135 35, 165 85, 145 150 C130 190, 105 230, 100 260 C95 230, 70 190, 55 150 C35 85, 65 35, 100 20 Z"
-              fill="url(#featherGlow)"
-              stroke="#1e293b"
-              strokeWidth="2.5"
-            />
-            <ellipse cx="100" cy="70" rx="32" ry="42" fill="#1e3a8a" stroke="#1e293b" strokeWidth="2" />
-            <ellipse cx="100" cy="70" rx="24" ry="32" fill="#0284c7" />
-            <ellipse cx="100" cy="70" rx="16" ry="22" fill="#d97706" />
-            <ellipse cx="100" cy="70" rx="9" ry="13" fill="#0f172a" />
-          </svg>
-        )}
-      </div>
-
-      {showText && (
-        <div className="flex flex-col">
-          <span className="text-2xl font-black tracking-tight text-slate-900 dark:text-white uppercase leading-none font-serif">
-            VED <span className="text-red-600 dark:text-red-500">ENTERPRISES</span>
-          </span>
-          <span className="text-xs font-semibold text-slate-600 dark:text-slate-300 tracking-wider uppercase mt-1">
-            Yarns, Fabrics & Textile Traders • Ludhiana
-          </span>
-        </div>
-      )}
+    <div className={`relative shrink-0 flex items-center justify-center ${iconSizeClasses} ${className}`}>
+      <img
+        src={iconSrc}
+        alt={alt}
+        className="w-full h-full object-contain filter drop-shadow-sm transition-transform duration-300 hover:scale-105"
+        referrerPolicy="no-referrer"
+      />
     </div>
   );
 };

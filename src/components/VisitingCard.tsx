@@ -52,29 +52,18 @@ export const VisitingCard: React.FC = () => {
               {/* Accent line */}
               <div className="absolute top-0 left-4 right-4 sm:left-6 sm:right-6 h-[2px] bg-gradient-to-r from-transparent via-amber-500/60 to-transparent" />
 
-              <div className="flex items-center gap-3 sm:gap-5">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div className="shrink-0">
-                  <div className="sm:hidden">
-                    <LogoGraphic size="sm" showText={false} />
-                  </div>
-                  <div className="hidden sm:block">
-                    <LogoGraphic size="lg" showText={false} />
-                  </div>
+                  <LogoGraphic variant="wordmark" size="md" theme="dark" className="h-12 sm:h-16 w-auto" />
                 </div>
-                <div className="min-w-0 flex-1">
-                  <h3 className="text-xl sm:text-2xl md:text-3xl font-black font-serif text-white tracking-tight leading-none truncate">
-                    Ved <span className="text-amber-400">Enterprises</span>
-                  </h3>
-                  <p className="text-slate-300 dark:text-slate-400 text-[0.6875rem] sm:text-sm font-semibold mt-1 tracking-wide truncate">
-                    Wholesale Yarn Stockist & Trader
-                  </p>
-                  <div className="flex items-center gap-2 mt-1.5 flex-wrap">
-                    <span className="inline-flex items-center gap-1 text-[0.5625rem] sm:text-[0.625rem] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-md border border-emerald-500/20">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                      Active Pan-India
-                    </span>
-                    <span className="text-[0.625rem] text-slate-400 font-medium truncate">Ludhiana, Punjab — India</span>
-                  </div>
+                <div className="min-w-0 flex items-center gap-2 flex-wrap">
+                  <span className="inline-flex items-center gap-1 text-[0.5625rem] sm:text-[0.625rem] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-md border border-emerald-500/20">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    Active Pan-India
+                  </span>
+                  <span className="inline-flex items-center gap-1 text-[0.5625rem] sm:text-[0.625rem] font-bold uppercase tracking-wider text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-md border border-amber-500/20">
+                    GST Registered
+                  </span>
                 </div>
               </div>
             </div>
