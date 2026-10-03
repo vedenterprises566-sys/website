@@ -343,54 +343,32 @@ Address: # 66/2, Near Shingar Cinema, Dharampura, Ludhiana - 141008
     saveDeletedKeys(Array.from(set));
   };
 
-  // API Route: Delete Product directly from local public/catalog.json
+  // API Route: Delete Product directly via Google Apps Script (Spreadsheet)
   app.post('/api/admin/delete-product', async (req, res) => {
     try {
       const { id, name } = req.body;
-      const catalogPath = path.join(process.cwd(), 'public', 'catalog.json');
-      let deleted = false;
+      const appsScriptUrl = process.env.VITE_APPS_SCRIPT_URL || process.env.APPS_SCRIPT_URL ||
+        'https://script.google.com/macros/s/AKfycbzrggQItVkhV9fhT851L-rRYEvQ9BZG30ew2YXkuDojt5JJ0R09hXt-XaPs5bMV0TP3oQ/exec';
 
-      // Add to persistent deleted-products.json
-      addDeletedKey(id, name);
-
-      if (fs.existsSync(catalogPath)) {
-        const raw = fs.readFileSync(catalogPath, 'utf8');
-        let catalog = JSON.parse(raw);
-        if (Array.isArray(catalog)) {
-          const initialLength = catalog.length;
-          const targetId = id ? String(id).trim().toLowerCase() : '';
-          const targetName = name ? String(name).trim().toLowerCase() : '';
-          const targetWithoutYarn = targetName.replace(/\s+yarn$/i, '').trim();
-
-          catalog = catalog.filter((p: any) => {
-            const pId = String(p.id || '').trim().toLowerCase();
-            const pName = String(p.name || '').trim().toLowerCase();
-            const pNameClean = pName.replace(/\s+yarn$/i, '').trim();
-
-            const matchId = targetId && (pId === targetId || pId.includes(targetId) || targetId.includes(pId));
-            const matchName = targetName && (pName === targetName || pNameClean === targetWithoutYarn);
-            return !matchId && !matchName;
+      // Forward deletion directly to Google Apps Script (Single Source of Truth)
+      let appsScriptResult: any = null;
+      if (appsScriptUrl) {
+        try {
+          const scriptRes = await fetch(appsScriptUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain' },
+            body: JSON.stringify({ action: 'delete', id, name }),
           });
-
-          if (catalog.length < initialLength) {
-            deleted = true;
+          if (scriptRes.ok) {
+            appsScriptResult = await scriptRes.json().catch(() => null);
+            console.log(`[APPS SCRIPT DELETE] Product "${name || id}" deleted from Google Spreadsheet`);
           }
-          fs.writeFileSync(catalogPath, JSON.stringify(catalog, null, 2), 'utf8');
-          console.log(`[CATALOG DELETE] Product "${name || id}" removed from public/catalog.json (${initialLength} -> ${catalog.length})`);
+        } catch (err: any) {
+          console.warn('[APPS SCRIPT DELETE NOTICE]', err.message);
         }
       }
 
-      // Forward to Google Apps Script asynchronously via Node.js in background
-      const appsScriptUrl = process.env.VITE_APPS_SCRIPT_URL || process.env.APPS_SCRIPT_URL;
-      if (appsScriptUrl) {
-        fetch(appsScriptUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'text/plain' },
-          body: JSON.stringify({ action: 'delete', id, name }),
-        }).catch((err: any) => console.warn('[APPS SCRIPT DELETE NOTICE]', err.message));
-      }
-
-      // Forward deletion to Web3Forms
+      // Forward deletion notice to Web3Forms
       const web3FormsKey = process.env.WEB3FORMS_ACCESS_KEY || '60b1da23-19c5-4576-b47c-7fa27d972f52';
       if (web3FormsKey) {
         fetch('https://api.web3forms.com/submit', {
@@ -405,9 +383,9 @@ Address: # 66/2, Near Shingar Cinema, Dharampura, Ludhiana - 141008
             'Catalog Action': 'DELETE',
             'Product ID': id || 'N/A',
             'Product Name': name || id || 'N/A',
-            message: `Product "${name || id}" was deleted from the catalog on ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}`,
+            message: `Product "${name || id}" was deleted from the Google Sheet catalog on ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}`,
           }),
-        }).then(r => r.json()).then(w3res => {
+        }).then(r => r.json()).then(() => {
           console.log(`[WEB3FORMS DELETE] Dispatched deletion notice for "${name || id}"`);
         }).catch((w3err) => console.warn('[WEB3FORMS DELETE NOTICE]', w3err.message));
       }
@@ -415,7 +393,7 @@ Address: # 66/2, Near Shingar Cinema, Dharampura, Ludhiana - 141008
       return res.json({
         success: true,
         deleted: true,
-        message: `Product "${name || id}" deleted successfully from catalog.`
+        message: appsScriptResult?.message || `Product "${name || id}" deleted successfully from Google Spreadsheet.`
       });
     } catch (err: any) {
       console.error('[CATALOG DELETE ERROR]', err.message);
@@ -423,21 +401,10 @@ Address: # 66/2, Near Shingar Cinema, Dharampura, Ludhiana - 141008
     }
   });
 
-  // API Route: Save / Update Product directly in local public/catalog.json
+  // API Route: Save / Update Product directly to Google Spreadsheet via Apps Script (no local code storage)
   app.post('/api/admin/save-product', async (req, res) => {
     try {
       const rawProduct = req.body;
-      const catalogPath = path.join(process.cwd(), 'public', 'catalog.json');
-      let catalog: any[] = [];
-      if (fs.existsSync(catalogPath)) {
-        try {
-          const raw = fs.readFileSync(catalogPath, 'utf8');
-          catalog = JSON.parse(raw);
-          if (!Array.isArray(catalog)) catalog = [];
-        } catch (e) {
-          catalog = [];
-        }
-      }
 
       // Generate robust ID if missing
       const cleanName = (rawProduct.name || 'Yarn Product').trim();
@@ -454,6 +421,7 @@ Address: # 66/2, Near Shingar Cinema, Dharampura, Ludhiana - 141008
       };
 
       const product = {
+        action: rawProduct.action || (rawProduct.isEdit ? 'edit' : 'add'),
         id: assignedId,
         name: cleanName,
         category: rawProduct.category || 'fancy',
@@ -470,59 +438,34 @@ Address: # 66/2, Near Shingar Cinema, Dharampura, Ludhiana - 141008
         badge: rawProduct.badge || 'New Item',
       };
 
-      // Unmark from deleted list
-      removeDeletedKey(product.id, product.name);
-
-      const existingIdx = catalog.findIndex((p: any) =>
-        (product.id && String(p.id).trim().toLowerCase() === String(product.id).trim().toLowerCase()) ||
-        (rawProduct.originalId && String(p.id).trim().toLowerCase() === String(rawProduct.originalId).trim().toLowerCase()) ||
-        (product.name && String(p.name).trim().toLowerCase() === String(product.name).trim().toLowerCase())
-      );
-
-      if (existingIdx >= 0) {
-        catalog[existingIdx] = { ...catalog[existingIdx], ...product };
-        console.log(`[CATALOG UPDATE] Updated "${product.name}" (ID: ${product.id}) in public/catalog.json`);
-      } else {
-        catalog.unshift(product);
-        console.log(`[CATALOG ADD] Added "${product.name}" (ID: ${product.id}) to public/catalog.json`);
-      }
-
-      fs.writeFileSync(catalogPath, JSON.stringify(catalog, null, 2), 'utf8');
-
-      // Forward to Google Apps Script asynchronously via Node.js in background (no browser CORS block)
-      const appsScriptUrl = process.env.VITE_APPS_SCRIPT_URL || process.env.APPS_SCRIPT_URL;
+      // Forward to Google Apps Script (Single Source of Truth in Spreadsheet)
+      const appsScriptUrl = process.env.VITE_APPS_SCRIPT_URL || process.env.APPS_SCRIPT_URL ||
+        'https://script.google.com/macros/s/AKfycbzrggQItVkhV9fhT851L-rRYEvQ9BZG30ew2YXkuDojt5JJ0R09hXt-XaPs5bMV0TP3oQ/exec';
+      let appsScriptResult: any = null;
       if (appsScriptUrl) {
-        fetch(appsScriptUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'text/plain' },
-          body: JSON.stringify({ action: 'add', ...product }),
-        }).catch((err: any) => console.warn('[APPS SCRIPT FORWARD NOTICE]', err.message));
+        try {
+          const scriptRes = await fetch(appsScriptUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain' },
+            body: JSON.stringify(product),
+          });
+          if (scriptRes.ok) {
+            appsScriptResult = await scriptRes.json().catch(() => null);
+            console.log(`[APPS SCRIPT SAVE] Product "${product.name}" saved to Google Spreadsheet`);
+          }
+        } catch (err: any) {
+          console.warn('[APPS SCRIPT SAVE NOTICE]', err.message);
+        }
       }
 
-      // Forward pushed product data to Web3Forms
+      // Forward pushed product data to Web3Forms for notification
       const web3FormsKey = process.env.WEB3FORMS_ACCESS_KEY || '60b1da23-19c5-4576-b47c-7fa27d972f52';
       if (web3FormsKey) {
-        const isUpdate = existingIdx >= 0;
+        const isUpdate = rawProduct.action === 'edit' || rawProduct.isEdit;
         const actionLabel = isUpdate ? 'Updated' : 'Added';
         const uses = Array.isArray(product.recommendedUses) ? product.recommendedUses.join(', ') : (product.recommendedUses || 'N/A');
         const feats = Array.isArray(product.features) ? product.features.join(', ') : (product.features || 'N/A');
         const timestamp = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
-
-        const messageBody = `VED ENTERPRISES - CATALOG PRODUCT PUSH\n\n` +
-          `Action: Product ${actionLabel}\n` +
-          `Product ID: ${product.id}\n` +
-          `Product Name: ${product.name}\n` +
-          `Category: ${product.categoryLabel} (${product.category})\n` +
-          `Count / Denier: ${product.countOrDenier}\n` +
-          `Badge: ${product.badge || 'N/A'}\n` +
-          `Origin: ${product.origin || 'Ved Enterprises Ludhiana'}\n` +
-          `Popular For: ${product.popularFor || 'Wholesale Supply'}\n` +
-          `Recommended Uses: ${uses}\n` +
-          `Key Features: ${feats}\n` +
-          `Image URL: ${product.imageUrl || 'None'}\n` +
-          `Shade Card URL: ${product.shadeCardUrl || 'None'}\n` +
-          `Description: ${product.description || 'N/A'}\n\n` +
-          `Timestamp: ${timestamp}`;
 
         const now = new Date();
         const dateTag = now.toISOString().slice(0, 10).replace(/-/g, '');
@@ -538,8 +481,8 @@ Address: # 66/2, Near Shingar Cinema, Dharampura, Ludhiana - 141008
           email: 'vedenterprises566@gmail.com',
           Description: product.description || `${cleanName} - Wholesale supply from Ved Enterprises Ludhiana.`,
           message: product.description || `${cleanName} - Wholesale supply from Ved Enterprises Ludhiana.`,
-          'Shade URL': product.shadeCardUrl?.startsWith('data:') ? 'Local File Attached' : (product.shadeCardUrl || product.shadeUrl || ''),
-          'Picture URL': product.imageUrl?.startsWith('data:') ? 'Local File Attached' : (product.imageUrl || product.pictureUrl || ''),
+          'Shade URL': product.shadeCardUrl?.startsWith('data:') ? 'Local File Attached' : (product.shadeCardUrl || ''),
+          'Picture URL': product.imageUrl?.startsWith('data:') ? 'Local File Attached' : (product.imageUrl || ''),
           'Catalog Action': isUpdate ? 'UPDATE' : 'ADD',
           'Product ID': product.id,
           'Product Name': product.name,
@@ -554,14 +497,14 @@ Address: # 66/2, Near Shingar Cinema, Dharampura, Ludhiana - 141008
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(web3Payload),
-        }).then(r => r.json()).then(w3res => {
+        }).then(r => r.json()).then(() => {
           console.log(`[WEB3FORMS PUSH SUCCESS] Product "${product.name}" pushed to Web3Forms`);
         }).catch((w3err) => console.warn('[WEB3FORMS PUSH NOTICE]', w3err.message));
       }
 
       return res.json({
         success: true,
-        message: `Product "${product.name}" saved to catalog.json and pushed to Web3Forms successfully!`,
+        message: appsScriptResult?.message || `Product "${product.name}" saved to Google Spreadsheet successfully!`,
         productId: product.id,
         product,
       });
@@ -571,20 +514,81 @@ Address: # 66/2, Near Shingar Cinema, Dharampura, Ludhiana - 141008
     }
   });
 
-  // API Route: Get Persistent Deleted Products List
-  app.get('/api/admin/deleted-products', (req, res) => {
-    res.json(getDeletedKeys());
-  });
-
-  // Serve catalog.json directly from disk with no-cache headers (bypasses Vite static cache)
-  app.get('/catalog.json', (req, res) => {
-    const catalogPath = path.join(process.cwd(), 'public', 'catalog.json');
+  // Helper to fetch live products directly from Google Spreadsheet via Apps Script or CSV
+  const fetchLiveProductsFromSheet = async (): Promise<any[]> => {
+    const appsScriptUrl = process.env.VITE_APPS_SCRIPT_URL || process.env.APPS_SCRIPT_URL ||
+      'https://script.google.com/macros/s/AKfycbzrggQItVkhV9fhT851L-rRYEvQ9BZG30ew2YXkuDojt5JJ0R09hXt-XaPs5bMV0TP3oQ/exec';
+    
+    // 1. Try Apps Script ?action=list
     try {
-      if (!fs.existsSync(catalogPath)) {
-        return res.status(404).json([]);
+      const scriptRes = await fetch(`${appsScriptUrl}${appsScriptUrl.includes('?') ? '&' : '?'}action=list&t=${Date.now()}`, {
+        headers: { 'Accept': 'application/json' },
+      });
+      if (scriptRes.ok) {
+        const data = await scriptRes.json();
+        if (Array.isArray(data) && data.length > 0) return data;
       }
-      const raw = fs.readFileSync(catalogPath, 'utf8');
-      const catalog = JSON.parse(raw);
+    } catch (e: any) {
+      console.warn('[SERVER LIVE CATALOG] Apps Script fetch notice:', e.message);
+    }
+
+    // 2. Try Google Sheet CSV export
+    const csvUrl = process.env.VITE_CATALOG_SHEET_CSV_URL ||
+      'https://docs.google.com/spreadsheets/d/1YohPYHghKzQO2zMlJc3MsFpBrNEHtG3qqE7cXAr_I9o/export?format=csv';
+    try {
+      const csvRes = await fetch(csvUrl);
+      if (csvRes.ok) {
+        const text = await csvRes.text();
+        const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+        if (lines.length > 1) {
+          const headers = lines[0].split(',').map(h => h.replace(/^"|"$/g, '').trim().toLowerCase());
+          const nameIdx = headers.indexOf('name');
+          const idIdx = headers.indexOf('id');
+          const catIdx = headers.indexOf('category');
+          const descIdx = headers.indexOf('description');
+          const imgIdx = headers.findIndex(h => h === 'imageurl' || h === 'image');
+          const shadeIdx = headers.findIndex(h => h === 'shadecardurl' || h === 'shadeurl');
+          const countIdx = headers.findIndex(h => h === 'countordenier' || h === 'count');
+          const badgeIdx = headers.indexOf('badge');
+
+          const products: any[] = [];
+          for (let i = 1; i < lines.length; i++) {
+            const row = lines[i].split(',').map(c => c.replace(/^"|"$/g, '').trim());
+            const name = nameIdx >= 0 ? row[nameIdx] : '';
+            if (!name) continue;
+            products.push({
+              id: idIdx >= 0 && row[idIdx] ? row[idIdx] : `prod-${i}`,
+              name,
+              category: catIdx >= 0 ? row[catIdx] : 'fancy',
+              countOrDenier: countIdx >= 0 ? row[countIdx] : '',
+              description: descIdx >= 0 ? row[descIdx] : '',
+              imageUrl: imgIdx >= 0 ? row[imgIdx] : '',
+              shadeCardUrl: shadeIdx >= 0 ? row[shadeIdx] : '',
+              badge: badgeIdx >= 0 ? row[badgeIdx] : '',
+            });
+          }
+          if (products.length > 0) return products;
+        }
+      }
+    } catch (e: any) {
+      console.warn('[SERVER LIVE CATALOG] Sheet CSV fetch notice:', e.message);
+    }
+
+    // 3. Fallback to existing public/catalog.json only if completely offline
+    const catalogPath = path.join(process.cwd(), 'public', 'catalog.json');
+    if (fs.existsSync(catalogPath)) {
+      try {
+        const raw = fs.readFileSync(catalogPath, 'utf8');
+        return JSON.parse(raw);
+      } catch (_) {}
+    }
+    return [];
+  };
+
+  // Serve live catalog dynamically from Google Spreadsheet
+  app.get(['/api/catalog', '/api/admin/catalog', '/catalog.json'], async (req, res) => {
+    try {
+      const catalog = await fetchLiveProductsFromSheet();
       res.setHeader('Content-Type', 'application/json');
       res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
       res.setHeader('Pragma', 'no-cache');
@@ -593,26 +597,6 @@ Address: # 66/2, Near Shingar Cinema, Dharampura, Ludhiana - 141008
     } catch (e: any) {
       console.error('[CATALOG SERVE ERROR]', e.message);
       return res.status(500).json([]);
-    }
-  });
-
-  // API alias for catalog.json - always fresh from disk (preferred by productService)
-  app.get('/api/admin/catalog', (req, res) => {
-    const catalogPath = path.join(process.cwd(), 'public', 'catalog.json');
-    try {
-      if (!fs.existsSync(catalogPath)) {
-        return res.status(200).json([]);
-      }
-      const raw = fs.readFileSync(catalogPath, 'utf8');
-      const catalog = JSON.parse(raw);
-      res.setHeader('Content-Type', 'application/json');
-      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
-      res.setHeader('Pragma', 'no-cache');
-      res.setHeader('Expires', '0');
-      return res.json(catalog);
-    } catch (e: any) {
-      console.error('[CATALOG API SERVE ERROR]', e.message);
-      return res.status(200).json([]);
     }
   });
 

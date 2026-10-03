@@ -448,7 +448,7 @@ export const AdminPanel: React.FC = () => {
 
     if (res.success) {
       if (editingProduct) {
-        showToast(`✅ "${formData.name}" updated & pushed to Web3Forms!`);
+        showToast(`✅ "${formData.name}" updated in Google Spreadsheet!`);
         setProducts((prev) =>
           prev.map((p) =>
             p.id === editingProduct.id
@@ -460,7 +460,7 @@ export const AdminPanel: React.FC = () => {
           )
         );
       } else {
-        showToast(`✅ "${formData.name}" added & pushed to Web3Forms!`);
+        showToast(`✅ "${formData.name}" saved to Google Spreadsheet!`);
         const optimisticProduct: Product = {
           id: res.productId || `prod-${Date.now()}`,
           ...(newProductPayload as any),
@@ -502,7 +502,7 @@ export const AdminPanel: React.FC = () => {
     const isSuccess = res.success || (res.message && res.message.toLowerCase().includes('not found'));
 
     if (isSuccess) {
-      showToast(`🗑️ "${productToDelete.name}" deleted and website updated.`);
+      showToast(`🗑️ "${productToDelete.name}" deleted from Google Spreadsheet.`);
       setProducts((prev) =>
         prev.filter(
           (p) =>

@@ -30,7 +30,7 @@ function loadBaselineCatalog(): any[] {
   return [];
 }
 
-const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/13dYmzJoPkpLGCDt7gZ7znKJARPSknghUzcEmG2PKtFM/export?format=csv';
+const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/1YohPYHghKzQO2zMlJc3MsFpBrNEHtG3qqE7cXAr_I9o/export?format=csv';
 
 function addDeletedKey(id?: string, name?: string) {
   if (id) inMemoryDeleted.add(String(id).toLowerCase().trim());
@@ -399,7 +399,8 @@ app.post(['/api/admin/save-product', '/admin/save-product'], async (req, res) =>
     }
 
     // Forward to Google Apps Script for cross-deploy persistence
-    const appsScriptUrl = process.env.VITE_APPS_SCRIPT_URL || process.env.APPS_SCRIPT_URL;
+    const appsScriptUrl = process.env.VITE_APPS_SCRIPT_URL || process.env.APPS_SCRIPT_URL ||
+      'https://script.google.com/macros/s/AKfycbzrggQItVkhV9fhT851L-rRYEvQ9BZG30ew2YXkuDojt5JJ0R09hXt-XaPs5bMV0TP3oQ/exec';
     if (appsScriptUrl) {
       try {
         await fetch(appsScriptUrl, {
@@ -478,7 +479,8 @@ app.post(['/api/admin/delete-product', '/admin/delete-product'], async (req, res
     });
 
     // Forward to Google Apps Script for persistence
-    const appsScriptUrl = process.env.VITE_APPS_SCRIPT_URL || process.env.APPS_SCRIPT_URL;
+    const appsScriptUrl = process.env.VITE_APPS_SCRIPT_URL || process.env.APPS_SCRIPT_URL ||
+      'https://script.google.com/macros/s/AKfycbzrggQItVkhV9fhT851L-rRYEvQ9BZG30ew2YXkuDojt5JJ0R09hXt-XaPs5bMV0TP3oQ/exec';
     if (appsScriptUrl) {
       try {
         await fetch(appsScriptUrl, {

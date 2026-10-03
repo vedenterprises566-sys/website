@@ -199,7 +199,7 @@ export class AdminService {
   }
 
   /**
-   * Adds a new product via local API and forwards to Google Apps Script in background
+   * Adds a new product directly to Google Spreadsheet via Apps Script & backend proxy
    */
   static async addProduct(product: Partial<Product>): Promise<AdminApiResponse> {
     const cleanName = (product.name || '').trim();
@@ -231,8 +231,10 @@ export class AdminService {
     // Unmark from deleted keys if previously deleted
     if (product.name) this.unmarkDeletedKey(generatedId, product.name);
 
-    // 1. Save to server catalog.json FIRST (source of truth for all devices)
-    let serverSaved = false;
+    let scriptSaved = false;
+    let resultMessage = '';
+
+    // 1. Forward to Google Apps Script (via server proxy to prevent browser CORS block)
     try {
       const serverRes = await fetch('/api/admin/save-product', {
         method: 'POST',
@@ -240,37 +242,19 @@ export class AdminService {
         body: JSON.stringify(payload),
       });
       if (serverRes.ok) {
-        serverSaved = true;
-        // Server save succeeded — no need to keep in localStorage
-        this.removeCustomProduct(generatedId, cleanName);
-        console.log(`[AdminService] Server catalog saved for "${payload.name}"`);
+        const data = await serverRes.json();
+        scriptSaved = true;
+        resultMessage = data.message || `Product "${payload.name}" saved to Google Spreadsheet!`;
+        console.log(`[AdminService] Server proxy saved "${payload.name}" to Google Spreadsheet`);
       }
     } catch (e) {
-      console.warn('[AdminService] Local server save failed, falling back to localStorage:', e);
+      console.warn('[AdminService] Server save proxy notice:', e);
     }
 
-    // 2. Fall back to localStorage ONLY if server save failed (offline / no Express)
-    if (!serverSaved) {
-      this.saveCustomProduct(payload as Product);
-    }
-
-    ProductService.clearCache();
-    if (typeof window !== 'undefined') {
-      window.dispatchEvent(new CustomEvent('catalog-updated', { detail: { action: 'add', product: payload } }));
-    }
-
-    // 3. Dispatch pushed product data to Web3Forms (Google Sheet log & email notification)
-    try {
-      await this.sendToWeb3Forms('add', payload);
-    } catch (w3err) {
-      console.warn('[AdminService] Web3Forms push warning:', w3err);
-    }
-
-    // 4. Forward to Apps Script (awaited so we can log errors properly)
+    // 2. Direct fetch to Google Apps Script Web App
     const url = this.getScriptUrl().trim();
     if (url) {
       try {
-        // Strip base64 images from payload — Apps Script handles image upload to Drive itself
         const scriptPayload = {
           ...payload,
           imageUrl: payload.imageUrl?.startsWith('data:') ? '' : (payload.imageUrl || ''),
@@ -283,21 +267,34 @@ export class AdminService {
           body: JSON.stringify(scriptPayload),
         });
         const scriptText = await scriptRes.text();
-        console.log('[AdminService] Apps Script response:', scriptText);
+        console.log('[AdminService] Direct Apps Script response:', scriptText);
+        scriptSaved = true;
       } catch (e) {
-        console.warn('[AdminService] Apps script notice:', e);
+        console.warn('[AdminService] Direct Apps script notice:', e);
       }
+    }
+
+    // 3. Dispatch pushed product data to Web3Forms
+    try {
+      await this.sendToWeb3Forms('add', payload);
+    } catch (w3err) {
+      console.warn('[AdminService] Web3Forms push warning:', w3err);
+    }
+
+    ProductService.clearCache();
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('catalog-updated', { detail: { action: 'add', product: payload } }));
     }
 
     return {
       success: true,
-      message: `Product "${payload.name}" saved to Web3Forms and catalog successfully!`,
+      message: resultMessage || `Product "${payload.name}" saved to Google Spreadsheet successfully!`,
       productId: generatedId,
     };
   }
 
   /**
-   * Updates an existing product via local API and Google Apps Script
+   * Updates an existing product directly in Google Spreadsheet via Apps Script
    */
   static async updateProduct(id: string, product: Partial<Product>): Promise<AdminApiResponse> {
     const payload = {
@@ -328,8 +325,9 @@ export class AdminService {
     // Unmark from deleted keys
     if (product.name) this.unmarkDeletedKey(id, product.name);
 
-    // 1. Save to server catalog.json FIRST (source of truth for all devices)
-    let serverSaved = false;
+    let resultMessage = '';
+
+    // 1. Forward to Google Apps Script via server proxy
     try {
       const serverRes = await fetch('/api/admin/save-product', {
         method: 'POST',
@@ -337,24 +335,24 @@ export class AdminService {
         body: JSON.stringify(payload),
       });
       if (serverRes.ok) {
-        serverSaved = true;
-        // Server save succeeded — remove from localStorage custom products
-        // so it doesn't override server data on THIS or OTHER devices
-        this.removeCustomProduct(id, product.name);
-        console.log(`[AdminService] Server catalog updated for "${payload.name}"`);
+        const data = await serverRes.json();
+        resultMessage = data.message || `Product "${payload.name}" updated in Google Spreadsheet!`;
+        console.log(`[AdminService] Server proxy updated "${payload.name}" in Google Spreadsheet`);
       }
     } catch (e) {
-      console.warn('[AdminService] Local server update failed, falling back to localStorage:', e);
+      console.warn('[AdminService] Server update proxy notice:', e);
     }
 
-    // 2. Fall back to localStorage ONLY if server save failed (offline / no Express)
-    if (!serverSaved) {
-      this.saveCustomProduct(payload as Product);
-    }
-
-    ProductService.clearCache();
-    if (typeof window !== 'undefined') {
-      window.dispatchEvent(new CustomEvent('catalog-updated', { detail: { action: 'edit', product: payload } }));
+    // 2. Direct fetch to Google Apps Script
+    const url = this.getScriptUrl().trim();
+    if (url) {
+      try {
+        fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain' },
+          body: JSON.stringify(payload),
+        }).catch((e) => console.warn('[AdminService] Direct Apps script update notice:', e));
+      } catch (e) {}
     }
 
     // 3. Dispatch pushed update to Web3Forms
@@ -364,30 +362,23 @@ export class AdminService {
       console.warn('[AdminService] Web3Forms edit warning:', w3err);
     }
 
-    // 4. Forward to Apps Script in background
-    const url = this.getScriptUrl().trim();
-    if (url) {
-      try {
-        fetch(url, {
-          method: 'POST',
-          headers: { 'Content-Type': 'text/plain' },
-          body: JSON.stringify(payload),
-        }).catch((e) => console.warn('[AdminService] Apps script update notice:', e));
-      } catch (e) {}
+    ProductService.clearCache();
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('catalog-updated', { detail: { action: 'edit', product: payload } }));
     }
 
     return {
       success: true,
-      message: `Product "${payload.name}" updated successfully!`,
+      message: resultMessage || `Product "${payload.name}" updated in Google Spreadsheet successfully!`,
       productId: id,
     };
   }
 
   /**
-   * Deletes a product by ID or Name via local server and Google Apps Script
+   * Deletes a product by ID or Name from Google Spreadsheet via Apps Script
    */
   static async deleteProduct(id: string, name?: string): Promise<AdminApiResponse> {
-    // 1. Remove from custom products and mark as deleted in localStorage immediately (guarantees it never reappears on reload)
+    // 1. Mark as deleted in session & clear cache immediately
     this.removeCustomProduct(id, name);
     this.markDeletedKey(id, name);
     ProductService.clearCache();
@@ -395,18 +386,24 @@ export class AdminService {
       window.dispatchEvent(new CustomEvent('catalog-updated', { detail: { action: 'delete', id, name } }));
     }
 
-    // 2. Delete directly from local public/catalog.json on disk
+    let resultMessage = '';
+
+    // 2. Forward deletion to Google Apps Script via server proxy
     try {
-      await fetch('/api/admin/delete-product', {
+      const serverRes = await fetch('/api/admin/delete-product', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id, name }),
       });
+      if (serverRes.ok) {
+        const data = await serverRes.json();
+        resultMessage = data.message || `Product "${name || id}" deleted from Google Spreadsheet.`;
+      }
     } catch (localErr) {
-      console.warn('[AdminService] Local disk delete notice:', localErr);
+      console.warn('[AdminService] Server proxy delete notice:', localErr);
     }
 
-    // 3. Attempt forward to Apps Script in background
+    // 3. Direct fetch to Apps Script
     const url = this.getScriptUrl().trim();
     if (url) {
       const payload = {
@@ -419,7 +416,7 @@ export class AdminService {
           method: 'POST',
           headers: { 'Content-Type': 'text/plain' },
           body: JSON.stringify(payload),
-        }).catch((e) => console.warn('[AdminService] Apps script delete notice:', e));
+        }).catch((e) => console.warn('[AdminService] Direct Apps script delete notice:', e));
       } catch (e) {}
     }
 
@@ -428,7 +425,7 @@ export class AdminService {
 
     return {
       success: true,
-      message: `Product "${name || id}" deleted successfully from catalog.`,
+      message: resultMessage || `Product "${name || id}" deleted successfully from Google Spreadsheet.`,
     };
   }
 

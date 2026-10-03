@@ -1,59 +1,16 @@
 import { Product, YarnCategory } from '../types';
-import { PRODUCTS_CATALOG } from '../data/products';
 
 let cachedCatalog: Product[] | null = null;
 let lastFetchTime = 0;
 const CACHE_DURATION_MS = 15 * 1000;
 
-// New catalog spreadsheet — exported as CSV so the website can read it without auth
+// Google Apps Script Web App URL — serves product list as JSON via ?action=list
+const APPS_SCRIPT_URL = (import.meta as any)?.env?.VITE_APPS_SCRIPT_URL ||
+  'https://script.google.com/macros/s/AKfycbzrggQItVkhV9fhT851L-rRYEvQ9BZG30ew2YXkuDojt5JJ0R09hXt-XaPs5bMV0TP3oQ/exec';
+
+// Catalog spreadsheet CSV export URL — used as a fallback if Apps Script JSON is unreachable
 const GOOGLE_SHEET_CSV_URL = (import.meta as any)?.env?.VITE_CATALOG_SHEET_CSV_URL ||
-  'https://docs.google.com/spreadsheets/d/13dYmzJoPkpLGCDt7gZ7znKJARPSknghUzcEmG2PKtFM/export?format=csv';
-
-export function getDeletedKeysFromStorage(): Set<string> {
-  const set = new Set<string>();
-  try {
-    if (typeof window !== 'undefined' && window.localStorage) {
-      const stored = localStorage.getItem('ved_deleted_product_ids');
-      if (stored) {
-        JSON.parse(stored).forEach((k: string) => {
-          const clean = String(k).toLowerCase().trim();
-          set.add(clean);
-          const withoutYarn = clean.replace(/\s+yarn$/i, '').trim();
-          if (withoutYarn) set.add(withoutYarn);
-          set.add(withoutYarn + ' yarn');
-        });
-      }
-    }
-  } catch (e) {}
-  return set;
-}
-
-export function getCustomProductsFromStorage(): Product[] {
-  try {
-    if (typeof window !== 'undefined' && window.localStorage) {
-      const stored = localStorage.getItem('ved_custom_products');
-      if (stored) {
-        const list = JSON.parse(stored);
-        if (Array.isArray(list)) return list;
-      }
-    }
-  } catch (e) {}
-  return [];
-}
-
-function isProductDeleted(p: { id?: string; name?: string }, deletedKeys: Set<string>): boolean {
-  if (!p) return false;
-  const id = String(p.id || '').toLowerCase().trim();
-  const name = String(p.name || '').toLowerCase().trim();
-  const nameWithoutYarn = name.replace(/\s+yarn$/i, '').trim();
-
-  if (id && deletedKeys.has(id)) return true;
-  if (name && deletedKeys.has(name)) return true;
-  if (nameWithoutYarn && deletedKeys.has(nameWithoutYarn)) return true;
-  if (nameWithoutYarn && deletedKeys.has(nameWithoutYarn + ' yarn')) return true;
-
-  return false;
-}
+  'https://docs.google.com/spreadsheets/d/1YohPYHghKzQO2zMlJc3MsFpBrNEHtG3qqE7cXAr_I9o/export?format=csv';
 
 function parseCSV(text: string): string[][] {
   const lines: string[][] = [];
@@ -93,7 +50,7 @@ function parseCSV(text: string): string[][] {
 }
 
 /**
- * Parses CSV from the NEW catalog spreadsheet.
+ * Parses CSV from the catalog spreadsheet into Product objects.
  * Expected columns (row 1 = headers):
  * id | name | category | categoryLabel | countOrDenier | description |
  * recommendedUses | features | sampleAvailable | origin | popularFor |
@@ -103,113 +60,54 @@ export function parseLiveGoogleSheetProducts(csvText: string): Product[] {
   const lines = parseCSV(csvText);
   if (lines.length <= 1) return [];
 
-  // Detect if this is the NEW structured sheet (first column = 'id') or legacy Web3Forms sheet
   const headerRow = lines[0].map(h => h.toLowerCase().trim());
-  const isNewStructuredSheet = headerRow[0] === 'id' || headerRow.includes('categoryLabel'.toLowerCase()) || headerRow.includes('countordenier');
 
-  if (isNewStructuredSheet) {
-    // --- NEW CATALOG SHEET: columns match Apps Script schema ---
-    const idIdx            = headerRow.indexOf('id');
-    const nameIdx          = headerRow.indexOf('name');
-    const categoryIdx      = headerRow.indexOf('category');
-    const categoryLabelIdx = headerRow.findIndex(h => h === 'categorylabel');
-    const countIdx         = headerRow.findIndex(h => h === 'countordenier' || h === 'count');
-    const descIdx          = headerRow.indexOf('description');
-    const usesIdx          = headerRow.findIndex(h => h === 'recommendeduses');
-    const featsIdx         = headerRow.indexOf('features');
-    const sampleIdx        = headerRow.findIndex(h => h === 'sampleavailable');
-    const originIdx        = headerRow.indexOf('origin');
-    const popIdx           = headerRow.findIndex(h => h === 'popularfor');
-    const imageIdx         = headerRow.findIndex(h => h === 'imageurl' || h === 'image');
-    const shadeIdx         = headerRow.findIndex(h => h === 'shadecardurl' || h === 'shadeurl');
-    const badgeIdx         = headerRow.indexOf('badge');
+  const idIdx            = headerRow.indexOf('id');
+  const nameIdx          = headerRow.indexOf('name');
+  const categoryIdx      = headerRow.indexOf('category');
+  const categoryLabelIdx = headerRow.findIndex(h => h === 'categorylabel');
+  const countIdx         = headerRow.findIndex(h => h === 'countordenier' || h === 'count');
+  const descIdx          = headerRow.indexOf('description');
+  const usesIdx          = headerRow.findIndex(h => h === 'recommendeduses');
+  const featsIdx         = headerRow.indexOf('features');
+  const sampleIdx        = headerRow.findIndex(h => h === 'sampleavailable');
+  const originIdx        = headerRow.indexOf('origin');
+  const popIdx           = headerRow.findIndex(h => h === 'popularfor');
+  const imageIdx         = headerRow.findIndex(h => h === 'imageurl' || h === 'image');
+  const shadeIdx         = headerRow.findIndex(h => h === 'shadecardurl' || h === 'shadeurl');
+  const badgeIdx         = headerRow.indexOf('badge');
 
-    const products: Product[] = [];
-    lines.slice(1).forEach((row, idx) => {
-      const name = nameIdx >= 0 ? row[nameIdx] : '';
-      if (!name || name.trim() === '') return;
-
-      let cat = (categoryIdx >= 0 ? row[categoryIdx] : 'fancy') as YarnCategory;
-      if (['winter-wear','sweaters','sweater'].includes(cat as string)) cat = 'garments';
-
-      const catLabel = (categoryLabelIdx >= 0 && row[categoryLabelIdx]) ? row[categoryLabelIdx] :
-        (cat === 'garments' ? 'Winter Wear' :
-         cat === 'china' ? 'China / Imported Yarn' :
-         cat === 'acrylic-blends' ? 'Acrylic & Blends' :
-         cat === 'fabrics' ? 'Fabrics & Textile Rolls' : 'Fancy Yarn');
-
-      const rawUses  = usesIdx  >= 0 ? row[usesIdx]  : '';
-      const rawFeats = featsIdx >= 0 ? row[featsIdx]  : '';
-
-      products.push({
-        id:             idIdx >= 0 && row[idIdx] ? row[idIdx] : `sheet-${idx + 1}`,
-        name:           name.trim(),
-        category:       cat,
-        categoryLabel:  catLabel,
-        countOrDenier:  countIdx  >= 0 ? row[countIdx]  : '',
-        description:    descIdx   >= 0 ? row[descIdx]   : '',
-        recommendedUses: rawUses  ? rawUses.split(',').map(s => s.trim()).filter(Boolean)  : [],
-        features:        rawFeats ? rawFeats.split(',').map(s => s.trim()).filter(Boolean) : [],
-        sampleAvailable: sampleIdx >= 0 ? String(row[sampleIdx]).toUpperCase() === 'TRUE' : true,
-        origin:         originIdx >= 0 ? row[originIdx] : 'Ved Enterprises',
-        popularFor:     popIdx    >= 0 ? row[popIdx]    : '',
-        imageUrl:       imageIdx  >= 0 ? row[imageIdx]  : '',
-        shadeCardUrl:   shadeIdx  >= 0 ? row[shadeIdx]  : '',
-        badge:          badgeIdx  >= 0 ? row[badgeIdx]  : '',
-      });
-    });
-    return products;
-  }
-
-  // --- LEGACY Web3Forms sheet fallback (old format: Timestamp | Name | Description | ShadeURL | PictureURL) ---
-  const dataRows = lines.slice(1);
   const products: Product[] = [];
+  lines.slice(1).forEach((row, idx) => {
+    const name = nameIdx >= 0 ? row[nameIdx] : '';
+    if (!name || name.trim() === '') return;
 
-  dataRows.forEach((r, idx) => {
-    const rawName = r[1] || '';
-    const description = r[2] || '';
-    const shadeUrl = r[3] || '';
-    const pictureUrl = r[4] || '';
+    let cat = (categoryIdx >= 0 ? row[categoryIdx] : 'fancy') as YarnCategory;
+    if (['winter-wear','sweaters','sweater'].includes(cat as string)) cat = 'garments';
 
-    if (!rawName || rawName.toLowerCase().includes('connection test')) return;
+    const catLabel = (categoryLabelIdx >= 0 && row[categoryLabelIdx]) ? row[categoryLabelIdx] :
+      ProductService.getCategoryLabel(cat);
 
-    const lowerDesc = (rawName + ' ' + description).toLowerCase();
-    const isGarment =
-      lowerDesc.includes('garment') || lowerDesc.includes('sweater') ||
-      lowerDesc.includes('cardigan') || lowerDesc.includes('winter wear') ||
-      lowerDesc.includes('pullover') || lowerDesc.includes('muffler') ||
-      lowerDesc.includes('vest') || lowerDesc.includes('coat');
-
-    let cleanName = rawName.replace(/_\d{8}_\d{6}$/g, '').trim();
-    cleanName = cleanName.replace(/(\d+)_(\d+)/g, '$1/$2');
-    if (!isGarment && !cleanName.toLowerCase().includes('yarn')) cleanName += ' Yarn';
-
-    let category: YarnCategory = 'fancy';
-    let categoryLabel = 'Fancy Yarn';
-    if (isGarment) { category = 'garments'; categoryLabel = 'Winter Wear'; }
-    else if (lowerDesc.includes('china') || lowerDesc.includes('vislon') || lowerDesc.includes('suede') || lowerDesc.includes('chenille') || lowerDesc.includes('nylon hair')) {
-      category = 'china'; categoryLabel = 'China / Imported Yarn';
-    } else if (lowerDesc.includes('acrylic') || lowerDesc.includes('daffodil') || lowerDesc.includes('rainbow')) {
-      category = 'acrylic-blends'; categoryLabel = 'Acrylic & Blends';
-    }
+    const rawUses  = usesIdx  >= 0 ? row[usesIdx]  : '';
+    const rawFeats = featsIdx >= 0 ? row[featsIdx]  : '';
 
     products.push({
-      id: `live-sheet-${idx + 1}-${cleanName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
-      name: cleanName,
-      category, categoryLabel,
-      countOrDenier: 'Standard Count',
-      description: description || 'High quality wholesale yarn from Ved Enterprises Ludhiana.',
-      recommendedUses: ['Winter Wear', 'Knitwear'],
-      features: ['High Quality', 'Direct Mill Supply'],
-      sampleAvailable: true,
-      origin: 'Ved Enterprises',
-      popularFor: 'Wholesale Supply',
-      imageUrl: pictureUrl,
-      shadeCardUrl: shadeUrl,
-      badge: '',
+      id:             idIdx >= 0 && row[idIdx] ? row[idIdx] : `sheet-${idx + 1}`,
+      name:           name.trim(),
+      category:       cat,
+      categoryLabel:  catLabel,
+      countOrDenier:  countIdx  >= 0 ? row[countIdx]  : '',
+      description:    descIdx   >= 0 ? row[descIdx]   : '',
+      recommendedUses: rawUses  ? rawUses.split(',').map(s => s.trim()).filter(Boolean)  : [],
+      features:        rawFeats ? rawFeats.split(',').map(s => s.trim()).filter(Boolean) : [],
+      sampleAvailable: sampleIdx >= 0 ? String(row[sampleIdx]).toUpperCase() === 'TRUE' : true,
+      origin:         originIdx >= 0 ? row[originIdx] : 'Ved Enterprises',
+      popularFor:     popIdx    >= 0 ? row[popIdx]    : '',
+      imageUrl:       imageIdx  >= 0 ? row[imageIdx]  : '',
+      shadeCardUrl:   shadeIdx  >= 0 ? row[shadeIdx]  : '',
+      badge:          badgeIdx  >= 0 ? row[badgeIdx]  : '',
     });
   });
-
   return products;
 }
 
@@ -224,7 +122,11 @@ export class ProductService {
   }
 
   /**
-   * Loads product catalog from live Google Sheet CSV or static catalog with fallback
+   * Loads product catalog from Google Spreadsheet (single source of truth).
+   * 
+   * Priority:
+   * 1. Apps Script JSON endpoint (?action=list) — fastest, structured JSON
+   * 2. Google Sheet CSV export URL — fallback if Apps Script is unreachable
    */
   static async getCatalog(forceRefresh = false): Promise<Product[]> {
     const now = Date.now();
@@ -234,167 +136,99 @@ export class ProductService {
       return cachedCatalog;
     }
 
-    // ── 1. Build deleted keys: SERVER first (shared across ALL devices), localStorage as supplement ──
-    // Server's deleted-products.json is the authoritative cross-device source of truth
-    const deletedKeys = new Set<string>();
+    let products: Product[] = [];
+
+    // ── 1. Try Apps Script JSON endpoint (preferred — returns structured JSON directly) ──
+    const customUrl = typeof window !== 'undefined' ? localStorage.getItem('ved_apps_script_url') : null;
+    const scriptUrl = (customUrl && customUrl.trim()) ? customUrl.trim() : APPS_SCRIPT_URL.trim();
 
     try {
-      const delRes = await fetch('/api/admin/deleted-products', {
-        headers: { 'Cache-Control': 'no-cache' },
-      });
-      if (delRes.ok) {
-        const serverDeleted = await delRes.json();
-        if (Array.isArray(serverDeleted)) {
-          serverDeleted.forEach((k: string) => {
-            const clean = String(k).toLowerCase().trim();
-            deletedKeys.add(clean);
-            const withoutYarn = clean.replace(/\s+yarn$/i, '').trim();
-            if (withoutYarn) deletedKeys.add(withoutYarn);
-            deletedKeys.add(withoutYarn + ' yarn');
-          });
-        }
-      }
-    } catch (e) {}
-
-    // Also add current device's localStorage deleted keys as same-session supplement
-    try {
-      const localDeleted = getDeletedKeysFromStorage();
-      localDeleted.forEach(k => deletedKeys.add(k));
-    } catch (e) {}
-
-    // 2. Load disk/static catalog.json as primary baseline
-    let baseProducts: Product[] = [];
-    try {
-      // Try /api/admin/catalog first (served fresh from disk by Express, bypasses Vite static cache)
-      // Fall back to /catalog.json with cache-busting
-      let response: Response | null = null;
-      try {
-        response = await fetch('/api/admin/catalog', {
-          headers: { 'Accept': 'application/json', 'Cache-Control': 'no-cache' },
+      if (scriptUrl) {
+        const listUrl = `${scriptUrl}${scriptUrl.includes('?') ? '&' : '?'}action=list&t=${now}`;
+        const res = await fetch(listUrl, {
+          headers: { 'Accept': 'application/json' },
         });
-        if (!response.ok) response = null;
-      } catch (_) {}
-      if (!response) {
-        response = await fetch(`/catalog.json?v=${now}`, {
-          headers: { 'Accept': 'application/json', 'Cache-Control': 'no-cache' },
-        });
-      }
-      if (response.ok) {
-        const rawData = await response.json();
-        if (Array.isArray(rawData) && rawData.length > 0) {
-          baseProducts = rawData.map((item: any, index: number) => ({
-            ...item,
-            id: item.id ? String(item.id) : `prod-${index + 1}`,
-            name: item.name || 'Yarn Product',
-            category: (item.category || 'fancy') as YarnCategory,
-            categoryLabel: item.categoryLabel || this.getCategoryLabel(item.category),
-            countOrDenier: item.countOrDenier || item.count || 'Standard Count',
-            description: item.description || 'High quality wholesale yarn from Ved Enterprises Ludhiana.',
-            recommendedUses: Array.isArray(item.recommendedUses)
-              ? item.recommendedUses
-              : (typeof item.recommendedUses === 'string' && item.recommendedUses ? item.recommendedUses.split(',').map((s: string) => s.trim()) : ['Knitwear', 'Winter Wear']),
-            features: Array.isArray(item.features)
-              ? item.features
-              : (typeof item.features === 'string' && item.features ? item.features.split(',').map((s: string) => s.trim()) : ['High Quality', 'Soft Touch']),
-            sampleAvailable: item.sampleAvailable !== false,
-            origin: item.origin || 'Ved Enterprises Wholesale',
-            popularFor: item.popularFor || 'Wholesale Knitwear',
-            imageUrl: item.imageUrl || item.image || '',
-            shadeCardUrl: item.shadeCardUrl || item.shadeUrl || '',
-            pictureUrl: item.pictureUrl || item.imageUrl || item.image || '',
-            badge: item.badge || '',
-          }));
+        if (res.ok) {
+          const rawData = await res.json();
+          if (Array.isArray(rawData) && rawData.length > 0) {
+            products = rawData.map((item: any, index: number) => ({
+              id: item.id ? String(item.id) : `prod-${index + 1}`,
+              name: item.name || 'Yarn Product',
+              category: (item.category === 'winter-wear' || item.category === 'sweaters'
+                ? 'garments' : item.category || 'fancy') as YarnCategory,
+              categoryLabel: item.categoryLabel || this.getCategoryLabel(item.category),
+              countOrDenier: item.countOrDenier || item.count || '',
+              description: item.description || '',
+              recommendedUses: Array.isArray(item.recommendedUses)
+                ? item.recommendedUses
+                : (typeof item.recommendedUses === 'string' && item.recommendedUses
+                  ? item.recommendedUses.split(',').map((s: string) => s.trim()).filter(Boolean)
+                  : []),
+              features: Array.isArray(item.features)
+                ? item.features
+                : (typeof item.features === 'string' && item.features
+                  ? item.features.split(',').map((s: string) => s.trim()).filter(Boolean)
+                  : []),
+              sampleAvailable: item.sampleAvailable === true || String(item.sampleAvailable).toUpperCase() === 'TRUE',
+              origin: item.origin || 'Ved Enterprises',
+              popularFor: item.popularFor || '',
+              imageUrl: item.imageUrl || item.image || '',
+              shadeCardUrl: item.shadeCardUrl || item.shadeUrl || '',
+              badge: item.badge || '',
+            }));
+            console.log(`[ProductService] Loaded ${products.length} products from Apps Script`);
+          }
         }
       }
     } catch (err) {
-      console.warn('[ProductService] Warning loading /catalog.json:', err);
+      console.warn('[ProductService] Apps Script fetch failed, trying proxy/CSV fallback:', err);
     }
 
-    if (baseProducts.length === 0) {
-      baseProducts = [...PRODUCTS_CATALOG];
-    } else {
-      // Merge any default items from PRODUCTS_CATALOG that are missing from catalog.json
-      const existingIds = new Set(baseProducts.map((p) => String(p.id).toLowerCase().trim()));
-      const existingNames = new Set(baseProducts.map((p) => p.name.toLowerCase().trim().replace(/\s+yarn$/i, '')));
-      PRODUCTS_CATALOG.forEach((p) => {
-        const pId = String(p.id).toLowerCase().trim();
-        const cleanName = p.name.toLowerCase().trim().replace(/\s+yarn$/i, '');
-        if (!existingIds.has(pId) && !existingNames.has(cleanName) && !isProductDeleted(p, deletedKeys)) {
-          baseProducts.push(p);
-          existingIds.add(pId);
-          existingNames.add(cleanName);
-        }
-      });
-    }
-
-    // 3. Try Live Auto-Sync directly from public Google Sheet CSV and merge any new items
-    try {
-      const sheetResponse = await fetch(`${GOOGLE_SHEET_CSV_URL}&v=${now}`, {
-        headers: { 'Accept': 'text/csv' },
-      });
-
-      if (sheetResponse.ok) {
-        const csvText = await sheetResponse.text();
-        const liveSheetProducts = parseLiveGoogleSheetProducts(csvText);
-
-        if (liveSheetProducts.length > 0) {
-          // Add any new products or enrich existing products with Drive URLs from sheet
-          liveSheetProducts.forEach((sp) => {
-            const clean = sp.name.toLowerCase().trim().replace(/[^a-z0-9]/g, '');
-            const existingIdx = baseProducts.findIndex(
-              (p) => p.name.toLowerCase().trim().replace(/[^a-z0-9]/g, '') === clean
-            );
-            if (existingIdx >= 0) {
-              if (!baseProducts[existingIdx].pictureUrl && sp.pictureUrl) {
-                baseProducts[existingIdx].pictureUrl = sp.pictureUrl;
-              }
-              if (!baseProducts[existingIdx].shadeUrl && sp.shadeUrl) {
-                baseProducts[existingIdx].shadeUrl = sp.shadeUrl;
-              }
-            } else if (!isProductDeleted(sp, deletedKeys)) {
-              baseProducts.push(sp);
-            }
-          });
-        }
-      }
-    } catch (sheetErr) {
-      console.warn('[ProductService] Live Google Sheet fetch notice:', sheetErr);
-    }
-
-    // ── 4. Merge custom products added via Admin Panel (localStorage) ──
-    // IMPORTANT: localStorage custom products are ADDITIVE ONLY — they fill in products
-    // that don't exist in server catalog.json. If a product already exists on the server,
-    // the server version is authoritative (prevents mobile/PC desync where stale
-    // localStorage data on one device overrides edits made on another device).
-    const customProducts = getCustomProductsFromStorage();
-    if (customProducts.length > 0) {
-      customProducts.forEach((cp) => {
-        const cpId = String(cp.id || '').toLowerCase().trim();
-        const cpClean = (cp.name || '').toLowerCase().trim().replace(/\s+yarn$/i, '');
-        if (!isProductDeleted(cp, deletedKeys)) {
-          const existsInCatalog = baseProducts.some(
-            (p) =>
-              (cpId && String(p.id || '').toLowerCase().trim() === cpId) ||
-              (cpClean && (p.name || '').toLowerCase().trim().replace(/\s+yarn$/i, '') === cpClean)
-          );
-          // Only add if this product doesn't already exist in server catalog
-          if (!existsInCatalog) {
-            baseProducts.unshift(cp);
+    // ── 2. Fallback: Backend proxy route (fetches from Google Sheets server-side to avoid CORS) ──
+    if (products.length === 0) {
+      try {
+        const proxyRes = await fetch(`/api/catalog?t=${now}`);
+        if (proxyRes.ok) {
+          const proxyData = await proxyRes.json();
+          if (Array.isArray(proxyData) && proxyData.length > 0) {
+            products = proxyData;
+            console.log(`[ProductService] Loaded ${products.length} products from server proxy`);
           }
         }
-      });
+      } catch (proxyErr) {}
     }
 
-    // ── 5. Filter all products against deletedKeys (server + device) ──
-    const filteredProducts = baseProducts.filter((p) => !isProductDeleted(p, deletedKeys));
+    // ── 2. Fallback: Google Sheet CSV export (if Apps Script failed or returned empty) ──
+    if (products.length === 0) {
+      try {
+        const csvUrl = `${GOOGLE_SHEET_CSV_URL}${GOOGLE_SHEET_CSV_URL.includes('?') ? '&' : '?'}v=${now}`;
+        const sheetResponse = await fetch(csvUrl, {
+          headers: { 'Accept': 'text/csv' },
+        });
+        if (sheetResponse.ok) {
+          const csvText = await sheetResponse.text();
+          products = parseLiveGoogleSheetProducts(csvText);
+          if (products.length > 0) {
+            console.log(`[ProductService] Loaded ${products.length} products from Sheet CSV`);
+          }
+        }
+      } catch (sheetErr) {
+        console.warn('[ProductService] Sheet CSV fetch failed:', sheetErr);
+      }
+    }
 
-    if (cachedCatalog && cachedCatalog.length > 0 && filteredProducts.length < cachedCatalog.length && !forceRefresh) {
+    // ── 3. Safety: return cached data if both sources failed ──
+    if (products.length === 0 && cachedCatalog && cachedCatalog.length > 0) {
+      console.warn('[ProductService] Both sources failed, returning cached data');
       return cachedCatalog;
     }
 
-    cachedCatalog = filteredProducts;
+    // Filter out any products without a valid name
+    products = products.filter(p => p.name && p.name.trim() !== '');
+
+    cachedCatalog = products;
     lastFetchTime = now;
-    return filteredProducts;
+    return products;
   }
 
   /**
@@ -408,7 +242,7 @@ export class ProductService {
   /**
    * Helper to derive readable category labels
    */
-  private static getCategoryLabel(category?: string): string {
+  static getCategoryLabel(category?: string): string {
     switch (category) {
       case 'china':
         return 'China / Imported Yarn';
@@ -417,6 +251,7 @@ export class ProductService {
       case 'fabrics':
         return 'Fabrics & Textile Rolls';
       case 'garments':
+      case 'winter-wear':
         return 'Winter Wear';
       case 'fancy':
       default:
