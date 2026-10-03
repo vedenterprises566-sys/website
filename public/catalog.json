@@ -511,31 +511,6 @@
     "badge": "Live Collection"
   },
   {
-    "id": "garment-vest-corporate-acrylic",
-    "name": "Corporate & School Uniform V-Neck Knitted Vest",
-    "category": "garments",
-    "categoryLabel": "Winter Wear",
-    "countOrDenier": "10GG Fine Gauge (Daffodil 100% Acrylic)",
-    "description": "Sleeveless V-neck sweater vest built specifically for school uniforms, college staff, and corporate workwear. Resists daily pill wear and frequent machine washes.",
-    "recommendedUses": [
-      "School Uniforms",
-      "Corporate Uniforms",
-      "Staff Knitwear"
-    ],
-    "features": [
-      "10GG Flat Knit",
-      "Reinforced Rib Neck & Arms",
-      "100% Pill Resistant",
-      "Deep Fast Dyes"
-    ],
-    "sampleAvailable": true,
-    "origin": "Ved Garment Collection (Ludhiana)",
-    "popularFor": "School Uniform Vests",
-    "imageUrl": "",
-    "shadeCardUrl": "",
-    "badge": "Live Collection"
-  },
-  {
     "id": "garment-oversized-chenille-coat",
     "name": "Oversized Velvet Plush Winter Coat Cardigan",
     "category": "garments",
