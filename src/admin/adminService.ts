@@ -260,6 +260,9 @@ export class AdminService {
           imageUrl: payload.imageUrl || '',
           image:    payload.imageUrl || '',
           pictureUrl: payload.imageUrl || '',
+          shadeCardUrl: payload.shadeCardUrl || '',
+          shadeUrl:     payload.shadeCardUrl || '',
+          shadePdfUrl:  payload.shadeCardUrl || '',
         };
         const scriptRes = await fetch(url, {
           method: 'POST',
@@ -318,7 +321,11 @@ export class AdminService {
       origin: product.origin || 'Ved Enterprises',
       popularFor: product.popularFor || '',
       imageUrl: product.imageUrl || product.image || '',
+      image: product.imageUrl || product.image || '',
+      pictureUrl: product.imageUrl || product.image || '',
       shadeCardUrl: product.shadeCardUrl || '',
+      shadeUrl: product.shadeCardUrl || '',
+      shadePdfUrl: product.shadeCardUrl || '',
       badge: product.badge || '',
     };
 

@@ -93,3 +93,40 @@ export function handleProductImageError(
   // Otherwise gracefully hide the broken image element
   img.style.display = 'none';
 }
+
+/**
+ * Detects if a shade card link is a PDF document
+ */
+export function isPdfShadeCard(url?: string | null): boolean {
+  if (!url || typeof url !== 'string') return false;
+  const lower = url.toLowerCase().trim();
+  if (lower.startsWith('data:application/pdf') || lower.includes('.pdf')) return true;
+  if (lower.includes('/preview') || lower.includes('usp=sharing') || lower.includes('drive.google.com/file/d/')) {
+    if (!lower.includes('.jpg') && !lower.includes('.jpeg') && !lower.includes('.png') && !lower.includes('.webp') && !lower.includes('googleusercontent.com/d/')) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/**
+ * Resolves shade card URL for viewing:
+ * - If PDF on Google Drive -> returns embeddable preview URL https://drive.google.com/file/d/{id}/preview
+ * - If Image on Google Drive -> returns direct edge CDN URL https://lh3.googleusercontent.com/d/{id}
+ * - Otherwise returns original URL
+ */
+export function resolveShadeCardUrl(url?: string | null): string {
+  if (!url || typeof url !== 'string') return '';
+  const trimmed = url.trim();
+  if (!trimmed) return '';
+
+  const fileId = extractGoogleDriveFileId(trimmed);
+  if (!fileId) return trimmed;
+
+  if (isPdfShadeCard(trimmed)) {
+    return `https://drive.google.com/file/d/${fileId}/preview`;
+  }
+
+  return `https://lh3.googleusercontent.com/d/${fileId}`;
+}
+

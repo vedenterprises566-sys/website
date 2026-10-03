@@ -49,7 +49,7 @@ import {
 } from './adminUtils';
 import { AuthService } from './authService';
 import { AdminLogin } from './AdminLogin';
-import { resolveProductImageUrl, handleProductImageError } from '../utils/imageUtils';
+import { resolveProductImageUrl, handleProductImageError, isPdfShadeCard, resolveShadeCardUrl } from '../utils/imageUtils';
 
 export const AdminPanel: React.FC = () => {
   // Authentication state
@@ -319,20 +319,11 @@ export const AdminPanel: React.FC = () => {
     }
   };
 
-  // Handle category change in form (clearing shade card if switched away from yarns)
+  // Handle category change in form
   const handleCategoryChangeInForm = (newCategory: YarnCategory) => {
-    const isYarn = ['fancy', 'china', 'acrylic-blends'].includes(newCategory);
     setFormData((prev) => ({
       ...prev,
       category: newCategory,
-      ...(!isYarn
-        ? {
-            shadeCardUrl: '',
-            shadeCardFileName: undefined,
-            shadeCardFileType: null,
-            shadeCardFileSize: undefined,
-          }
-        : {}),
     }));
   };
 
@@ -431,8 +422,7 @@ export const AdminPanel: React.FC = () => {
       recommendedUses: defaultUses,
       features: defaultFeatures,
       imageUrl: formData.imageUrl.trim(),
-      // Shade card only saved for yarn categories
-      shadeCardUrl: isYarn ? formData.shadeCardUrl.trim() : '',
+      shadeCardUrl: formData.shadeCardUrl.trim(),
       badge: defaultBadge,
       origin: defaultOrigin,
       popularFor: isWinterWear ? 'Winter Wear Collections' : 'Bulk Wholesale Dispatch',
@@ -668,9 +658,7 @@ export const AdminPanel: React.FC = () => {
               ? `/catalog/garments/winter-wear/${p.id}`
               : `/catalog/yarns/${p.category}-yarns/${p.id}`;
             const hasShadeCard = Boolean(p.shadeCardUrl);
-            const isPdfShade =
-              hasShadeCard &&
-              (p.shadeCardUrl!.toLowerCase().endsWith('.pdf') || p.shadeCardUrl!.includes('.pdf'));
+            const isPdfShade = hasShadeCard && isPdfShadeCard(p.shadeCardUrl);
 
             return (
               <div key={`m-${p.id}`} className="p-3.5 sm:p-4 space-y-3 hover:bg-slate-50/70 transition-colors">
@@ -715,7 +703,7 @@ export const AdminPanel: React.FC = () => {
                       )}
                       {hasShadeCard && (
                         <a
-                          href={p.shadeCardUrl}
+                          href={resolveShadeCardUrl(p.shadeCardUrl)}
                           target="_blank"
                           rel="noopener noreferrer"
                           className={`inline-flex items-center gap-1 text-[0.625rem] font-bold px-1.5 py-0.5 rounded border transition-colors ${
@@ -787,9 +775,7 @@ export const AdminPanel: React.FC = () => {
                   ? `/catalog/garments/winter-wear/${p.id}`
                   : `/catalog/yarns/${p.category}-yarns/${p.id}`;
                 const hasShadeCard = Boolean(p.shadeCardUrl);
-                const isPdfShade =
-                  hasShadeCard &&
-                  (p.shadeCardUrl!.toLowerCase().endsWith('.pdf') || p.shadeCardUrl!.includes('.pdf'));
+                const isPdfShade = hasShadeCard && isPdfShadeCard(p.shadeCardUrl);
 
                 return (
                   <tr key={p.id} className="hover:bg-slate-50/80 transition-colors group">
@@ -867,7 +853,7 @@ export const AdminPanel: React.FC = () => {
                     <td className="py-2.5 px-3 whitespace-nowrap">
                       {hasShadeCard ? (
                         <a
-                          href={p.shadeCardUrl}
+                          href={resolveShadeCardUrl(p.shadeCardUrl)}
                           target="_blank"
                           rel="noopener noreferrer"
                           className={`inline-flex items-center gap-1 text-[0.6875rem] font-bold px-2 py-0.5 rounded-md border transition-all hover:scale-105 ${
@@ -1562,22 +1548,16 @@ export const AdminPanel: React.FC = () => {
                   )}
                 </div>
 
-                {/* 2. SHADE CARD UPLOAD SECTION (PDF or Image - ONLY in Yarn Categories) */}
-                {isYarnCategory && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    exit={{ opacity: 0, height: 0 }}
-                    className="bg-amber-50/60 p-4 rounded-2xl border border-amber-200/90 space-y-3"
-                  >
-                    <div className="flex items-center justify-between">
-                      <label className="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
-                        <FileText className="w-3.5 h-3.5 text-amber-600" />
-                        <span>Shade Card (PDF Catalog or Image)</span>
-                        <span className="text-[0.5625rem] bg-amber-200/70 text-amber-900 px-1.5 py-0.5 rounded font-bold uppercase tracking-wider">
-                          Yarns Only
-                        </span>
-                      </label>
+                {/* 2. SHADE CARD / SPEC SHEET UPLOAD SECTION (PDF or Image) */}
+                <div className="bg-amber-50/60 p-4 rounded-2xl border border-amber-200/90 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+                      <FileText className="w-3.5 h-3.5 text-amber-600" />
+                      <span>Shade Card / Spec Sheet (PDF Catalog or Image)</span>
+                      <span className="text-[0.5625rem] bg-amber-200/70 text-amber-900 px-1.5 py-0.5 rounded font-bold uppercase tracking-wider">
+                        PDF or Image
+                      </span>
+                    </label>
                       <button
                         type="button"
                         onClick={() => setShowManualShadeUrl(!showManualShadeUrl)}
@@ -1689,8 +1669,7 @@ export const AdminPanel: React.FC = () => {
                         </p>
                       </label>
                     )}
-                  </motion.div>
-                )}
+                  </div>
 
                 {/* Submit Actions */}
                 <div className="flex flex-col-reverse sm:flex-row items-center justify-end gap-2.5 sm:gap-3 pt-4 border-t border-slate-100">

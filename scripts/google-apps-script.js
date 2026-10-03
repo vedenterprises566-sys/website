@@ -126,13 +126,14 @@ function doPost(e) {
       }
     }
 
-    // Also upload shade card file/image if sent as base64 data URL
+    // Also upload shade card file / PDF / image if sent as base64 or URL
     const shadeSource = data.shade_url || data.shadeCardUrl || data.shadeUrl || data.shadePdfUrl || '';
-    if (shadeSource && shadeSource.startsWith('data:')) {
-      const shadeDriveUrl = uploadImageToDrive(shadeSource, (data.name || 'product') + '_shade');
+    if (shadeSource && (shadeSource.startsWith('http') || shadeSource.startsWith('data:'))) {
+      const shadeDriveUrl = uploadImageToDrive(shadeSource, (data.name || 'product') + '_shade', true);
       if (shadeDriveUrl && shadeDriveUrl !== shadeSource) {
         data.shadeCardUrl = shadeDriveUrl;
         data.shadeUrl = shadeDriveUrl;
+        data.shadePdfUrl = shadeDriveUrl;
       }
     }
 
@@ -247,24 +248,51 @@ function deleteProduct(query) {
   return { success: true, message: 'Deleted and synced.', remainingProducts: JSON.parse(catalog).length };
 }
 
-function uploadImageToDrive(imgSource, productName) {
+function uploadImageToDrive(imgSource, productName, isShadeCard) {
   try {
     const config = getConfig();
     if (!config.DRIVE_FOLDER_ID || !imgSource) return imgSource;
 
-    var blob, extension = 'jpg';
+    // If already a Google Drive or UserContent URL, no need to re-upload
+    if (imgSource.indexOf('drive.google.com') !== -1 || imgSource.indexOf('googleusercontent.com') !== -1) {
+      return imgSource;
+    }
 
-    if (imgSource.startsWith('data:image')) {
-      // Base64 from website upload
+    var blob, extension = 'jpg', isPdf = false;
+
+    if (imgSource.startsWith('data:')) {
+      // Base64 from website upload (handles both images and application/pdf)
       const parts = imgSource.split(',');
-      const mime  = parts[0].match(/data:([^;]+);/)[1];
-      extension   = mime.split('/')[1] || 'jpg';
-      blob        = Utilities.newBlob(Utilities.base64Decode(parts[1]), mime, 'image.' + extension);
+      const mimeMatch = parts[0].match(/data:([^;]+);/);
+      const mime  = mimeMatch ? mimeMatch[1].toLowerCase() : 'application/octet-stream';
+
+      if (mime.indexOf('pdf') !== -1) {
+        extension = 'pdf';
+        isPdf = true;
+      } else if (mime.indexOf('png') !== -1) {
+        extension = 'png';
+      } else if (mime.indexOf('webp') !== -1) {
+        extension = 'webp';
+      } else {
+        extension = 'jpg';
+      }
+
+      blob = Utilities.newBlob(Utilities.base64Decode(parts[1]), mime, (isShadeCard ? 'shade_' : 'media_') + Date.now() + '.' + extension);
     } else if (imgSource.startsWith('http')) {
       // External URL
       const resp = UrlFetchApp.fetch(imgSource, { muteHttpExceptions: true });
       blob       = resp.getBlob();
-      extension  = blob.getContentType().split('/')[1] || 'jpg';
+      const cType = (blob.getContentType() || '').toLowerCase();
+      if (cType.indexOf('pdf') !== -1 || imgSource.toLowerCase().indexOf('.pdf') !== -1) {
+        extension = 'pdf';
+        isPdf = true;
+      } else if (cType.indexOf('png') !== -1) {
+        extension = 'png';
+      } else if (cType.indexOf('webp') !== -1) {
+        extension = 'webp';
+      } else {
+        extension = 'jpg';
+      }
     } else {
       return imgSource;
     }
@@ -276,10 +304,18 @@ function uploadImageToDrive(imgSource, productName) {
     const file   = folder.createFile(blob);
     file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
 
-    // Use official Google Edge CDN direct link for high-speed, CORS-friendly display
-    const url = 'https://lh3.googleusercontent.com/d/' + file.getId();
-    Logger.log('Image uploaded to Drive: ' + url);
-    return url;
+    const fileId = file.getId();
+    if (isPdf) {
+      // For PDFs: Google Drive document view/preview link
+      const url = 'https://drive.google.com/file/d/' + fileId + '/view?usp=sharing';
+      Logger.log('PDF Shade Card uploaded to Drive: ' + url);
+      return url;
+    } else {
+      // For Images: Official Google Edge CDN direct link for high-speed, CORS-friendly display
+      const url = 'https://lh3.googleusercontent.com/d/' + fileId;
+      Logger.log('Image uploaded to Drive: ' + url);
+      return url;
+    }
   } catch (err) {
     Logger.log('Drive upload notice: ' + err.toString());
     return imgSource;
