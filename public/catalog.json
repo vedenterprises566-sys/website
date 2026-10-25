@@ -25,28 +25,27 @@
   },
   {
     "id": "sheet-rainbow",
-    "name": "Rainbow Yarn",
+    "name": "Rainbow Yarn (GALAXIA)",
     "category": "acrylic-blends",
     "categoryLabel": "Acrylic & Blends",
     "countOrDenier": "2/26 Nm (82/18 Acrylic/Nylon)",
     "description": "The Blend of Acrylic & Shiny Soft Nylon 82/18. Count is 2/26 NM.",
     "recommendedUses": [
-      "Shiny Soft Winter Wear",
-      "Designer Knitwear",
-      "Fashion Tops"
+      "Knitting & Hosiery",
+      "Weaving",
+      "Winter Knitwear"
     ],
     "features": [
-      "82/18 Acrylic Nylon Blend",
-      "Shiny Soft Sheen",
-      "Soft Hand Feel",
-      "Smooth Knitting"
+      "Consistent Count",
+      "Even Dyeing",
+      "High Tensile Strength"
     ],
     "sampleAvailable": true,
-    "origin": "Ved Premium Selection",
-    "popularFor": "Shiny Designer Winter Wear",
-    "imageUrl": "",
+    "origin": "Ved Enterprises Ludhiana",
+    "popularFor": "Bulk Wholesale Dispatch",
+    "imageUrl": "https://lh3.googleusercontent.com/d/1TDtwuoKwdK0iueU_mykF_mERJPihvU9k",
     "shadeCardUrl": "",
-    "badge": "Live Sheet Item"
+    "badge": "In Stock"
   },
   {
     "id": "sheet-hazel",
